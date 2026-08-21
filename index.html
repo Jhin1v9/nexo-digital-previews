@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
+
 /* ═══════════════════════════════════════════════════════════════
    HDM INDUSTRIAL — DISCOVERY ENGINE v3
    Voice-First + Local Persistence + Export ZIP
@@ -170,9 +171,11 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 @keyframes progressShimmer { 0%,100% { opacity: 0; } 50% { opacity: 0.6; } }
 
 /* Steps */
-.step-panel { display: none; animation: stepEnter 0.5s var(--ease-out-expo) forwards; }
-.step-panel.active { display: block; }
-@keyframes stepEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.form-section { margin-bottom: var(--space-16); animation: sectionEnter 0.5s var(--ease-out-expo) forwards; }
+.form-section:last-of-type { margin-bottom: var(--space-8); }
+@keyframes sectionEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+html { scroll-behavior: smooth; }
+.nav-item { text-decoration: none; }
 
 /* Fields */
 .field { margin-bottom: var(--space-8); position: relative; }
@@ -194,197 +197,20 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 .select option { background: var(--ink-800); color: var(--ink-100); padding: var(--space-2); }
 
 /* Voice Input Wrapper */
-.voice-wrap { position: relative; }
-.voice-wrap .textarea { padding-right: 52px; }
-.voice-wrap .input { padding-right: 52px; }
-
 /* Mic Button */
-.mic-btn {
-  position: absolute;
-  right: 12px;
-  top: 14px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ink-800);
-  border: 1.5px solid var(--ink-600);
-  border-radius: var(--radius-md);
-  color: var(--ink-400);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out-quart);
-  z-index: 2;
-}
-.mic-btn:hover { border-color: var(--bronze-500); color: var(--bronze-300); background: var(--bronze-glow); }
-.mic-btn:focus-visible { outline: 2px solid var(--bronze-500); outline-offset: 2px; }
-.mic-btn.recording {
-  background: var(--signal-red-dim);
-  border-color: var(--signal-red);
-  color: var(--signal-red);
-  animation: micPulse 1.5s ease-in-out infinite;
-}
-@keyframes micPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
+50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
 
 /* Voice Badge (accepted state) */
-.voice-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  background: var(--bronze-glow);
-  border: 1px solid var(--bronze-600);
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  color: var(--bronze-300);
-  margin-top: var(--space-2);
-  cursor: pointer;
-  transition: all var(--duration-fast);
-}
-.voice-badge:hover { background: var(--bronze-glow-strong); }
-
 /* Voice Recorder Overlay */
-.voice-overlay {
-  display: none;
-  margin-top: var(--space-4);
-  padding: var(--space-6);
-  background: var(--ink-900);
-  border: 1.5px solid var(--ink-700);
-  border-radius: var(--radius-lg);
-  position: relative;
-  overflow: hidden;
-  animation: conditionalReveal 0.35s var(--ease-out-expo);
-}
-.voice-overlay.visible { display: block; }
 @keyframes conditionalReveal { from { opacity: 0; transform: translateY(-8px); max-height: 0; } to { opacity: 1; transform: translateY(0); max-height: 800px; } }
 
-.voice-overlay::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--bronze-600), transparent); }
-
-.rec-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-5);
-}
-.rec-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--signal-red);
-  border-radius: var(--radius-full);
-  animation: recBlink 1s ease-in-out infinite;
-}
-@keyframes recBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-.rec-label {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--signal-red);
-  letter-spacing: 0.05em;
-}
-.rec-timer {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--ink-300);
-  margin-left: auto;
-}
-
+50% { opacity: 0.3; } }
 /* Waveform visual */
-.waveform {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  height: 32px;
-  margin-bottom: var(--space-5);
-}
-.wave-bar {
-  width: 3px;
-  background: var(--bronze-500);
-  border-radius: var(--radius-full);
-  transition: height 0.1s ease;
-}
-
 /* Audio Player */
-.audio-player {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--ink-850);
-  border: 1px solid var(--ink-750);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-4);
-}
-.audio-play {
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bronze-glow);
-  border: 1.5px solid var(--bronze-600);
-  border-radius: var(--radius-full);
-  color: var(--bronze-300);
-  cursor: pointer;
-  transition: all var(--duration-fast);
-  flex-shrink: 0;
-}
-.audio-play:hover { background: var(--bronze-glow-strong); transform: scale(1.05); }
-.audio-timeline {
-  flex: 1;
-  height: 4px;
-  background: var(--ink-700);
-  border-radius: var(--radius-full);
-  position: relative;
-  cursor: pointer;
-}
-.audio-timeline-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--bronze-600), var(--bronze-400));
-  border-radius: var(--radius-full);
-  width: 0%;
-  transition: width 0.1s linear;
-}
-.audio-time {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--ink-400);
-  min-width: 40px;
-  text-align: right;
-}
-
 /* Transcript area */
-.transcript-area {
-  margin-bottom: var(--space-4);
-}
-.transcript-area .field-label { font-size: var(--text-sm); margin-bottom: var(--space-2); }
-.transcript-area .textarea { min-height: 100px; font-size: var(--text-sm); }
-
 /* Processing state */
-.processing-box {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--ink-850);
-  border: 1px dashed var(--ink-600);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-4);
 }
-.processing-spinner {
-  width: 20px; height: 20px;
-  border: 2px solid var(--ink-600);
-  border-top-color: var(--bronze-400);
-  border-radius: var(--radius-full);
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.processing-text { font-size: var(--text-sm); color: var(--ink-300); }
-
 /* Voice actions */
-.voice-actions {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
 /* Chips */
 .chip-grid { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .chip {
@@ -534,8 +360,7 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 /* Print */
 @media print {
   body { background: var(--ink-950) !important; color: var(--ink-200) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  .sidebar, .action-bar, .step-footer, .mic-btn, .voice-overlay, .voice-badge { display: none !important; }
-  .main { margin-left: 0 !important; }
+  .sidebar, .action-bar, .step-footer, .main { margin-left: 0 !important; }
   .step-panel { display: block !important; page-break-inside: avoid; }
   .main-inner { padding: 20px !important; max-width: 100% !important; }
 }
@@ -556,15 +381,14 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
   .toggle-row .toggle-btn { flex: 1; text-align: center; }
   .step-footer { flex-direction: column; gap: var(--space-3); }
   .step-footer .btn { width: 100%; justify-content: center; }
-  .voice-actions { flex-direction: column; }
-  .voice-actions .btn { width: 100%; justify-content: center; }
-}
+  }
 
 /* Accessibility */
 *:focus-visible { outline: 2px solid var(--bronze-500); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
 
 </style>
 </head>
@@ -579,38 +403,14 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
     </div>
     <div class="sidebar-divider"></div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <button class="nav-item active" data-step="0" role="tab" aria-selected="true">
-        <span class="nav-num">01</span><span class="nav-label">La empresa</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-item" data-step="1" role="tab" aria-selected="false">
-        <span class="nav-num">02</span><span class="nav-label">Lo que hacéis</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-item" data-step="2" role="tab" aria-selected="false">
-        <span class="nav-num">03</span><span class="nav-label">A quién ayudáis</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-item" data-step="3" role="tab" aria-selected="false">
-        <span class="nav-num">04</span><span class="nav-label">Dónde trabajáis</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-item" data-step="4" role="tab" aria-selected="false">
-        <span class="nav-num">05</span><span class="nav-label">Capacidad</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-item" data-step="5" role="tab" aria-selected="false">
-        <span class="nav-num">06</span><span class="nav-label">Proyectos</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-item" data-step="6" role="tab" aria-selected="false">
-        <span class="nav-num">07</span><span class="nav-label">La nueva web</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-item" data-step="7" role="tab" aria-selected="false">
-        <span class="nav-num">08</span><span class="nav-label">Resumen</span>
-        <svg class="nav-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2dd4a0" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      <a href="#sec-empresa" class="nav-item active"><span class="nav-num">01</span><span class="nav-label">La empresa</span></a>
+      <a href="#sec-servicios" class="nav-item"><span class="nav-num">02</span><span class="nav-label">Lo que hacéis</span></a>
+      <a href="#sec-audiencia" class="nav-item"><span class="nav-num">03</span><span class="nav-label">A quién ayudáis</span></a>
+      <a href="#sec-locacion" class="nav-item"><span class="nav-num">04</span><span class="nav-label">Dónde trabajáis</span></a>
+      <a href="#sec-capacidad" class="nav-item"><span class="nav-num">05</span><span class="nav-label">Capacidad</span></a>
+      <a href="#sec-proyectos" class="nav-item"><span class="nav-num">06</span><span class="nav-label">Proyectos</span></a>
+      <a href="#sec-web" class="nav-item"><span class="nav-num">07</span><span class="nav-label">La nueva web</span></a>
+      <a href="#sec-resumen" class="nav-item"><span class="nav-num">08</span><span class="nav-label">Resumen</span></a>
     </nav>
     <div class="sidebar-footer">
       <div class="autosave-pill" id="autosavePill"><span class="autosave-dot"></span><span id="autosaveText">Guardado</span></div>
@@ -619,47 +419,27 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
   <main class="main">
     <div class="main-inner">
-
-      <!-- STEP 01 -->
-      <section class="step-panel active" id="step-0" data-step="0" aria-labelledby="h-step-0">
+<section class="form-section" id="sec-empresa" aria-labelledby="h-sec-empresa">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 01 de 08</div>
-          <h1 class="header-title" id="h-step-0">La empresa</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 01</div>
+          <h1 class="header-title" id="h-sec-empresa">La empresa</h1>
           <p class="header-desc">Descubramos el posicionamiento real de HDM. No buscamos frases corporativas, buscamos entender qué hacéis y por qué importa.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">01</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:12.5%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <div class="field">
           <label class="field-label">¿Cómo explicarías qué hace HDM Industrial a una empresa que todavía no os conoce?</label>
           <p class="field-hint">Imagina que estás en una reunión con un director de planta que nunca ha oído hablar de vosotros.</p>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-empresa-explica" placeholder="Somos una empresa especializada en..." data-key="empresa.explicacion"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-empresa-explica')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-empresa-explica"></div>
-        </div>
-
-        <div class="field">
+          <textarea class="textarea" id="f-empresa-explica" placeholder="Somos una empresa especializada en..." data-key="empresa.explicacion"></textarea>
+            <div class="field">
           <label class="field-label">¿Qué debería entender alguien sobre HDM durante los primeros segundos en la nueva web?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-empresa-impacto" placeholder="Que podemos resolver problemas de mantenimiento industrial con profesionales cualificados..." data-key="empresa.impacto"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-empresa-impacto')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-empresa-impacto"></div>
-        </div>
+          <textarea class="textarea" id="f-empresa-impacto" placeholder="Que podemos resolver problemas de mantenimiento industrial con profesionales cualificados..." data-key="empresa.impacto"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">Si un cliente os llama hoy, ¿qué suele necesitar de vosotros?</label>
           <p class="field-hint">Captura el problema real que resuelve HDM: qué ocurre, qué necesitan y por qué contactan con vosotros.</p>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-empresa-necesidad" placeholder="Normalmente nos contactan cuando necesitan..." data-key="empresa.necesidad"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-empresa-necesidad')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-empresa-necesidad"></div>
-        </div>
+          <textarea class="textarea" id="f-empresa-necesidad" placeholder="Normalmente nos contactan cuando necesitan..." data-key="empresa.necesidad"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Cuántos años lleva HDM trabajando en el sector?</label>
@@ -679,25 +459,19 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
       </section>
 
       <!-- STEP 02 -->
-      <section class="step-panel" id="step-1" data-step="1" aria-labelledby="h-step-1">
+      
+<section class="form-section" id="sec-servicios" aria-labelledby="h-sec-servicios">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 02 de 08</div>
-          <h1 class="header-title" id="h-step-1">Lo que hacéis</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 02</div>
+          <h1 class="header-title" id="h-sec-servicios">Lo que hacéis</h1>
           <p class="header-desc">Esta es la columna vertebral del nuevo site. Cuanto más preciso sea aquí, mejor será el resultado final.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">02</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:25%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <div class="field">
           <label class="field-label">Servicios de HDM</label>
           <p class="field-hint">Añadid cada servicio que ofrezcáis. Una respuesta detallada aquí se traduce en páginas de conversión después.</p>
           <div class="repeater-list" id="servicios-list"></div>
-          <button type="button" class="btn-add" onclick="addServicio()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir servicio</button>
-        </div>
-
-        <div class="field">
+          <button type="button" class="btn-add" onclick="addServicio()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir servicio</button><div class="field">
           <label class="field-label">¿Qué perfiles profesionales puede aportar HDM?</label>
           <div class="repeater-list" id="perfiles-list"></div>
           <button type="button" class="btn-add" onclick="addPerfil()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir perfil</button>
@@ -705,25 +479,18 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
         <div class="field">
           <label class="field-label">¿Qué puede hacer una persona/equipo de HDM que una empresa externa normalmente no puede ofrecer?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-cap-diferencial" placeholder="Nuestro equipo destaca porque..." data-key="capacidad.diferencial"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-cap-diferencial')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-cap-diferencial"></div>
-        </div>
+          <textarea class="textarea" id="f-cap-diferencial" placeholder="Nuestro equipo destaca porque..." data-key="capacidad.diferencial"></textarea>
+            </div>
       </section>
 
       <!-- STEP 03 -->
-      <section class="step-panel" id="step-2" data-step="2" aria-labelledby="h-step-2">
+      
+<section class="form-section" id="sec-audiencia" aria-labelledby="h-sec-audiencia">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 03 de 08</div>
-          <h1 class="header-title" id="h-step-2">A quién ayudáis</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 03</div>
+          <h1 class="header-title" id="h-sec-audiencia">A quién ayudáis</h1>
           <p class="header-desc">Entender quién compra, por qué compra y qué dudas tiene antes de decidirse.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">03</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:37.5%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <div class="field">
           <label class="field-label">¿Qué tipo de empresas suelen contratar HDM?</label>
@@ -741,10 +508,7 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
             <input type="text" class="input" id="custom-tipo-empresas" placeholder="Añadir otro sector...">
             <button type="button" class="btn btn-secondary" onclick="addCustomChip('tipo-empresas')">Añadir</button>
           </div>
-          <input type="hidden" id="f-tipo-empresas" data-key="audiencia.tipoEmpresas">
-        </div>
-
-        <div class="field">
+          <input type="hidden" id="f-tipo-empresas" data-key="audiencia.tipoEmpresas"><div class="field">
           <label class="field-label">¿Quién suele tomar la decisión de contrataros?</label>
           <div class="chip-grid" id="chips-decisor">
             <span class="chip" data-value="Dirección">Dirección</span>
@@ -760,22 +524,14 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
         <div class="field">
           <label class="field-label">¿Qué problema suele tener esa persona cuando os busca?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-audiencia-problema" placeholder="Necesita resolver una parada industrial urgente..." data-key="audiencia.problema"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-audiencia-problema')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-audiencia-problema"></div>
-        </div>
+          <textarea class="textarea" id="f-audiencia-problema" placeholder="Necesita resolver una parada industrial urgente..." data-key="audiencia.problema"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Qué suele pasar antes de que un cliente contacte con HDM?</label>
           <p class="field-hint">Describe el momento previo: ¿qué ocurre en su empresa que le lleva a buscar una solución como la vuestra?</p>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-audiencia-journey" placeholder="Normalmente ocurre que..." data-key="audiencia.journey"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-audiencia-journey')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-audiencia-journey"></div>
-        </div>
+          <textarea class="textarea" id="f-audiencia-journey" placeholder="Normalmente ocurre que..." data-key="audiencia.journey"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Qué información necesita ese cliente antes de decidir contrataros?</label>
@@ -794,53 +550,32 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
         <div class="field">
           <label class="field-label">¿Qué dudas suelen tener los clientes antes de contrataros?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-objeciones" placeholder="Antes de contratar, normalmente preguntan..." data-key="audiencia.objeciones"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-objeciones')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-objeciones"></div>
-        </div>
+          <textarea class="textarea" id="f-objeciones" placeholder="Antes de contratar, normalmente preguntan..." data-key="audiencia.objeciones"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Qué información os piden una y otra vez por teléfono o WhatsApp?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-preguntas" placeholder="Siempre nos preguntan..." data-key="audiencia.preguntas"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-preguntas')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-preguntas"></div>
-        </div>
+          <textarea class="textarea" id="f-preguntas" placeholder="Siempre nos preguntan..." data-key="audiencia.preguntas"></textarea>
+            </div>
       </section>
 
       <!-- STEP 04 -->
-      <section class="step-panel" id="step-3" data-step="3" aria-labelledby="h-step-3">
+      
+<section class="form-section" id="sec-locacion" aria-labelledby="h-sec-locacion">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 04 de 08</div>
-          <h1 class="header-title" id="h-step-3">Dónde trabajáis</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 04</div>
+          <h1 class="header-title" id="h-sec-locacion">Dónde trabajáis</h1>
           <p class="header-desc">La geografía de HDM es clave para SEO local, páginas territoriales y estrategia de captación.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">04</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:50%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <div class="field">
           <label class="field-label">¿Dónde trabajáis actualmente?</label>
           <p class="field-hint">País, comunidad autónoma, provincia, ciudad o área de actuación.</p>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-loc-actual" placeholder="Actualmente operamos principalmente en Cataluña..." data-key="locacion.actual"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-loc-actual')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-loc-actual"></div>
-        </div>
-
-        <div class="field">
+          <textarea class="textarea" id="f-loc-actual" placeholder="Actualmente operamos principalmente en Cataluña..." data-key="locacion.actual"></textarea>
+            <div class="field">
           <label class="field-label">¿Dónde queréis conseguir más clientes?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-loc-objetivo" placeholder="Nos interesa crecer especialmente en..." data-key="locacion.objetivo"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-loc-objetivo')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-loc-objetivo"></div>
-        </div>
+          <textarea class="textarea" id="f-loc-objetivo" placeholder="Nos interesa crecer especialmente en..." data-key="locacion.objetivo"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Podéis desplazar equipos/profesionales?</label>
@@ -865,34 +600,21 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
       </section>
 
       <!-- STEP 05 -->
-      <section class="step-panel" id="step-4" data-step="4" aria-labelledby="h-step-4">
+      
+<section class="form-section" id="sec-capacidad" aria-labelledby="h-sec-capacidad">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 05 de 08</div>
-          <h1 class="header-title" id="h-step-4">Capacidad industrial</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 05</div>
+          <h1 class="header-title" id="h-sec-capacidad">Capacidad industrial</h1>
           <p class="header-desc">Certificaciones, calidad, seguridad y todo lo que demuestra que HDM puede cumplir.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">05</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:62.5%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <div class="field">
           <label class="field-label">¿Qué certificaciones, homologaciones o acreditaciones podéis demostrar?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-certificaciones" placeholder="Contamos con certificación ISO 9001, homologación para trabajos en altura..." data-key="capacidad.certificaciones"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-certificaciones')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-certificaciones"></div>
-        </div>
-
-        <div class="field">
+          <textarea class="textarea" id="f-certificaciones" placeholder="Contamos con certificación ISO 9001, homologación para trabajos en altura..." data-key="capacidad.certificaciones"></textarea>
+            <div class="field">
           <label class="field-label">¿Qué estándares de seguridad y calidad son importantes para vuestros clientes?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-seguridad" placeholder="Para nosotros es importante cumplir con la normativa de prevención de riesgos laborales..." data-key="capacidad.seguridadCalidad"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-seguridad')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-seguridad"></div>
-        </div>
+          <textarea class="textarea" id="f-seguridad" placeholder="Para nosotros es importante cumplir con la normativa de prevención de riesgos laborales..." data-key="capacidad.seguridadCalidad"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Hay documentación que podamos mostrar públicamente?</label>
@@ -905,82 +627,51 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
         <div class="field">
           <label class="field-label">¿Por qué una empresa debería elegir HDM en lugar de otra empresa del sector?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-diferencial" placeholder="Porque..." data-key="capacidad.diferencial"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-diferencial')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-diferencial"></div>
-        </div>
+          <textarea class="textarea" id="f-diferencial" placeholder="Porque..." data-key="capacidad.diferencial"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Qué suelen destacar vuestros clientes después de trabajar con vosotros?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-clientes-valoran" placeholder="Lo que más nos suelen valorar es..." data-key="capacidad.clientesValoran"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-clientes-valoran')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-clientes-valoran"></div>
-        </div>
+          <textarea class="textarea" id="f-clientes-valoran" placeholder="Lo que más nos suelen valorar es..." data-key="capacidad.clientesValoran"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Cuál es uno de los trabajos más exigentes que habéis realizado?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-trabajo-exigente" placeholder="Uno de nuestros proyectos más exigentes fue..." data-key="capacidad.trabajoExigente"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-trabajo-exigente')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-trabajo-exigente"></div>
-        </div>
+          <textarea class="textarea" id="f-trabajo-exigente" placeholder="Uno de nuestros proyectos más exigentes fue..." data-key="capacidad.trabajoExigente"></textarea>
+            </div>
       </section>
 
       <!-- STEP 06 -->
-      <section class="step-panel" id="step-5" data-step="5" aria-labelledby="h-step-5">
+      
+<section class="form-section" id="sec-proyectos" aria-labelledby="h-sec-proyectos">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 06 de 08</div>
-          <h1 class="header-title" id="h-step-5">Proyectos y experiencia</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 06</div>
+          <h1 class="header-title" id="h-sec-proyectos">Proyectos y experiencia</h1>
           <p class="header-desc">Los proyectos son la prueba más poderosa. Añadid los que podáis — cada uno es material para case studies.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">06</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:75%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <div class="field">
           <label class="field-label">Proyectos realizados</label>
           <div class="repeater-list" id="proyectos-list"></div>
-          <button type="button" class="btn-add" onclick="addProyecto()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir proyecto</button>
-        </div>
-
-        <div class="field">
+          <button type="button" class="btn-add" onclick="addProyecto()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir proyecto</button><div class="field">
           <label class="field-label">¿Qué clientes o empresas podemos mostrar públicamente? <span class="optional">opcional</span></label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-clientes-publicos" placeholder="Podemos mencionar a..." data-key="proyectos.clientesPublicos"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-clientes-publicos')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-clientes-publicos"></div>
-        </div>
+          <textarea class="textarea" id="f-clientes-publicos" placeholder="Podemos mencionar a..." data-key="proyectos.clientesPublicos"></textarea>
+            </div>
       </section>
 
       <!-- STEP 07 -->
-      <section class="step-panel" id="step-6" data-step="6" aria-labelledby="h-step-6">
+      
+<section class="form-section" id="sec-web" aria-labelledby="h-sec-web">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 07 de 08</div>
-          <h1 class="header-title" id="h-step-6">La nueva web</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 07</div>
+          <h1 class="header-title" id="h-sec-web">La nueva web</h1>
           <p class="header-desc">Queremos entender qué esperáis del nuevo site, no qué creáis que necesita técnicamente.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">07</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:87.5%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <div class="field">
           <label class="field-label">¿Qué no funciona bien en vuestra web actual?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-web-problemas" placeholder="El principal problema de la web actual es..." data-key="web.problemas"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-web-problemas')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-web-problemas"></div>
-        </div>
-
-        <div class="field">
+          <textarea class="textarea" id="f-web-problemas" placeholder="El principal problema de la web actual es..." data-key="web.problemas"></textarea>
+            <div class="field">
           <label class="field-label">¿Qué queréis que el nuevo sitio haga mejor?</label>
           <div class="chip-grid" id="chips-web-objetivos">
             <span class="chip" data-value="Conseguir más clientes">Conseguir más clientes</span>
@@ -1029,20 +720,12 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
           <div class="conditional" id="cond-reclutamiento">
             <div class="field" style="margin-bottom:var(--space-5)">
               <label class="field-label">¿Qué perfiles buscáis?</label>
-              <div class="voice-wrap">
-                <textarea class="textarea" id="f-reclutamiento-perfiles" placeholder="Soldadores certificados, técnicos de mantenimiento..." data-key="web.reclutamientoPerfiles"></textarea>
-                <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-reclutamiento-perfiles')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-              </div>
-              <div class="voice-overlay" id="vo-f-reclutamiento-perfiles"></div>
-            </div>
+              <textarea class="textarea" id="f-reclutamiento-perfiles" placeholder="Soldadores certificados, técnicos de mantenimiento..." data-key="web.reclutamientoPerfiles"></textarea>
+                </div>
             <div class="field" style="margin-bottom:0">
               <label class="field-label">¿Qué información debe enviar un candidato?</label>
-              <div class="voice-wrap">
-                <textarea class="textarea" id="f-reclutamiento-info" placeholder="CV, certificaciones, disponibilidad..." data-key="web.reclutamientoInfo"></textarea>
-                <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-reclutamiento-info')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-              </div>
-              <div class="voice-overlay" id="vo-f-reclutamiento-info"></div>
-            </div>
+              <textarea class="textarea" id="f-reclutamiento-info" placeholder="CV, certificaciones, disponibilidad..." data-key="web.reclutamientoInfo"></textarea>
+                </div>
           </div>
         </div>
 
@@ -1096,12 +779,8 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
         <div class="field">
           <label class="field-label">¿Qué te gustaría que HDM transmitiera y que hoy no transmite?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-ref-deseo" placeholder="Queremos que cuando alguien entre piense..." data-key="refs.deseo"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-ref-deseo')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-ref-deseo"></div>
-        </div>
+          <textarea class="textarea" id="f-ref-deseo" placeholder="Queremos que cuando alguien entre piense..." data-key="refs.deseo"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Qué material tenéis disponible?</label>
@@ -1131,35 +810,24 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
         <div class="field">
           <label class="field-label">¿Hay algo que no podamos publicar?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-restricciones" placeholder="No queremos publicar..." data-key="web.restricciones"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-restricciones')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-restricciones"></div>
-        </div>
+          <textarea class="textarea" id="f-restricciones" placeholder="No queremos publicar..." data-key="web.restricciones"></textarea>
+            </div>
 
         <div class="field">
           <label class="field-label">¿Hay clientes, proyectos o información confidencial que debamos excluir?</label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-confidencial" placeholder="Debemos excluir..." data-key="web.confidencial"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-confidencial')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
-          </div>
-          <div class="voice-overlay" id="vo-f-confidencial"></div>
-        </div>
+          <textarea class="textarea" id="f-confidencial" placeholder="Debemos excluir..." data-key="web.confidencial"></textarea>
+            </div>
       </section>
 
       
       <!-- STEP 08 -->
-      <section class="step-panel" id="step-7" data-step="7" aria-labelledby="h-step-7">
+      
+<section class="form-section" id="sec-resumen" aria-labelledby="h-sec-resumen">
         <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Paso 08 de 08</div>
-          <h1 class="header-title" id="h-step-7">Revisa tu información</h1>
+          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 08</div>
+          <h1 class="header-title" id="h-sec-resumen">Revisa tu información</h1>
           <p class="header-desc">Verifica que todo esté correcto antes de guardar. Puedes exportar incluso con respuestas incompletas.</p>
-          <div class="progress-track">
-            <span class="fraction"><span class="current">08</span> / 08</span>
-            <div class="progress-rail"><div class="progress-fill" style="width:100%"></div></div>
-          </div>
-        </header>
+          </header>
 
         <!-- Summary Card -->
         <div class="summary-card" id="review-summary">
@@ -1200,10 +868,7 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               <span id="review-warnings-text"></span>
             </div>
-          </div>
-        </div>
-
-        <div class="field">
+          </div><div class="field">
           <label class="field-label">Email de contacto <span class="optional">para que Nexo Digital pueda contactaros</span></label>
           <input type="email" class="input" id="f-contacto-email" placeholder="matheus@hdmindustrial.es" data-key="contacto.email">
         </div>
@@ -1215,14 +880,8 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
 
         <div class="field">
           <label class="field-label">Notas adicionales <span class="optional">cualquier cosa que no haya cabido</span></label>
-          <div class="voice-wrap">
-            <textarea class="textarea" id="f-notas" placeholder="Queremos añadir que..." data-key="contacto.notas" style="min-height:80px"></textarea>
-            <button type="button" class="mic-btn" data-tooltip="Responder por voz" aria-label="Responder por voz" onclick="VoiceUI.start('f-notas')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-            </button>
-          </div>
-          <div class="voice-overlay" id="vo-f-notas"></div>
-        </div>
+          <textarea class="textarea" id="f-notas" placeholder="Queremos añadir que..." data-key="contacto.notas" style="min-height:80px"></textarea>
+            </div>
 
         <div style="text-align:center;padding:var(--space-8) 0;">
           <p style="color:var(--ink-300);font-size:var(--text-md);line-height:var(--leading-relaxed);max-width:520px;margin:0 auto var(--space-6);">
@@ -1235,10 +894,7 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
           </button>
         </div>
       </section>
-<div class="step-footer" id="stepFooter">
-        <button type="button" class="btn btn-secondary" id="btnPrev" onclick="prevStep()" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Anterior</button>
-        <button type="button" class="btn btn-primary" id="btnNext" onclick="nextStep()">Siguiente <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-      </div>
+
     </div>
   </main>
 </div>
@@ -1249,528 +905,19 @@ body { font-family: var(--font-body); font-size: var(--text-base); line-height: 
   <button type="button" class="btn btn-secondary" onclick="window.print()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir / PDF</button>
 </div>
 
-<div class="privacy-note">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-  <span>Tus grabaciones se utilizan únicamente para facilitar tus respuestas. Puedes revisar o eliminar cada grabación antes de continuar. El audio puede ser enviado al servicio de transcripción configurado.</span>
-</div>
-
 <script>
-// ═══════════════════════════════════════════════════════════════
-// HDM INDUSTRIAL DISCOVERY ENGINE v4 — PRODUCTION HARDENED
-// Voice-First + IndexedDB Audio + Session Recovery + Secure Export
-// ═══════════════════════════════════════════════════════════════
-
 const STATE = {
-  step: 0,
-  total: 8,
   data: {},
-  voice: {},
   counters: { servicios: 0, perfiles: 0, sectores: 0, proyectos: 0 },
-  schemaVersion: '4.0',
-  formVersion: 'hdm-discovery-v4',
+  schemaVersion: '4.1',
+  formVersion: 'hdm-discovery-v4-single',
   language: 'es-ES',
   createdAt: null,
   updatedAt: null
 };
 
-const DB_NAME = 'HDM_Discovery_DB';
-const DB_VERSION = 2; // bumped for schema evolution
-const STORE_AUDIO = 'audio';
-const LS_KEY = 'hdm_discovery_v4';
-const MAX_RECORDING_SEC = 180;
+const LS_KEY = 'hdm_discovery_v4_single';
 
-// ─── IndexedDB ────────────────────────────────────────────────
-let db = null;
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onerror = () => reject(req.error);
-    req.onsuccess = () => { db = req.result; resolve(db); };
-    req.onupgradeneeded = (e) => {
-      const d = e.target.result;
-      if (!d.objectStoreNames.contains(STORE_AUDIO)) {
-        const store = d.createObjectStore(STORE_AUDIO, { keyPath: 'id' });
-        store.createIndex('questionId', 'questionId', { unique: false });
-        store.createIndex('createdAt', 'createdAt', { unique: false });
-      }
-    };
-  });
-}
-
-async function saveAudio(id, blob, mimeType, duration, questionId) {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_AUDIO, 'readwrite');
-    const store = tx.objectStore(STORE_AUDIO);
-    const req = store.put({ id, blob, mimeType, duration, questionId, createdAt: Date.now() });
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function getAudio(id) {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_AUDIO, 'readonly');
-    const store = tx.objectStore(STORE_AUDIO);
-    const req = store.get(id);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function deleteAudio(id) {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_AUDIO, 'readwrite');
-    const store = tx.objectStore(STORE_AUDIO);
-    const req = store.delete(id);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function getAllAudioIds() {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_AUDIO, 'readonly');
-    const store = tx.objectStore(STORE_AUDIO);
-    const req = store.getAllKeys();
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function listAudios() {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_AUDIO, 'readonly');
-    const store = tx.objectStore(STORE_AUDIO);
-    const req = store.getAll();
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function deleteOrphanedAudios() {
-  const allIds = await getAllAudioIds();
-  const usedIds = new Set();
-  Object.values(STATE.voice).forEach(v => { if (v.audioId) usedIds.add(v.audioId); });
-  for (const id of allIds) {
-    if (!usedIds.has(id)) {
-      await deleteAudio(id);
-      console.log('[Cleanup] Deleted orphaned audio:', id);
-    }
-  }
-}
-
-// ─── Transcription Provider ───────────────────────────────────
-// ABSTRAÇÃO: substituir esta implementação por chamada real ao backend
-// NUNCA expor API keys no frontend
-const TranscriptionProvider = {
-  // Endpoint esperado: POST /api/transcribe
-  // Body: FormData com campo 'audio' (Blob) e 'language' (string)
-  // Response: { text: string, confidence?: number }
-
-  async transcribe(audioBlob, options = {}) {
-    const { language = 'es', filename = 'recording.webm', mimeType = 'audio/webm' } = options;
-
-    console.log('[Transcription] Request:', { size: audioBlob.size, type: mimeType, language });
-
-    // === MODO STANDALONE (mock) ===
-    // Substitua pelo endpoint real quando o backend estiver pronto:
-    //
-    // const formData = new FormData();
-    // formData.append('audio', audioBlob, filename);
-    // formData.append('language', language);
-    // const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
-    // if (!res.ok) throw new Error('Transcription failed: ' + res.status);
-    // const data = await res.json();
-    // return data.text;
-    //
-    // ================================
-
-    await new Promise(r => setTimeout(r, 1200));
-    return '[TRANSCRIPCIÓN PENDIENTE — conecta el backend]\n\nPara activar la transcripción real:\n1. Crea un endpoint POST /api/transcribe en tu servidor\n2. Envía el audioBlob como multipart/form-data\n3. Usa Whisper, Groq, Deepgram o AssemblyAI con la API key en el servidor\n4. Devuelve { text: \"transcripción\" }\n\nEl audio original se mantiene guardado en IndexedDB.';
-  },
-
-  // Retry com backoff exponencial
-  async transcribeWithRetry(audioBlob, options = {}, maxRetries = 2) {
-    let lastError;
-    for (let i = 0; i <= maxRetries; i++) {
-      try {
-        return await this.transcribe(audioBlob, options);
-      } catch (err) {
-        lastError = err;
-        if (i < maxRetries) {
-          const delay = Math.pow(2, i) * 1000;
-          await new Promise(r => setTimeout(r, delay));
-        }
-      }
-    }
-    throw lastError;
-  }
-};
-
-// ─── Voice UI Controller ──────────────────────────────────────
-const VoiceUI = {
-  activeField: null,
-  recorder: null,
-  chunks: [],
-  startTime: 0,
-  timerInterval: null,
-  audioBlob: null,
-  audioUrl: null,
-  audioPlayer: null,
-  mimeType: 'audio/webm',
-  currentAudioId: null,
-
-  async start(fieldId) {
-    const field = document.getElementById(fieldId);
-    const overlay = document.getElementById('vo-' + fieldId);
-    const existingText = field.value.trim();
-
-    if (!navigator.mediaDevices || !window.MediaRecorder) {
-      alert('Tu navegador no soporta grabación de audio. Continúa escribiendo.');
-      return;
-    }
-
-    if (existingText) {
-      const action = confirm('Ya hay texto en este campo.\n\n¿Quieres SUSTITUIRLO con la grabación?\n(Cancelar = añadir al final)');
-      if (action === null) return;
-      STATE.voice[fieldId] = { ...STATE.voice[fieldId], replaceMode: action };
-    }
-
-    this.activeField = fieldId;
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.mimeType = this._getSupportedMimeType();
-      this.recorder = new MediaRecorder(stream, { mimeType: this.mimeType });
-      this.chunks = [];
-
-      this.recorder.ondataavailable = (e) => { if (e.data.size > 0) this.chunks.push(e.data); };
-      this.recorder.onstop = () => this._onStop();
-
-      this.recorder.start(100);
-      this.startTime = Date.now();
-      this._renderRecording(overlay);
-      this.timerInterval = setInterval(() => this._updateTimer(), 100);
-
-      const micBtn = field.parentElement.querySelector('.mic-btn');
-      micBtn.classList.add('recording');
-      micBtn.setAttribute('aria-label', 'Detener grabación');
-      micBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v6a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
-      micBtn.onclick = () => this.stop();
-
-    } catch (err) {
-      console.error('[Voice] Mic error:', err);
-      alert('No podemos acceder al micrófono. Revisa los permisos del navegador o continúa escribiendo normalmente.');
-    }
-  },
-
-  stop() {
-    if (!this.recorder) return;
-    this.recorder.stop();
-    this.recorder.stream.getTracks().forEach(t => t.stop());
-    clearInterval(this.timerInterval);
-
-    const field = document.getElementById(this.activeField);
-    const micBtn = field.parentElement.querySelector('.mic-btn');
-    micBtn.classList.remove('recording');
-    micBtn.setAttribute('aria-label', 'Responder por voz');
-    micBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
-    micBtn.onclick = () => this.start(this.activeField);
-  },
-
-  async _onStop() {
-    this.audioBlob = new Blob(this.chunks, { type: this.mimeType });
-    this.audioUrl = URL.createObjectURL(this.audioBlob);
-    const duration = (Date.now() - this.startTime) / 1000;
-
-    // Generate audioId and save to IndexedDB IMMEDIATELY
-    // This ensures audio is never lost even if transcription fails
-    this.currentAudioId = 'audio_' + this.activeField + '_' + Date.now();
-    await saveAudio(this.currentAudioId, this.audioBlob, this.mimeType, duration, this.activeField);
-    console.log('[Voice] Audio saved to IndexedDB:', this.currentAudioId, this.audioBlob.size, 'bytes');
-
-    const overlay = document.getElementById('vo-' + this.activeField);
-    this._renderProcessing(overlay);
-
-    try {
-      const transcript = await TranscriptionProvider.transcribeWithRetry(this.audioBlob, {
-        language: 'es',
-        filename: this.currentAudioId + '.webm',
-        mimeType: this.mimeType
-      });
-      this._renderReview(overlay, transcript, duration);
-    } catch (err) {
-      console.error('[Voice] Transcription failed:', err);
-      this._renderError(overlay, duration);
-    }
-  },
-
-  _getSupportedMimeType() {
-    const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
-    for (const t of types) if (MediaRecorder.isTypeSupported(t)) return t;
-    return 'audio/webm';
-  },
-
-  _formatTime(sec) {
-    const m = Math.floor(sec / 60).toString().padStart(2, '0');
-    const s = Math.floor(sec % 60).toString().padStart(2, '0');
-    return m + ':' + s;
-  },
-
-  _updateTimer() {
-    const elapsed = (Date.now() - this.startTime) / 1000;
-    const timerEl = document.getElementById('voice-timer');
-    if (timerEl) timerEl.textContent = this._formatTime(elapsed);
-    if (elapsed > MAX_RECORDING_SEC - 10) {
-      const label = document.getElementById('voice-rec-label');
-      if (label) label.textContent = 'Quedan ' + Math.ceil(MAX_RECORDING_SEC - elapsed) + 's';
-    }
-    if (elapsed >= MAX_RECORDING_SEC) this.stop();
-  },
-
-  _renderRecording(overlay) {
-    overlay.innerHTML = '<div class="rec-header"><span class="rec-dot"></span><span class="rec-label" id="voice-rec-label">REC</span><span class="rec-timer" id="voice-timer">00:00</span></div><div class="waveform" id="voice-waveform"></div><button type="button" class="btn btn-danger" onclick="VoiceUI.stop()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v6a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Detener grabación</button>';
-    overlay.classList.add('visible');
-    this._animateWaveform();
-  },
-
-  _animateWaveform() {
-    const container = document.getElementById('voice-waveform');
-    if (!container) return;
-    for (let i = 0; i < 30; i++) {
-      const bar = document.createElement('div');
-      bar.className = 'wave-bar';
-      bar.style.height = '4px';
-      container.appendChild(bar);
-    }
-    const animate = () => {
-      if (!document.getElementById('voice-waveform')) return;
-      container.querySelectorAll('.wave-bar').forEach(bar => {
-        bar.style.height = (4 + Math.random() * 28) + 'px';
-      });
-      if (this.recorder && this.recorder.state === 'recording') requestAnimationFrame(animate);
-    };
-    animate();
-  },
-
-  _renderProcessing(overlay) {
-    overlay.innerHTML = '<div class="processing-box"><div class="processing-spinner"></div><span class="processing-text">Estamos transcribiendo tu respuesta...</span></div>';
-  },
-
-  _renderError(overlay, duration) {
-    overlay.innerHTML = '<div class="audio-player"><button type="button" class="audio-play" id="ap-play-' + this.activeField + '" onclick="VoiceUI.togglePlay()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></button><div class="audio-timeline" id="ap-timeline-' + this.activeField + '" onclick="VoiceUI.seek(event)"><div class="audio-timeline-fill" id="ap-fill-' + this.activeField + '"></div></div><span class="audio-time" id="ap-time-' + this.activeField + '">' + this._formatTime(duration) + '</span></div><div style="padding:var(--space-4);background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-md);margin-bottom:var(--space-4);font-size:var(--text-sm);color:var(--signal-red);"><strong>No hemos podido transcribir el audio.</strong><br>El audio original está guardado. Puedes intentarlo de nuevo o escribir manualmente.</div><div class="voice-actions"><button type="button" class="btn btn-secondary" onclick="VoiceUI.retryTranscription()">Intentar de nuevo</button><button type="button" class="btn btn-secondary" onclick="VoiceUI.keepAudioNoTranscript()">Mantener audio</button><button type="button" class="btn btn-danger" onclick="VoiceUI.discard()">Descartar</button></div>';
-
-    this.audioPlayer = new Audio(this.audioUrl);
-    this.audioPlayer.addEventListener('timeupdate', () => this._updatePlayer());
-    this.audioPlayer.addEventListener('ended', () => {
-      const btn = document.getElementById('ap-play-' + this.activeField);
-      if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-    });
-  },
-
-  _renderReview(overlay, transcript, duration) {
-    overlay.innerHTML = '<div class="audio-player"><button type="button" class="audio-play" id="ap-play-' + this.activeField + '" onclick="VoiceUI.togglePlay()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></button><div class="audio-timeline" id="ap-timeline-' + this.activeField + '" onclick="VoiceUI.seek(event)"><div class="audio-timeline-fill" id="ap-fill-' + this.activeField + '"></div></div><span class="audio-time" id="ap-time-' + this.activeField + '">' + this._formatTime(duration) + '</span></div><div class="transcript-area"><label class="field-label">Transcripción — puedes editarla</label><textarea class="textarea" id="voice-transcript-' + this.activeField + '">' + this._esc(transcript) + '</textarea></div><div class="voice-actions"><button type="button" class="btn btn-danger" onclick="VoiceUI.discard()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Descartar</button><button type="button" class="btn btn-secondary" onclick="VoiceUI.restart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Grabar de nuevo</button><button type="button" class="btn btn-primary" onclick="VoiceUI.accept()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Aceptar</button></div>';
-
-    this.audioPlayer = new Audio(this.audioUrl);
-    this.audioPlayer.addEventListener('timeupdate', () => this._updatePlayer());
-    this.audioPlayer.addEventListener('ended', () => {
-      const btn = document.getElementById('ap-play-' + this.activeField);
-      if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-    });
-  },
-
-  async retryTranscription() {
-    const overlay = document.getElementById('vo-' + this.activeField);
-    this._renderProcessing(overlay);
-    try {
-      const transcript = await TranscriptionProvider.transcribeWithRetry(this.audioBlob, {
-        language: 'es',
-        filename: this.currentAudioId + '.webm',
-        mimeType: this.mimeType
-      });
-      const duration = this.audioPlayer ? this.audioPlayer.duration : 0;
-      this._renderReview(overlay, transcript, duration);
-    } catch (err) {
-      console.error('[Voice] Retry failed:', err);
-      const duration = this.audioPlayer ? this.audioPlayer.duration : 0;
-      this._renderError(overlay, duration);
-    }
-  },
-
-  async keepAudioNoTranscript() {
-    const fieldId = this.activeField;
-    const field = document.getElementById(fieldId);
-    const duration = this.audioPlayer ? this.audioPlayer.duration : 0;
-
-    STATE.voice[fieldId] = {
-      audioId: this.currentAudioId,
-      transcript: null,
-      edited: false,
-      duration,
-      source: 'voice',
-      createdAt: Date.now()
-    };
-
-    this._showBadge(fieldId);
-    this._cleanup();
-    triggerAutosave();
-  },
-
-  togglePlay() {
-    if (!this.audioPlayer) return;
-    const btn = document.getElementById('ap-play-' + this.activeField);
-    if (this.audioPlayer.paused) {
-      this.audioPlayer.play();
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-    } else {
-      this.audioPlayer.pause();
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-    }
-  },
-
-  seek(e) {
-    if (!this.audioPlayer) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const pct = (e.clientX - rect.left) / rect.width;
-    this.audioPlayer.currentTime = pct * this.audioPlayer.duration;
-  },
-
-  _updatePlayer() {
-    if (!this.audioPlayer) return;
-    const fill = document.getElementById('ap-fill-' + this.activeField);
-    if (fill && this.audioPlayer.duration) {
-      fill.style.width = (this.audioPlayer.currentTime / this.audioPlayer.duration * 100) + '%';
-    }
-  },
-
-  async accept() {
-    const fieldId = this.activeField;
-    const field = document.getElementById(fieldId);
-    const transcriptEl = document.getElementById('voice-transcript-' + fieldId);
-    const transcript = transcriptEl ? transcriptEl.value : '';
-    const duration = this.audioPlayer ? this.audioPlayer.duration : 0;
-
-    const replaceMode = STATE.voice[fieldId]?.replaceMode;
-    if (replaceMode || !field.value.trim()) {
-      field.value = transcript;
-    } else {
-      field.value = field.value.trim() + '\n\n' + transcript;
-    }
-
-    STATE.voice[fieldId] = {
-      audioId: this.currentAudioId,
-      transcript,
-      edited: false,
-      duration,
-      source: 'voice',
-      createdAt: Date.now()
-    };
-
-    this._showBadge(fieldId);
-    this._cleanup();
-    triggerAutosave();
-  },
-
-  async discard() {
-    // Delete audio from IndexedDB if it was saved but not accepted
-    if (this.currentAudioId) {
-      try { await deleteAudio(this.currentAudioId); } catch(e) {}
-    }
-    this._cleanup();
-    const overlay = document.getElementById('vo-' + this.activeField);
-    if (overlay) { overlay.innerHTML = ''; overlay.classList.remove('visible'); }
-  },
-
-  restart() {
-    this.discard();
-    this.start(this.activeField);
-  },
-
-  _cleanup() {
-    if (this.audioPlayer) { this.audioPlayer.pause(); this.audioPlayer = null; }
-    if (this.audioUrl) { URL.revokeObjectURL(this.audioUrl); this.audioUrl = null; }
-    this.audioBlob = null;
-    this.chunks = [];
-    this.recorder = null;
-    this.currentAudioId = null;
-    this.activeField = null;
-  },
-
-  _showBadge(fieldId) {
-    const field = document.getElementById(fieldId);
-    let badge = field.parentElement.querySelector('.voice-badge');
-    if (!badge) {
-      badge = document.createElement('div');
-      badge.className = 'voice-badge';
-      badge.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Respuesta por voz';
-      badge.onclick = () => this._reviewExisting(fieldId);
-      field.parentElement.appendChild(badge);
-    }
-  },
-
-  async _reviewExisting(fieldId) {
-    const v = STATE.voice[fieldId];
-    if (!v || !v.audioId) return;
-    const record = await getAudio(v.audioId);
-    if (!record) return;
-
-    this.activeField = fieldId;
-    this.currentAudioId = v.audioId;
-    this.audioBlob = record.blob;
-    this.audioUrl = URL.createObjectURL(record.blob);
-    const overlay = document.getElementById('vo-' + fieldId);
-    this._renderReview(overlay, v.transcript || document.getElementById(fieldId).value, record.duration);
-  },
-
-  _esc(s) { return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-};
-
-// ─── Navigation ───────────────────────────────────────────────
-function goToStep(n) {
-  if (n < 0 || n >= STATE.total) return;
-  collectStepData(STATE.step);
-  STATE.step = n;
-  updateUI();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function nextStep() { if (STATE.step < STATE.total - 1) goToStep(STATE.step + 1); }
-function prevStep() { if (STATE.step > 0) goToStep(STATE.step - 1); }
-
-function updateUI() {
-  document.querySelectorAll('.step-panel').forEach((p, i) => {
-    p.classList.toggle('active', i === STATE.step);
-    p.setAttribute('aria-hidden', i !== STATE.step);
-  });
-  document.querySelectorAll('.nav-item').forEach((btn, i) => {
-    btn.classList.toggle('active', i === STATE.step);
-    btn.setAttribute('aria-selected', i === STATE.step);
-    if (i < STATE.step) btn.classList.add('completed');
-  });
-  document.getElementById('btnPrev').disabled = STATE.step === 0;
-  const btnNext = document.getElementById('btnNext');
-  if (STATE.step === STATE.total - 1) {
-    btnNext.innerHTML = 'Finalizar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-  } else {
-    btnNext.innerHTML = 'Siguiente <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
-  }
-  if (STATE.step === 7) updateSummary();
-}
-
-function initSidebar() {
-  document.querySelectorAll('.nav-item').forEach(btn => {
-    btn.addEventListener('click', () => { collectStepData(STATE.step); goToStep(parseInt(btn.dataset.step)); });
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && !e.shiftKey) { e.preventDefault(); nextStep(); }
-  });
-}
-
-// ─── Chips ────────────────────────────────────────────────────
 function initChips() {
   document.querySelectorAll('.chip-grid').forEach(grid => {
     grid.addEventListener('click', e => {
@@ -1807,7 +954,6 @@ function addCustomChip(groupId) {
   syncChips(grid);
 }
 
-// ─── Toggles ──────────────────────────────────────────────────
 function initToggles() {
   document.querySelectorAll('.toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1823,48 +969,6 @@ function initToggles() {
   });
 }
 
-// ─── Repeaters ────────────────────────────────────────────────
-function addServicio(data) {
-  STATE.counters.servicios++;
-  const n = STATE.counters.servicios;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.dataset.sid = n;
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">SVC-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest('.repeater-card').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre del servicio</label><input type="text" class="input s-nombre" placeholder="Mantenimiento industrial" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">¿Qué incluye?</label><textarea class="textarea s-incluye" placeholder="Realizamos..." style="min-height:70px">' + esc(data?.incluye) + '</textarea></div><div class="field"><label class="field-label">¿Qué tipo de trabajos hacéis?</label><input type="text" class="input s-tipo" placeholder="Ej: Soldadura TIG, montaje de estructuras..." value="' + esc(data?.tipo) + '"></div><div class="field"><label class="field-label">¿En qué situaciones suele necesitarlo el cliente?</label><textarea class="textarea s-situacion" placeholder="Cuando..." style="min-height:60px">' + esc(data?.situacion) + '</textarea></div><div class="field"><label class="field-label">Modalidad</label><select class="select s-modalidad"><option value="">Seleccionar...</option><option value="ejecutamos" ' + sel(data?.modalidad,'ejecutamos') + '>Ejecutamos el trabajo</option><option value="profesionales" ' + sel(data?.modalidad,'profesionales') + '>Proporcionamos profesionales</option><option value="ambas" ' + sel(data?.modalidad,'ambas') + '>Ambas</option><option value="otro" ' + sel(data?.modalidad,'otro') + '>Otro</option></select></div><div class="field"><label class="field-label">¿Cómo suele pedir un cliente este servicio?</label><textarea class="textarea s-lenguaje" placeholder="Necesitamos soldadores para una parada industrial..." style="min-height:60px">' + esc(data?.lenguaje) + '</textarea></div><div class="field"><label class="field-label">¿Hay otra forma de llamarlo?</label><input type="text" class="input s-alias" placeholder="También lo conocemos como..." value="' + esc(data?.alias) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">¿Potenciar en la web?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.potenciar==='si'?'active':'') + '" onclick="setToggle(this,'si')">Sí</button><button type="button" class="toggle-btn ' + (data?.potenciar==='no'?'active':'') + '" onclick="setToggle(this,'no')">No</button></div><input type="hidden" class="s-potenciar" value="' + esc(data?.potenciar) + '"></div></div>';
-  document.getElementById('servicios-list').appendChild(card);
-  triggerAutosave();
-}
-
-function addPerfil(data) {
-  STATE.counters.perfiles++;
-  const n = STATE.counters.perfiles;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">PRF-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest('.repeater-card').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre / Especialidad</label><input type="text" class="input p-nombre" placeholder="Ej: Soldador TIG certificado" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">Certificaciones <span class="optional">opcional</span></label><input type="text" class="input p-cert" placeholder="Certificaciones relevantes" value="' + esc(data?.cert) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">Experiencia <span class="optional">opcional</span></label><input type="text" class="input p-exp" placeholder="Años de experiencia, tipo de obra..." value="' + esc(data?.exp) + '"></div></div>';
-  document.getElementById('perfiles-list').appendChild(card);
-  triggerAutosave();
-}
-
-function addSector(data) {
-  STATE.counters.sectores++;
-  const n = STATE.counters.sectores;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">SEC-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest('.repeater-card').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Sector</label><input type="text" class="input sc-nombre" placeholder="Ej: Petroquímica, naval, energía..." value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">¿Qué tipo de trabajo realizáis allí?</label><textarea class="textarea sc-trabajo" placeholder="En este sector solemos..." style="min-height:60px">' + esc(data?.trabajo) + '</textarea></div><div class="field"><label class="field-label">¿Qué experiencia tenéis?</label><textarea class="textarea sc-exp" placeholder="Llevamos X años trabajando..." style="min-height:60px">' + esc(data?.exp) + '</textarea></div><div class="field" style="margin-bottom:0"><label class="field-label">¿Mostrar proyectos de este sector?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.mostrar==='si'?'active':'') + '" onclick="setToggle(this,'si')">Sí</button><button type="button" class="toggle-btn ' + (data?.mostrar==='no'?'active':'') + '" onclick="setToggle(this,'no')">No</button></div><input type="hidden" class="sc-mostrar" value="' + esc(data?.mostrar) + '"></div></div>';
-  document.getElementById('sectores-list').appendChild(card);
-  triggerAutosave();
-}
-
-function addProyecto(data) {
-  STATE.counters.proyectos++;
-  const n = STATE.counters.proyectos;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">PRY-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest('.repeater-card').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre del proyecto</label><input type="text" class="input py-nombre" placeholder="Mantenimiento parada 2024 — Refinería X" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">Cliente <span class="optional">opcional</span></label><input type="text" class="input py-cliente" placeholder="Nombre del cliente" value="' + esc(data?.cliente) + '"></div><div class="field"><label class="field-label">¿Publicar nombre del cliente?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.publicar==='si'?'active':'') + '" onclick="setToggle(this,'si')">Sí</button><button type="button" class="toggle-btn ' + (data?.publicar==='no'?'active':'') + '" onclick="setToggle(this,'no')">No</button></div><input type="hidden" class="py-publicar" value="' + esc(data?.publicar) + '"></div><div class="field"><label class="field-label">Sector</label><input type="text" class="input py-sector" placeholder="Ej: Petroquímica" value="' + esc(data?.sector) + '"></div><div class="field"><label class="field-label">Localización</label><input type="text" class="input py-loc" placeholder="Ej: Tarragona" value="' + esc(data?.loc) + '"></div><div class="field"><label class="field-label">¿Qué necesitaba el cliente?</label><textarea class="textarea py-necesidad" placeholder="El cliente necesitaba..." style="min-height:60px">' + esc(data?.necesidad) + '</textarea></div><div class="field"><label class="field-label">¿Qué hizo HDM?</label><textarea class="textarea py-hdm" placeholder="HDM se encargó de..." style="min-height:60px">' + esc(data?.hdm) + '</textarea></div><div class="field"><label class="field-label">Resultado <span class="optional">opcional</span></label><textarea class="textarea py-resultado" placeholder="El resultado fue..." style="min-height:60px">' + esc(data?.resultado) + '</textarea></div><div class="field"><label class="field-label">Profesionales/equipos <span class="optional">opcional</span></label><input type="text" class="input py-equipo" placeholder="Ej: 4 soldadores + 2 técnicos" value="' + esc(data?.equipo) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">Duración <span class="optional">opcional</span></label><input type="text" class="input py-duracion" placeholder="Ej: 3 semanas" value="' + esc(data?.duracion) + '"></div></div>';
-  document.getElementById('proyectos-list').appendChild(card);
-  triggerAutosave();
-}
-
 function setToggle(btn, val) {
   const row = btn.closest('.toggle-row');
   row.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
@@ -1877,10 +981,49 @@ function setToggle(btn, val) {
 function esc(s) { return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function sel(a, b) { return a === b ? 'selected' : ''; }
 
-// ─── Data Collection ──────────────────────────────────────────
-function collectStepData(step) {
-  const panel = document.getElementById('step-' + step);
-  panel.querySelectorAll('[data-key]').forEach(el => { STATE.data[el.dataset.key] = el.value; });
+function addServicio(data) {
+  STATE.counters.servicios++;
+  const n = STATE.counters.servicios;
+  const card = document.createElement('div');
+  card.className = 'repeater-card';
+  card.dataset.sid = n;
+  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">SVC-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre del servicio</label><input type="text" class="input s-nombre" placeholder="Mantenimiento industrial" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">¿Qué incluye?</label><textarea class="textarea s-incluye" placeholder="Realizamos..." style="min-height:70px">' + esc(data?.incluye) + '</textarea></div><div class="field"><label class="field-label">¿Qué tipo de trabajos hacéis?</label><input type="text" class="input s-tipo" placeholder="Ej: Soldadura TIG, montaje de estructuras..." value="' + esc(data?.tipo) + '"></div><div class="field"><label class="field-label">¿En qué situaciones suele necesitarlo el cliente?</label><textarea class="textarea s-situacion" placeholder="Cuando..." style="min-height:60px">' + esc(data?.situacion) + '</textarea></div><div class="field"><label class="field-label">Modalidad</label><select class="select s-modalidad"><option value="">Seleccionar...</option><option value="ejecutamos" ' + sel(data?.modalidad,'ejecutamos') + '>Ejecutamos el trabajo</option><option value="profesionales" ' + sel(data?.modalidad,'profesionales') + '>Proporcionamos profesionales</option><option value="ambas" ' + sel(data?.modalidad,'ambas') + '>Ambas</option><option value="otro" ' + sel(data?.modalidad,'otro') + '>Otro</option></select></div><div class="field"><label class="field-label">¿Cómo suele pedir un cliente este servicio?</label><textarea class="textarea s-lenguaje" placeholder="Necesitamos soldadores para una parada industrial..." style="min-height:60px">' + esc(data?.lenguaje) + '</textarea></div><div class="field"><label class="field-label">¿Hay otra forma de llamarlo?</label><input type="text" class="input s-alias" placeholder="También lo conocemos como..." value="' + esc(data?.alias) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">¿Potenciar en la web?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.potenciar==='si'?'active':'') + '" onclick="setToggle(this,\'si\')">Sí</button><button type="button" class="toggle-btn ' + (data?.potenciar==='no'?'active':'') + '" onclick="setToggle(this,\'no\')">No</button></div><input type="hidden" class="s-potenciar" value="' + esc(data?.potenciar) + '"></div></div>';
+  document.getElementById('servicios-list').appendChild(card);
+  triggerAutosave();
+}
+
+function addPerfil(data) {
+  STATE.counters.perfiles++;
+  const n = STATE.counters.perfiles;
+  const card = document.createElement('div');
+  card.className = 'repeater-card';
+  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">PRF-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre / Especialidad</label><input type="text" class="input p-nombre" placeholder="Ej: Soldador TIG certificado" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">Certificaciones <span class="optional">opcional</span></label><input type="text" class="input p-cert" placeholder="Certificaciones relevantes" value="' + esc(data?.cert) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">Experiencia <span class="optional">opcional</span></label><input type="text" class="input p-exp" placeholder="Años de experiencia, tipo de obra..." value="' + esc(data?.exp) + '"></div></div>';
+  document.getElementById('perfiles-list').appendChild(card);
+  triggerAutosave();
+}
+
+function addSector(data) {
+  STATE.counters.sectores++;
+  const n = STATE.counters.sectores;
+  const card = document.createElement('div');
+  card.className = 'repeater-card';
+  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">SEC-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Sector</label><input type="text" class="input sc-nombre" placeholder="Ej: Petroquímica, naval, energía..." value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">¿Qué tipo de trabajo realizáis allí?</label><textarea class="textarea sc-trabajo" placeholder="En este sector solemos..." style="min-height:60px">' + esc(data?.trabajo) + '</textarea></div><div class="field"><label class="field-label">¿Qué experiencia tenéis?</label><textarea class="textarea sc-exp" placeholder="Llevamos X años trabajando..." style="min-height:60px">' + esc(data?.exp) + '</textarea></div><div class="field" style="margin-bottom:0"><label class="field-label">¿Mostrar proyectos de este sector?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.mostrar==='si'?'active':'') + '" onclick="setToggle(this,\'si\')">Sí</button><button type="button" class="toggle-btn ' + (data?.mostrar==='no'?'active':'') + '" onclick="setToggle(this,\'no\')">No</button></div><input type="hidden" class="sc-mostrar" value="' + esc(data?.mostrar) + '"></div></div>';
+  document.getElementById('sectores-list').appendChild(card);
+  triggerAutosave();
+}
+
+function addProyecto(data) {
+  STATE.counters.proyectos++;
+  const n = STATE.counters.proyectos;
+  const card = document.createElement('div');
+  card.className = 'repeater-card';
+  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">PRY-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre del proyecto</label><input type="text" class="input py-nombre" placeholder="Mantenimiento parada 2024 — Refinería X" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">Cliente <span class="optional">opcional</span></label><input type="text" class="input py-cliente" placeholder="Nombre del cliente" value="' + esc(data?.cliente) + '"></div><div class="field"><label class="field-label">¿Publicar nombre del cliente?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.publicar==='si'?'active':'') + '" onclick="setToggle(this,\'si\')">Sí</button><button type="button" class="toggle-btn ' + (data?.publicar==='no'?'active':'') + '" onclick="setToggle(this,\'no\')">No</button></div><input type="hidden" class="py-publicar" value="' + esc(data?.publicar) + '"></div><div class="field"><label class="field-label">Sector</label><input type="text" class="input py-sector" placeholder="Ej: Petroquímica" value="' + esc(data?.sector) + '"></div><div class="field"><label class="field-label">Localización</label><input type="text" class="input py-loc" placeholder="Ej: Tarragona" value="' + esc(data?.loc) + '"></div><div class="field"><label class="field-label">¿Qué necesitaba el cliente?</label><textarea class="textarea py-necesidad" placeholder="El cliente necesitaba..." style="min-height:60px">' + esc(data?.necesidad) + '</textarea></div><div class="field"><label class="field-label">¿Qué hizo HDM?</label><textarea class="textarea py-hdm" placeholder="HDM se encargó de..." style="min-height:60px">' + esc(data?.hdm) + '</textarea></div><div class="field"><label class="field-label">Resultado <span class="optional">opcional</span></label><textarea class="textarea py-resultado" placeholder="El resultado fue..." style="min-height:60px">' + esc(data?.resultado) + '</textarea></div><div class="field"><label class="field-label">Profesionales/equipos <span class="optional">opcional</span></label><input type="text" class="input py-equipo" placeholder="Ej: 4 soldadores + 2 técnicos" value="' + esc(data?.equipo) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">Duración <span class="optional">opcional</span></label><input type="text" class="input py-duracion" placeholder="Ej: 3 semanas" value="' + esc(data?.duracion) + '"></div></div>';
+  document.getElementById('proyectos-list').appendChild(card);
+  triggerAutosave();
+}
+
+function collectAllData() {
+  document.querySelectorAll('[data-key]').forEach(el => { STATE.data[el.dataset.key] = el.value; });
 
   const servs = [];
   document.querySelectorAll('#servicios-list .repeater-card').forEach(c => {
@@ -1922,9 +1065,8 @@ function collectStepData(step) {
   if (proys.length) STATE.data.proyectos = proys;
 }
 
-// ─── Storage & Session Recovery ───────────────────────────────
 function saveProgress() {
-  collectStepData(STATE.step);
+  collectAllData();
   STATE.updatedAt = new Date().toISOString();
   const payload = {
     schemaVersion: STATE.schemaVersion,
@@ -1932,9 +1074,7 @@ function saveProgress() {
     language: STATE.language,
     createdAt: STATE.createdAt,
     updatedAt: STATE.updatedAt,
-    step: STATE.step,
-    data: STATE.data,
-    voice: STATE.voice
+    data: STATE.data
   };
   localStorage.setItem(LS_KEY, JSON.stringify(payload));
   const pill = document.getElementById('autosavePill');
@@ -1973,16 +1113,12 @@ function offerSessionRecovery() {
 
 function clearAllData() {
   STATE.data = {};
-  STATE.voice = {};
-  STATE.step = 0;
   STATE.counters = { servicios: 0, perfiles: 0, sectores: 0, proyectos: 0 };
   document.querySelectorAll('textarea, input[type="text"], input[type="email"]').forEach(el => { if (el.id && el.id.startsWith('f-')) el.value = ''; });
   document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
   document.querySelectorAll('input[type="hidden"]').forEach(h => h.value = '');
   document.querySelectorAll('.repeater-list').forEach(list => list.innerHTML = '');
-  document.querySelectorAll('.voice-badge').forEach(b => b.remove());
-  document.querySelectorAll('.voice-overlay').forEach(o => { o.innerHTML = ''; o.classList.remove('visible'); });
-  updateUI();
+  updateSummary();
 }
 
 function loadStorage() {
@@ -1991,8 +1127,6 @@ function loadStorage() {
   try {
     const saved = JSON.parse(raw);
     STATE.data = saved.data || {};
-    STATE.voice = saved.voice || {};
-    if (saved.step !== undefined) STATE.step = saved.step;
     if (saved.createdAt) STATE.createdAt = saved.createdAt;
     populate();
   } catch(e) { console.error(e); }
@@ -2033,13 +1167,8 @@ function populate() {
   if (d.perfiles) d.perfiles.forEach(p => addPerfil(p));
   if (d.sectores) d.sectores.forEach(s => addSector(s));
   if (d.proyectos) d.proyectos.forEach(p => addProyecto(p));
-
-  Object.entries(STATE.voice).forEach(([fieldId, v]) => {
-    if (v.source === 'voice') VoiceUI._showBadge(fieldId);
-  });
 }
 
-// ─── Autosave ─────────────────────────────────────────────────
 let autosaveTimer;
 function initAutosave() {
   document.addEventListener('input', () => triggerAutosave());
@@ -2053,11 +1182,10 @@ function triggerAutosave() {
   autosaveTimer = setTimeout(() => saveProgress(), 1200);
 }
 
-// ─── Enhanced Summary ─────────────────────────────────────────
 function updateSummary() {
+  collectAllData();
   const d = STATE.data;
 
-  // Check each section
   const checks = {
     empresa: !!(d['empresa.explicacion'] || d['empresa.necesidad']),
     servicios: !!(d.servicios?.length),
@@ -2073,17 +1201,13 @@ function updateSummary() {
     item.classList.toggle('complete', !!checks[section]);
   });
 
-  // Stats
   let respuestas = 0;
   document.querySelectorAll('[data-key]').forEach(el => { if (el.value.trim()) respuestas++; });
   document.getElementById('stat-respuestas').textContent = respuestas;
-
-  const vozCount = Object.values(STATE.voice).filter(v => v.source === 'voice').length;
-  document.getElementById('stat-voz').textContent = vozCount;
+  document.getElementById('stat-voz').textContent = 0;
   document.getElementById('stat-servicios').textContent = d.servicios?.length || 0;
   document.getElementById('stat-proyectos').textContent = d.proyectos?.length || 0;
 
-  // Warnings
   const emptyCount = Object.keys(checks).filter(k => !checks[k]).length;
   const warningsEl = document.getElementById('review-warnings');
   const warningsText = document.getElementById('review-warnings-text');
@@ -2095,199 +1219,194 @@ function updateSummary() {
   }
 }
 
-// ─── Markdown Export ──────────────────────────────────────────
 function exportMarkdown() {
-  collectStepData(STATE.step);
+  collectAllData();
   const d = STATE.data;
-  let md = '# HDM INDUSTRIAL — Website Discovery Blueprint
+  let md = `# HDM INDUSTRIAL — Website Discovery Blueprint
 
-';
-  md += '> Generado por HDM Industrial Discovery Engine v4
-';
-  md += '> Schema: ' + STATE.schemaVersion + ' | Form: ' + STATE.formVersion + '
-';
-  md += '> Fecha: ' + new Date().toLocaleDateString('es-ES') + '
+> Generado por HDM Industrial Discovery Engine v4
+> Schema: ${STATE.schemaVersion} | Form: ${STATE.formVersion}
+> Fecha: ${new Date().toLocaleDateString('es-ES')}
 
 ---
 
-';
-  md += '## 01 — LA EMPRESA
+## 01 — LA EMPRESA
 
-**Explicación:** ' + val(d,'empresa.explicacion') + '
+**Explicación:** ${val(d,'empresa.explicacion')}
 
-**Impacto:** ' + val(d,'empresa.impacto') + '
+**Impacto:** ${val(d,'empresa.impacto')}
 
-**Necesidad:** ' + val(d,'empresa.necesidad') + '
+**Necesidad:** ${val(d,'empresa.necesidad')}
 
-**Años:** ' + val(d,'empresa.anos') + ' | **Equipo:** ' + val(d,'empresa.equipo') + ' | **Números:** ' + val(d,'empresa.numeros') + '
+**Años:** ${val(d,'empresa.anos')} | **Equipo:** ${val(d,'empresa.equipo')} | **Números:** ${val(d,'empresa.numeros')}
 
-';
-  md += '---
+`;
+  md += `---
 
 ## 02 — SERVICIOS
 
-';
+`;
   (d.servicios || []).forEach((s, i) => {
-    md += '### ' + (s.nombre || 'Servicio '+(i+1)) + '
+    md += `### ${s.nombre || 'Servicio '+(i+1)}
 
-';
-    md += '- **Qué incluye:** ' + (s.incluye || '_') + '
-';
-    md += '- **Tipo:** ' + (s.tipo || '_') + '
-';
-    md += '- **Situación:** ' + (s.situacion || '_') + '
-';
-    md += '- **Modalidad:** ' + (s.modalidad || '_') + '
-';
-    md += '- **Lenguaje cliente:** ' + (s.lenguaje || '_') + '
-';
-    md += '- **Alias:** ' + (s.alias || '_') + '
-';
-    md += '- **Potenciar:** ' + (s.potenciar || '_') + '
+`;
+    md += `- **Qué incluye:** ${s.incluye || '_'}
+`;
+    md += `- **Tipo:** ${s.tipo || '_'}
+`;
+    md += `- **Situación:** ${s.situacion || '_'}
+`;
+    md += `- **Modalidad:** ${s.modalidad || '_'}
+`;
+    md += `- **Lenguaje cliente:** ${s.lenguaje || '_'}
+`;
+    md += `- **Alias:** ${s.alias || '_'}
+`;
+    md += `- **Potenciar:** ${s.potenciar || '_'}
 
-';
+`;
   });
-  md += '### Perfiles
+  md += `### Perfiles
 
-';
-  (d.perfiles || []).forEach((p, i) => { md += (i+1) + '. **' + (p.nombre || '_') + '** — Cert: ' + (p.cert || 'N/A') + ' — Exp: ' + (p.exp || 'N/A') + '
-'; });
-  md += '
-**Capacidad diferencial:** ' + val(d,'capacidad.diferencial') + '
+`;
+  (d.perfiles || []).forEach((p, i) => { md += `${i+1}. **${p.nombre || '_'}** — Cert: ${p.cert || 'N/A'} — Exp: ${p.exp || 'N/A'}
+`; });
+  md += `
+**Capacidad diferencial:** ${val(d,'capacidad.diferencial')}
 
-';
-  md += '---
+`;
+  md += `---
 
 ## 03 — AUDIENCIA
 
-**Tipo empresas:** ' + jval(d,'audiencia.tipoEmpresas') + '
+**Tipo empresas:** ${jval(d,'audiencia.tipoEmpresas')}
 
-**Decisor:** ' + jval(d,'audiencia.decisor') + '
+**Decisor:** ${jval(d,'audiencia.decisor')}
 
-**Problema:** ' + val(d,'audiencia.problema') + '
+**Problema:** ${val(d,'audiencia.problema')}
 
-**Journey:** ' + val(d,'audiencia.journey') + '
+**Journey:** ${val(d,'audiencia.journey')}
 
-**Info decisión:** ' + jval(d,'audiencia.infoDecision') + '
+**Info decisión:** ${jval(d,'audiencia.infoDecision')}
 
-**Objeciones:** ' + val(d,'audiencia.objeciones') + '
+**Objeciones:** ${val(d,'audiencia.objeciones')}
 
-**Preguntas frecuentes:** ' + val(d,'audiencia.preguntas') + '
+**Preguntas frecuentes:** ${val(d,'audiencia.preguntas')}
 
-';
-  md += '---
+`;
+  md += `---
 
 ## 04 — LOCALIZACIÓN
 
-**Actual:** ' + val(d,'locacion.actual') + '
+**Actual:** ${val(d,'locacion.actual')}
 
-**Objetivo:** ' + val(d,'locacion.objetivo') + '
+**Objetivo:** ${val(d,'locacion.objetivo')}
 
-**Desplazamiento:** ' + val(d,'locacion.desplazamiento') + ' ' + (d['locacion.desplazamiento']==='si'?'— Hasta: '+val(d,'locacion.desplazamientoHasta'):'') + '
+**Desplazamiento:** ${val(d,'locacion.desplazamiento')} ${d['locacion.desplazamiento']==='si'?'— Hasta: '+val(d,'locacion.desplazamientoHasta'):''}
 
-';
-  if (d.sectores?.length) { md += '### Sectores
+`;
+  if (d.sectores?.length) { md += `### Sectores
 
-'; d.sectores.forEach((s, i) => { md += (i+1) + '. **' + s.nombre + '** — ' + (s.trabajo || '') + ' (Mostrar: ' + (s.mostrar || '') + ')
-'; }); md += '
-'; }
-  md += '---
+`; d.sectores.forEach((s, i) => { md += `${i+1}. **${s.nombre}** — ${s.trabajo || ''} (Mostrar: ${s.mostrar || ''})
+`; }); md += `
+`; }
+  md += `---
 
 ## 05 — CAPACIDAD
 
-**Certificaciones:** ' + val(d,'capacidad.certificaciones') + '
+**Certificaciones:** ${val(d,'capacidad.certificaciones')}
 
-**Seguridad/Calidad:** ' + val(d,'capacidad.seguridadCalidad') + '
+**Seguridad/Calidad:** ${val(d,'capacidad.seguridadCalidad')}
 
-**Doc. pública:** ' + val(d,'capacidad.docPublica') + '
+**Doc. pública:** ${val(d,'capacidad.docPublica')}
 
-**Diferencial:** ' + val(d,'capacidad.diferencial') + '
+**Diferencial:** ${val(d,'capacidad.diferencial')}
 
-**Valoran clientes:** ' + val(d,'capacidad.clientesValoran') + '
+**Valoran clientes:** ${val(d,'capacidad.clientesValoran')}
 
-**Trabajo exigente:** ' + val(d,'capacidad.trabajoExigente') + '
+**Trabajo exigente:** ${val(d,'capacidad.trabajoExigente')}
 
-';
-  md += '---
+`;
+  md += `---
 
 ## 06 — PROYECTOS
 
-';
+`;
   (d.proyectos || []).forEach((p, i) => {
-    md += '### ' + (p.nombre || 'Proyecto '+(i+1)) + '
+    md += `### ${p.nombre || 'Proyecto '+(i+1)}
 
-';
-    md += '- **Cliente:** ' + (p.cliente || 'N/A') + ' (Publicar: ' + (p.publicar || 'N/A') + ')
-';
-    md += '- **Sector:** ' + (p.sector || 'N/A') + ' — **Loc:** ' + (p.loc || 'N/A') + '
-';
-    md += '- **Necesidad:** ' + (p.necesidad || 'N/A') + '
-';
-    md += '- **HDM hizo:** ' + (p.hdm || 'N/A') + '
-';
-    md += '- **Resultado:** ' + (p.resultado || 'N/A') + '
-';
-    md += '- **Equipo:** ' + (p.equipo || 'N/A') + ' — **Duración:** ' + (p.duracion || 'N/A') + '
+`;
+    md += `- **Cliente:** ${p.cliente || 'N/A'} (Publicar: ${p.publicar || 'N/A'})
+`;
+    md += `- **Sector:** ${p.sector || 'N/A'} — **Loc:** ${p.loc || 'N/A'}
+`;
+    md += `- **Necesidad:** ${p.necesidad || 'N/A'}
+`;
+    md += `- **HDM hizo:** ${p.hdm || 'N/A'}
+`;
+    md += `- **Resultado:** ${p.resultado || 'N/A'}
+`;
+    md += `- **Equipo:** ${p.equipo || 'N/A'} — **Duración:** ${p.duracion || 'N/A'}
 
-';
+`;
   });
-  md += '**Clientes públicos:** ' + val(d,'proyectos.clientesPublicos') + '
+  md += `**Clientes públicos:** ${val(d,'proyectos.clientesPublicos')}
 
-';
-  md += '---
+`;
+  md += `---
 
 ## 07 — NUEVA WEB
 
-**Problemas actuales:** ' + val(d,'web.problemas') + '
+**Problemas actuales:** ${val(d,'web.problemas')}
 
-**Objetivos:** ' + jval(d,'web.objetivos') + '
+**Objetivos:** ${jval(d,'web.objetivos')}
 
-**CTA principal:** ' + val(d,'web.ctaPrincipal') + '
+**CTA principal:** ${val(d,'web.ctaPrincipal')}
 
-**Contactos:** ' + jval(d,'web.contacto') + '
+**Contactos:** ${jval(d,'web.contacto')}
 
-**Reclutamiento:** ' + val(d,'web.reclutamiento') + '
-';
-  if (d['web.reclutamiento'] === 'si') { md += '- Perfiles: ' + val(d,'web.reclutamientoPerfiles') + '
-'; md += '- Info candidato: ' + val(d,'web.reclutamientoInfo') + '
-'; }
-  md += '
-**Idiomas:** ' + jval(d,'web.idiomas') + '
+**Reclutamiento:** ${val(d,'web.reclutamiento')}
+`;
+  if (d['web.reclutamiento'] === 'si') { md += `- Perfiles: ${val(d,'web.reclutamientoPerfiles')}
+`; md += `- Info candidato: ${val(d,'web.reclutamientoInfo')}
+`; }
+  md += `
+**Idiomas:** ${jval(d,'web.idiomas')}
 
-**Ref. Sparks:** ' + val(d,'refs.sparks') + '
+**Ref. Sparks:** ${val(d,'refs.sparks')}
 
-**Ref. Braga:** ' + val(d,'refs.braga') + '
+**Ref. Braga:** ${val(d,'refs.braga')}
 
-**Ref. Incaso:** ' + val(d,'refs.incaso') + '
+**Ref. Incaso:** ${val(d,'refs.incaso')}
 
-**Deseo percepción:** ' + val(d,'refs.deseo') + '
+**Deseo percepción:** ${val(d,'refs.deseo')}
 
-**Material:** ' + jval(d,'web.material') + '
+**Material:** ${jval(d,'web.material')}
 
-**Restricciones:** ' + val(d,'web.restricciones') + '
+**Restricciones:** ${val(d,'web.restricciones')}
 
-**Confidencial:** ' + val(d,'web.confidencial') + '
+**Confidencial:** ${val(d,'web.confidencial')}
 
-';
-  md += '---
+`;
+  md += `---
 
 ## 08 — CONTACTO
 
-**Email:** ' + val(d,'contacto.email') + '
+**Email:** ${val(d,'contacto.email')}
 
-**Nombre:** ' + val(d,'contacto.nombre') + '
+**Nombre:** ${val(d,'contacto.nombre')}
 
-**Notas:** ' + val(d,'contacto.notas') + '
+**Notas:** ${val(d,'contacto.notas')}
 
-';
-  md += '---
+`;
+  md += `---
 
 ## DATA MODEL (JSON)
 
-```json
-' + JSON.stringify(d, null, 2) + '
-```
-';
+\`\`\`json
+${JSON.stringify(d, null, 2)}
+\`\`\`
+`;
 
   const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -2306,9 +1425,8 @@ function jval(d, k) {
   catch { return d[k] || '_No respondido_'; }
 }
 
-// ─── ZIP Export Package (Hardened) ────────────────────────────
 async function exportPackage() {
-  collectStepData(STATE.step);
+  collectAllData();
 
   if (typeof JSZip === 'undefined') {
     alert('JSZip no está disponible. Recarga la página e inténtalo de nuevo.');
@@ -2320,47 +1438,18 @@ async function exportPackage() {
   const date = new Date().toISOString().split('T')[0];
   const timestamp = new Date().toISOString();
 
-  // Build responses with full audio/transcript relationships
   const responses = [];
-  let audioCounter = 0;
-  const audioFiles = []; // { id, filename, blob, mimeType }
-
   document.querySelectorAll('[data-key]').forEach((el, idx) => {
     const key = el.dataset.key;
-    const voiceMeta = STATE.voice[el.id];
-    const hasAudio = voiceMeta && voiceMeta.audioId;
-
-    let audioFile = null;
-    let transcriptFile = null;
-
-    if (hasAudio) {
-      audioCounter++;
-      const ext = voiceMeta.audioId.endsWith('.mp4') ? 'mp4' : 'webm';
-      audioFile = '02-AUDIO/response-' + String(audioCounter).padStart(3,'0') + '.' + ext;
-      transcriptFile = '03-TRANSCRIPTS/response-' + String(audioCounter).padStart(3,'0') + '.txt';
-      audioFiles.push({
-        id: voiceMeta.audioId,
-        filename: 'response-' + String(audioCounter).padStart(3,'0') + '.' + ext,
-        counter: audioCounter
-      });
-    }
-
     responses.push({
       index: idx + 1,
       questionId: key,
       question: getQuestionLabel(key),
       answer: el.value,
-      source: voiceMeta?.source || 'typed',
-      transcript: voiceMeta?.transcript || null,
-      edited: voiceMeta?.edited || false,
-      duration: voiceMeta?.duration || null,
-      audioFile: audioFile,
-      transcriptFile: transcriptFile,
-      timestamp: voiceMeta?.createdAt || Date.now()
+      timestamp: Date.now()
     });
   });
 
-  // 01-DISCOVERY folder
   const discoveryFolder = zip.folder('01-DISCOVERY');
 
   const exportData = {
@@ -2377,145 +1466,20 @@ async function exportPackage() {
     projects: d.proyectos || [],
     metadata: {
       totalResponses: responses.length,
-      voiceResponses: responses.filter(r => r.source === 'voice').length,
-      typedResponses: responses.filter(r => r.source === 'typed').length,
-      totalAudioFiles: audioFiles.length
+      typedResponses: responses.length
     }
   };
 
   discoveryFolder.file('hdm-discovery.json', JSON.stringify(exportData, null, 2));
 
-  // Markdown blueprint
-  let md = '# HDM INDUSTRIAL — Website Discovery Blueprint
-
-';
-  md += '> Schema: ' + STATE.schemaVersion + ' | Form: ' + STATE.formVersion + '
-';
-  md += '> Exportado: ' + timestamp + '
-
----
-
-';
-  md += '## Empresa
-
-' + val(d,'empresa.explicacion') + '
-
-';
-  md += '## Servicios
-
-';
-  (d.servicios || []).forEach((s, i) => { md += (i+1) + '. **' + (s.nombre || '_') + '** — ' + (s.incluye || '') + '
-'; });
-  md += '
-## Proyectos
-
-';
-  (d.proyectos || []).forEach((p, i) => { md += (i+1) + '. **' + (p.nombre || '_') + '** — ' + (p.hdm || '') + '
-'; });
-  md += '
-## Contacto
-
-' + val(d,'contacto.email') + '
-';
+  let md = `# HDM INDUSTRIAL — Website Discovery Blueprint\n\n> Schema: ${STATE.schemaVersion} | Form: ${STATE.formVersion}\n> Exportado: ${timestamp}\n\n---\n\n## Empresa\n\n${val(d,'empresa.explicacion')}\n\n## Servicios\n\n`;
+  (d.servicios || []).forEach((s, i) => { md += `${i+1}. **${s.nombre || '_'}** — ${s.incluye || ''}\n`; });
+  md += `\n## Proyectos\n\n`;
+  (d.proyectos || []).forEach((p, i) => { md += `${i+1}. **${p.nombre || '_'}** — ${p.hdm || ''}\n`; });
+  md += `\n## Contacto\n\n${val(d,'contacto.email')}\n`;
   discoveryFolder.file('hdm-discovery.md', md);
 
-  // 02-AUDIO folder — CRITICAL: fetch real blobs from IndexedDB
-  const audioFolder = zip.folder('02-AUDIO');
-  let audioSuccessCount = 0;
-  let audioFailCount = 0;
-
-  for (const af of audioFiles) {
-    try {
-      const record = await getAudio(af.id);
-      if (record && record.blob && record.blob.size > 0) {
-        audioFolder.file(af.filename, record.blob);
-        audioSuccessCount++;
-      } else {
-        console.warn('[Export] Audio blob empty or missing:', af.id);
-        audioFailCount++;
-      }
-    } catch (err) {
-      console.error('[Export] Failed to fetch audio:', af.id, err);
-      audioFailCount++;
-    }
-  }
-
-  // 03-TRANSCRIPTS folder
-  const transcriptFolder = zip.folder('03-TRANSCRIPTS');
-  responses.forEach((r, i) => {
-    if (r.answer || r.transcript) {
-      let content = 'Question: ' + r.question + '
-';
-      content += 'Question ID: ' + r.questionId + '
-';
-      content += 'Source: ' + r.source + '
-';
-      if (r.audioFile) content += 'Audio: ' + r.audioFile + '
-';
-      if (r.duration) content += 'Duration: ' + r.duration + 's
-';
-      content += 'Edited: ' + (r.edited ? 'yes' : 'no') + '
-';
-      content += '
---- ANSWER ---
-
-' + (r.answer || '_Sin respuesta_') + '
-';
-      if (r.transcript) {
-        content += '
---- TRANSCRIPT ---
-
-' + r.transcript + '
-';
-      }
-      transcriptFolder.file('response-' + String(i+1).padStart(3,'0') + '.txt', content);
-    }
-  });
-
-  // README
-  zip.file('README.txt', 'HDM Industrial — Discovery Export
-' +
-    '================================
-
-' +
-    'Fecha: ' + date + '
-' +
-    'Idioma: ' + STATE.language + '
-' +
-    'Schema: ' + STATE.schemaVersion + '
-' +
-    'Form: ' + STATE.formVersion + '
-
-' +
-    'Contenido:
-' +
-    '  01-DISCOVERY/    → Respuestas estructuradas (JSON + Markdown)
-' +
-    '  02-AUDIO/        → Grabaciones originales de voz
-' +
-    '  03-TRANSCRIPTS/  → Transcripciones y respuestas en texto
-
-' +
-    'Estadísticas:
-' +
-    '  Total respuestas: ' + responses.length + '
-' +
-    '  Por voz: ' + exportData.metadata.voiceResponses + '
-' +
-    '  Escritas: ' + exportData.metadata.typedResponses + '
-' +
-    '  Archivos de audio: ' + audioSuccessCount + (audioFailCount > 0 ? ' (' + audioFailCount + ' fallidos)' : '') + '
-
-' +
-    'Los archivos de audio en 02-AUDIO/ corresponden a las respuestas
-' +
-    'originales del usuario. Las transcripciones pueden haber sido editadas.
-
-' +
-    'Para análisis posterior, usa 01-DISCOVERY/hdm-discovery.json
-' +
-    'que mantiene la relación entre cada respuesta y su audio.
-');
+  zip.file('README.txt', `HDM Industrial — Discovery Export\n================================\nFecha: ${date}\nIdioma: ${STATE.language}\nSchema: ${STATE.schemaVersion}\nForm: ${STATE.formVersion}\n\nContenido:\n  01-DISCOVERY/    → Respuestas estructuradas (JSON + Markdown)\n\nEstadísticas:\n  Total respuestas: ${responses.length}\n\nPara análisis posterior, usa 01-DISCOVERY/hdm-discovery.json\n`);
 
   const blob = await zip.generateAsync({ type: 'blob' });
   const url = URL.createObjectURL(blob);
@@ -2526,11 +1490,6 @@ async function exportPackage() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-
-  // Feedback
-  if (audioFailCount > 0) {
-    alert('ZIP generado. Nota: ' + audioFailCount + ' archivo(s) de audio no pudieron incluirse. Revisa la consola para más detalles.');
-  }
 }
 
 function getQuestionLabel(key) {
@@ -2579,30 +1538,35 @@ function getQuestionLabel(key) {
   return labels[key] || key;
 }
 
-// ─── Init ─────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize DB first
-  try { await openDB(); } catch(e) { console.warn('[Init] IndexedDB not available:', e); }
+function initScrollSpy() {
+  const sections = document.querySelectorAll('.form-section');
+  const navItems = document.querySelectorAll('.nav-item');
 
-  // Set creation date if new
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(item => {
+          item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -80% 0px' });
+
+  sections.forEach(section => observer.observe(section));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
   if (!STATE.createdAt) STATE.createdAt = new Date().toISOString();
-
-  // Check for session recovery
   const recovered = offerSessionRecovery();
-  if (!recovered) {
-    // Fresh start - initialize defaults
-    STATE.createdAt = new Date().toISOString();
-  }
-
+  if (!recovered) STATE.createdAt = new Date().toISOString();
   initChips();
   initToggles();
-  initSidebar();
   initAutosave();
-  updateUI();
-
-  // Cleanup orphaned audios periodically
-  try { await deleteOrphanedAudios(); } catch(e) { console.warn('[Cleanup] Failed:', e); }
+  initScrollSpy();
+  updateSummary();
 });
+
 </script>
 
 </body>
