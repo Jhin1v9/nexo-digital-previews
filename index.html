@@ -1,1688 +1,1245 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>HDM Industrial — Discovery Engine</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-function toggleSidebar() {
-  document.querySelector('.sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('visible');
-}
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    if (window.innerWidth <= 900) toggleSidebar();
-  });
-});
-</script>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório Completo — Jr-Reformas.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --terracota: #c45f3c;
+      --terracota-light: #d97b56;
+      --terracota-dark: #a34d2e;
+      --carbon: #1a1a1a;
+      --carbon-light: #2a2a2a;
+      --carbon-mid: #333333;
+      --offwhite: #f7f4ef;
+      --sand: #e8e0d5;
+      --text-secondary: #6b6b6b;
+      --olive: #5a7d4a;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   HDM INDUSTRIAL — DISCOVERY ENGINE v3
-   Voice-First + Local Persistence + Export ZIP
-   Design System: Industrial Bronze & Slate
-   ═══════════════════════════════════════════════════════════════ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-:root {
-  --ink-950: #07080a;
-  --ink-900: #0c0e12;
-  --ink-850: #11141a;
-  --ink-800: #181c24;
-  --ink-750: #1e232e;
-  --ink-700: #252b38;
-  --ink-600: #2d3544;
-  --ink-500: #3d4759;
-  --ink-400: #5a667a;
-  --ink-300: #7d8a9e;
-  --ink-200: #a8b3c4;
-  --ink-100: #d0d8e4;
-  --ink-50:  #e8ecf2;
-  --bronze-600: #8b6914;
-  --bronze-500: #a67c1a;
-  --bronze-400: #c49a2c;
-  --bronze-300: #d4b04a;
-  --bronze-200: #e4c878;
-  --bronze-100: #f0e0a8;
-  --bronze-glow: rgba(196, 154, 44, 0.12);
-  --bronze-glow-strong: rgba(196, 154, 44, 0.22);
-  --signal-green: #2dd4a0;
-  --signal-red: #ef4444;
-  --signal-amber: #f59e0b;
-  --signal-red-dim: rgba(239, 68, 68, 0.15);
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --text-xs: 0.6875rem;
-  --text-sm: 0.8125rem;
-  --text-base: 0.9375rem;
-  --text-md: 1.0625rem;
-  --text-lg: 1.25rem;
-  --text-xl: 1.5rem;
-  --text-2xl: 1.875rem;
-  --text-3xl: 2.25rem;
-  --leading-tight: 1.2;
-  --leading-snug: 1.35;
-  --leading-normal: 1.55;
-  --leading-relaxed: 1.7;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-  --space-20: 5rem;
-  --space-24: 6rem;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-full: 9999px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
-  --shadow-bronze: 0 0 24px var(--bronze-glow);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 400ms;
-  --content-max: 780px;
-  --sidebar-width: 260px;
-}
+    html { scroll-behavior: smooth; }
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
-body { font-family: var(--font-body); font-size: var(--text-base); line-height: var(--leading-normal); color: var(--ink-200); background: var(--ink-950); min-height: 100vh; overflow-x: hidden; }
-::selection { background: var(--bronze-glow-strong); color: var(--bronze-200); }
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--ink-950); }
-::-webkit-scrollbar-thumb { background: var(--ink-600); border-radius: var(--radius-full); }
-::-webkit-scrollbar-thumb:hover { background: var(--ink-500); }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--offwhite);
+      color: var(--carbon);
+      line-height: 1.6;
+    }
 
-.app-shell { display: flex; min-height: 100vh; }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
 
-/* Sidebar */
-.sidebar {
-  width: var(--sidebar-width);
-  background: var(--ink-900);
-  border-right: 1px solid var(--ink-800);
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-6) 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.sidebar-brand { padding: 0 var(--space-6); margin-bottom: var(--space-8); }
-.sidebar-brand .logo-mark { width: 40px; height: 40px; margin-bottom: var(--space-4); }
-.sidebar-brand .logo-text { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; color: var(--ink-50); letter-spacing: -0.02em; line-height: var(--leading-tight); }
-.sidebar-brand .logo-sub { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--bronze-400); text-transform: uppercase; letter-spacing: 0.08em; margin-top: var(--space-1); }
-.sidebar-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--ink-700), transparent); margin: 0 var(--space-6) var(--space-6); }
-.sidebar-nav { flex: 1; padding: 0 var(--space-4); }
-.nav-item {
-  display: flex; align-items: center; gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out-quart);
-  margin-bottom: var(--space-1);
-  position: relative;
-  border: none; background: none; width: 100%; text-align: left;
-  font-family: var(--font-body); font-size: var(--text-sm); color: var(--ink-400); outline: none;
-}
-.nav-item:hover { background: var(--ink-800); color: var(--ink-200); }
-.nav-item:focus-visible { outline: 2px solid var(--bronze-500); outline-offset: 2px; }
-.nav-item.active { background: var(--bronze-glow); color: var(--bronze-300); }
-.nav-item.active::before { content: ''; position: absolute; left: -var(--space-4); top: 50%; transform: translateY(-50%); width: 3px; height: 20px; background: var(--bronze-400); border-radius: 0 var(--radius-full) var(--radius-full) 0; }
-.nav-item.completed { color: var(--signal-green); }
-.nav-item.completed .nav-check { opacity: 1; transform: scale(1); }
-.nav-num { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500; min-width: 22px; text-align: center; color: var(--ink-500); transition: color var(--duration-fast); }
-.nav-item.active .nav-num { color: var(--bronze-400); }
-.nav-label { flex: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.nav-check { width: 16px; height: 16px; opacity: 0; transform: scale(0); transition: all var(--duration-normal) var(--ease-spring); }
-.sidebar-footer { padding: var(--space-4) var(--space-6) 0; border-top: 1px solid var(--ink-800); margin-top: auto; }
-.autosave-pill {
-  display: flex; align-items: center; gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background: var(--ink-800); border: 1px solid var(--ink-700); border-radius: var(--radius-full);
-  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-400); transition: all var(--duration-normal);
-}
-.autosave-pill.saved { border-color: rgba(45,212,160,0.3); color: var(--signal-green); }
-.autosave-pill.saving { border-color: rgba(245,158,11,0.3); color: var(--signal-amber); }
-.autosave-dot { width: 6px; height: 6px; border-radius: var(--radius-full); background: currentColor; transition: all var(--duration-normal); }
-.autosave-pill.saved .autosave-dot { background: var(--signal-green); box-shadow: 0 0 6px var(--signal-green); }
+    /* Navegação */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(26,26,26,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
 
-.main { flex: 1; margin-left: var(--sidebar-width); min-height: 100vh; position: relative; }
-.main-inner { max-width: var(--content-max); margin: 0 auto; padding: var(--space-16) var(--space-8) calc(var(--space-24) + 80px); }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
 
-/* Header */
-.page-header { margin-bottom: var(--space-12); position: relative; }
-.page-header::before { content: ''; position: absolute; top: -var(--space-16); left: -var(--space-8); right: -var(--space-8); height: 1px; background: linear-gradient(90deg, var(--bronze-600), transparent 60%); opacity: 0.4; }
-.header-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500; color: var(--bronze-400); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: var(--space-3); display: flex; align-items: center; gap: var(--space-2); }
-.header-eyebrow .eyebrow-line { width: 24px; height: 1px; background: var(--bronze-600); }
-.header-title { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 700; color: var(--ink-50); letter-spacing: -0.03em; line-height: var(--leading-tight); margin-bottom: var(--space-4); }
-.header-desc { font-size: var(--text-md); color: var(--ink-300); max-width: 560px; line-height: var(--leading-relaxed); }
-.progress-track { margin-top: var(--space-8); display: flex; align-items: center; gap: var(--space-4); }
-.progress-track .fraction { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink-400); font-weight: 500; }
-.progress-track .fraction .current { color: var(--bronze-300); font-weight: 700; }
-.progress-rail { flex: 1; height: 3px; background: var(--ink-800); border-radius: var(--radius-full); overflow: hidden; position: relative; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--bronze-600), var(--bronze-400)); border-radius: var(--radius-full); transition: width 0.6s var(--ease-out-expo); position: relative; }
-.progress-fill::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px; background: linear-gradient(90deg, transparent, var(--bronze-300)); border-radius: var(--radius-full); animation: progressShimmer 2s ease-in-out infinite; }
-@keyframes progressShimmer { 0%,100% { opacity: 0; } 50% { opacity: 0.6; } }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--offwhite);
+      text-decoration: none;
+    }
 
-/* Steps */
-.form-section { margin-bottom: var(--space-16); animation: sectionEnter 0.5s var(--ease-out-expo) forwards; }
-.form-section:last-of-type { margin-bottom: var(--space-8); }
-@keyframes sectionEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-html { scroll-behavior: smooth; }
-.nav-item { text-decoration: none; }
+    .nav-logo span { color: var(--terracota); }
 
-/* Fields */
-.field { margin-bottom: var(--space-8); position: relative; }
-.field-label { display: block; font-family: var(--font-display); font-size: var(--text-md); font-weight: 600; color: var(--ink-100); margin-bottom: var(--space-3); line-height: var(--leading-snug); }
-.field-label .optional { font-family: var(--font-body); font-size: var(--text-sm); font-weight: 400; color: var(--ink-500); margin-left: var(--space-1); }
-.field-hint { font-size: var(--text-sm); color: var(--ink-400); margin-bottom: var(--space-3); line-height: var(--leading-relaxed); max-width: 640px; }
+    .nav-links {
+      display: none;
+      gap: 0.25rem;
+      align-items: center;
+    }
 
-.input, .textarea, .select {
-  width: 100%; padding: var(--space-4) var(--space-5);
-  background: var(--ink-850); border: 1.5px solid var(--ink-700); border-radius: var(--radius-md);
-  color: var(--ink-50); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--leading-normal);
-  transition: all var(--duration-fast) var(--ease-out-quart); outline: none; resize: vertical;
-}
-.input::placeholder, .textarea::placeholder { color: var(--ink-500); opacity: 0.7; }
-.input:hover, .textarea:hover, .select:hover { border-color: var(--ink-600); }
-.input:focus, .textarea:focus, .select:focus { border-color: var(--bronze-500); background: var(--ink-900); box-shadow: 0 0 0 3px var(--bronze-glow), var(--shadow-md); }
-.textarea { min-height: 140px; line-height: var(--leading-relaxed); }
-.select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235a667a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right var(--space-4) center; padding-right: var(--space-12); }
-.select option { background: var(--ink-800); color: var(--ink-100); padding: var(--space-2); }
+    @media (min-width: 900px) {
+      .nav-links { display: flex; }
+    }
 
-/* Voice Input Wrapper */
-/* Mic Button */
-50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
+    .nav-links a {
+      color: rgba(247,244,239,0.75);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
-/* Voice Badge (accepted state) */
-/* Voice Recorder Overlay */
-@keyframes conditionalReveal { from { opacity: 0; transform: translateY(-8px); max-height: 0; } to { opacity: 1; transform: translateY(0); max-height: 800px; } }
+    .nav-links a:hover { color: var(--offwhite); background: rgba(255,255,255,0.05); }
 
-50% { opacity: 0.3; } }
-/* Waveform visual */
-/* Audio Player */
-/* Transcript area */
-/* Processing state */
-}
-/* Voice actions */
-/* Chips */
-.chip-grid { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.chip {
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  background: var(--ink-800); border: 1.5px solid var(--ink-700); border-radius: var(--radius-full);
-  font-size: var(--text-sm); font-weight: 500; color: var(--ink-300);
-  cursor: pointer; transition: all var(--duration-fast) var(--ease-out-quart); user-select: none; position: relative; overflow: hidden;
-}
-.chip::before { content: ''; position: absolute; inset: 0; background: var(--bronze-glow); opacity: 0; transition: opacity var(--duration-fast); }
-.chip:hover { border-color: var(--ink-500); color: var(--ink-100); transform: translateY(-1px); }
-.chip:active { transform: translateY(0); }
-.chip.selected { background: var(--bronze-glow); border-color: var(--bronze-500); color: var(--bronze-200); }
-.chip.selected::before { opacity: 1; }
-.chip-check { width: 14px; height: 14px; opacity: 0; transform: scale(0); transition: all var(--duration-normal) var(--ease-spring); }
-.chip.selected .chip-check { opacity: 1; transform: scale(1); }
-.chip-input-row { display: flex; gap: var(--space-2); margin-top: var(--space-3); align-items: stretch; }
-.chip-input-row .input { flex: 1; margin-bottom: 0; }
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--carbon) 0%, var(--carbon-mid) 100%);
+      color: var(--offwhite);
+      padding: 8rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+    }
 
-/* Toggles */
-.toggle-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.toggle-btn {
-  padding: var(--space-3) var(--space-5);
-  background: var(--ink-800); border: 1.5px solid var(--ink-700); border-radius: var(--radius-md);
-  color: var(--ink-400); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
-  cursor: pointer; transition: all var(--duration-fast) var(--ease-out-quart); outline: none; position: relative; overflow: hidden;
-}
-.toggle-btn::before { content: ''; position: absolute; inset: 0; background: var(--bronze-glow); opacity: 0; transition: opacity var(--duration-fast); }
-.toggle-btn:hover { background: var(--ink-750); border-color: var(--ink-600); color: var(--ink-200); }
-.toggle-btn:focus-visible { outline: 2px solid var(--bronze-500); outline-offset: 2px; }
-.toggle-btn.active { background: var(--bronze-glow); border-color: var(--bronze-500); color: var(--bronze-200); }
-.toggle-btn.active::before { opacity: 1; }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 60%;
+      height: 150%;
+      background: radial-gradient(circle, rgba(196,95,60,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-/* Conditional */
-.conditional { display: none; margin-top: var(--space-5); padding: var(--space-6); background: var(--ink-900); border: 1.5px solid var(--ink-700); border-radius: var(--radius-lg); position: relative; overflow: hidden; }
-.conditional.visible { display: block; animation: conditionalReveal 0.35s var(--ease-out-expo); }
-.conditional::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--bronze-600), transparent); }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--terracota);
+      color: var(--terracota);
+      padding: 0.375rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+    }
 
-/* Repeaters */
-.repeater-list { display: flex; flex-direction: column; gap: var(--space-5); }
-.repeater-card {
-  background: var(--ink-850); border: 1.5px solid var(--ink-750); border-radius: var(--radius-lg);
-  overflow: hidden; transition: all var(--duration-normal) var(--ease-out-quart); position: relative;
-}
-.repeater-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(180deg, var(--bronze-600), transparent); opacity: 0; transition: opacity var(--duration-normal); }
-.repeater-card:hover { border-color: var(--ink-600); box-shadow: var(--shadow-md); }
-.repeater-card:hover::before { opacity: 1; }
-.repeater-header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-5); background: var(--ink-800); border-bottom: 1px solid var(--ink-750); }
-.repeater-header .repeater-title { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 600; color: var(--bronze-300); letter-spacing: 0.02em; }
-.repeater-header .repeater-remove {
-  display: flex; align-items: center; gap: var(--space-2);
-  padding: var(--space-2) var(--space-3); background: transparent; border: 1px solid var(--ink-700); border-radius: var(--radius-sm);
-  color: var(--ink-500); font-size: var(--text-xs); font-weight: 500; cursor: pointer; transition: all var(--duration-fast);
-}
-.repeater-header .repeater-remove:hover { border-color: var(--signal-red); color: var(--signal-red); background: rgba(239,68,68,0.08); }
-.repeater-body { padding: var(--space-5); }
-.repeater-body .field { margin-bottom: var(--space-5); }
-.repeater-body .field:last-child { margin-bottom: 0; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.05;
+      font-weight: 700;
+      max-width: 800px;
+      margin-bottom: 1.5rem;
+    }
 
-.btn-add {
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  padding: var(--space-3) var(--space-5); background: var(--ink-800); border: 1.5px dashed var(--ink-600); border-radius: var(--radius-md);
-  color: var(--ink-400); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
-  cursor: pointer; transition: all var(--duration-fast) var(--ease-out-quart); outline: none;
-}
-.btn-add:hover { border-color: var(--bronze-500); color: var(--bronze-300); background: var(--bronze-glow); }
-.btn-add:focus-visible { outline: 2px solid var(--bronze-500); outline-offset: 2px; }
-.btn-add svg { transition: transform var(--duration-fast) var(--ease-spring); }
-.btn-add:hover svg { transform: rotate(90deg); }
+    .hero p {
+      font-size: 1.125rem;
+      color: rgba(247,244,239,0.7);
+      max-width: 600px;
+      margin-bottom: 2.5rem;
+    }
 
-/* Ref cards */
-.ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); }
-.ref-card { background: var(--ink-850); border: 1.5px solid var(--ink-750); border-radius: var(--radius-lg); overflow: hidden; transition: all var(--duration-normal) var(--ease-out-quart); }
-.ref-card:hover { border-color: var(--ink-600); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-.ref-card-header { padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--ink-750); display: flex; align-items: center; gap: var(--space-3); }
-.ref-card-header a { color: var(--bronze-300); font-size: var(--text-sm); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: var(--space-2); transition: color var(--duration-fast); }
-.ref-card-header a:hover { color: var(--bronze-200); }
-.ref-favicon { width: 20px; height: 20px; border-radius: var(--radius-sm); background: var(--ink-700); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--ink-400); font-weight: 700; }
-.ref-card-body { padding: var(--space-4) var(--space-5); }
-.ref-card-body .field-label { font-size: var(--text-sm); margin-bottom: var(--space-2); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 3rem;
+    }
 
-/* Summary */
-.summary-card { background: var(--ink-850); border: 1.5px solid var(--ink-750); border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-6); }
-.summary-card h3 { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--bronze-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-5); }
-.summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-3); }
-.summary-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--ink-900); border: 1px solid var(--ink-800); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--ink-300); transition: all var(--duration-fast); }
-.summary-item.complete { border-color: rgba(45,212,160,0.2); color: var(--signal-green); }
-.summary-item svg { width: 16px; height: 16px; color: var(--ink-600); flex-shrink: 0; transition: all var(--duration-normal) var(--ease-spring); }
-.summary-item.complete svg { color: var(--signal-green); }
+    @media (min-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    }
 
-/* Step footer */
-.step-footer { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-12); padding-top: var(--space-8); border-top: 1px solid var(--ink-800); }
-.btn {
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  padding: var(--space-4) var(--space-6); border-radius: var(--radius-md);
-  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
-  cursor: pointer; transition: all var(--duration-fast) var(--ease-out-quart);
-  border: none; outline: none; position: relative; overflow: hidden;
-}
-.btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent); opacity: 0; transition: opacity var(--duration-fast); }
-.btn:hover::before { opacity: 1; }
-.btn-primary { background: linear-gradient(135deg, var(--bronze-500), var(--bronze-600)); color: var(--ink-950); box-shadow: 0 2px 8px rgba(196,154,44,0.2); }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(196,154,44,0.35), var(--shadow-bronze); }
-.btn-primary:active { transform: translateY(0); }
-.btn-secondary { background: var(--ink-800); color: var(--ink-200); border: 1.5px solid var(--ink-700); }
-.btn-secondary:hover { background: var(--ink-750); border-color: var(--ink-600); color: var(--ink-100); }
-.btn-danger { background: var(--signal-red-dim); color: var(--signal-red); border: 1.5px solid rgba(239,68,68,0.3); }
-.btn-danger:hover { background: rgba(239,68,68,0.2); }
-.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
 
-/* Action bar */
-.action-bar {
-  position: fixed; bottom: 0; left: var(--sidebar-width); right: 0;
-  background: linear-gradient(180deg, transparent, var(--ink-950) 40%);
-  padding: var(--space-6) var(--space-8) var(--space-6);
-  display: flex; justify-content: center; gap: var(--space-3);
-  z-index: 40; pointer-events: none; flex-wrap: wrap;
-}
-.action-bar .btn { pointer-events: auto; backdrop-filter: blur(12px); background: rgba(24,28,36,0.9); border: 1.5px solid var(--ink-700); font-size: var(--text-sm); padding: var(--space-3) var(--space-5); }
-.action-bar .btn:hover { background: var(--ink-800); border-color: var(--bronze-500); color: var(--bronze-300); }
+    .stat-card:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
 
-/* Privacy note */
-.privacy-note {
-  display: flex; align-items: flex-start; gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--ink-850);
-  border: 1px solid var(--ink-750);
-  border-radius: var(--radius-md);
-  margin-top: var(--space-6);
-  font-size: var(--text-sm);
-  color: var(--ink-400);
-  line-height: var(--leading-relaxed);
-}
-.privacy-note svg { flex-shrink: 0; margin-top: 2px; color: var(--ink-500); }
+    .stat-icon { color: var(--terracota); margin-bottom: 0.75rem; }
 
-/* Tooltip */
-[data-tooltip] { position: relative; }
-[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%) scale(0.95);
-  padding: var(--space-2) var(--space-3); background: var(--ink-800); border: 1px solid var(--ink-700); border-radius: var(--radius-sm);
-  font-size: var(--text-xs); color: var(--ink-200); white-space: nowrap; opacity: 0; pointer-events: none;
-  transition: all var(--duration-fast) var(--ease-out-quart);
-}
-[data-tooltip]:hover::after { opacity: 1; transform: translateX(-50%) scale(1); }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--offwhite);
+      line-height: 1;
+    }
 
-/* Print */
-@media print {
-  body { background: var(--ink-950) !important; color: var(--ink-200) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  .sidebar, .action-bar, .step-footer, .main { margin-left: 0 !important; }
-  .step-panel { display: block !important; page-break-inside: avoid; }
-  .main-inner { padding: 20px !important; max-width: 100% !important; }
-}
+    .stat-label {
+      font-size: 0.8rem;
+      color: rgba(247,244,239,0.6);
+      margin-top: 0.5rem;
+    }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .sidebar { transform: translateX(-100%); transition: transform var(--duration-slow) var(--ease-out-expo); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .action-bar { left: 0; }
-  .main-inner { padding: var(--space-8) var(--space-5) calc(var(--space-20) + 60px); }
-  .header-title { font-size: var(--text-2xl); }
-}
-@media (max-width: 640px) {
-  .header-title { font-size: var(--text-xl); }
-  .ref-grid { grid-template-columns: 1fr; }
-  .summary-grid { grid-template-columns: 1fr; }
-  .toggle-row .toggle-btn { flex: 1; text-align: center; }
-  .step-footer { flex-direction: column; gap: var(--space-3); }
-  .step-footer .btn { width: 100%; justify-content: center; }
-  }
+    /* Seções */
+    .section { padding: 5rem 0; }
 
-/* Accessibility */
-*:focus-visible { outline: 2px solid var(--bronze-500); outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-}
+    .section-light { background: var(--offwhite); }
 
+    .section-dark {
+      background: var(--carbon);
+      color: var(--offwhite);
+    }
 
+    .section-header {
+      max-width: 700px;
+      margin-bottom: 3rem;
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   MOBILE RESPONSIVE — Sidebar Hamburger + Full Layout
-   ═══════════════════════════════════════════════════════════════ */
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--terracota);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+    }
 
-.mobile-menu-btn {
-  display: none;
-  position: fixed;
-  top: var(--space-4);
-  left: var(--space-4);
-  z-index: 100;
-  width: 44px;
-  height: 44px;
-  background: var(--ink-900);
-  border: 1.5px solid var(--ink-700);
-  border-radius: var(--radius-md);
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--ink-200);
-  box-shadow: var(--shadow-md);
-}
-.mobile-menu-btn:hover { border-color: var(--bronze-500); color: var(--bronze-300); }
-.mobile-menu-btn svg { width: 20px; height: 20px; }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
 
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 60;
-  backdrop-filter: blur(4px);
-}
-.sidebar-overlay.visible { display: block; }
+    .section-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+    }
 
-@media (max-width: 900px) {
-  .mobile-menu-btn { display: flex; }
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.35s var(--ease-out-expo);
-    width: 280px;
-    box-shadow: var(--shadow-lg);
-  }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .main-inner { padding: var(--space-20) var(--space-5) calc(var(--space-20) + 80px); }
-  .action-bar { left: 0; padding: var(--space-4) var(--space-4) var(--space-4); }
-  .action-bar .btn { font-size: var(--text-xs); padding: var(--space-2) var(--space-3); }
-  .header-title { font-size: var(--text-2xl); }
-  .header-desc { font-size: var(--text-base); }
-  .page-header::before { left: -var(--space-5); right: -var(--space-5); }
-}
+    .section-dark .section-subtitle { color: rgba(247,244,239,0.65); }
 
-@media (max-width: 640px) {
-  .header-title { font-size: var(--text-xl); }
-  .header-eyebrow { font-size: var(--text-xs); }
-  .field-label { font-size: var(--text-base); }
-  .field-hint { font-size: var(--text-sm); }
-  .input, .textarea, .select {
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--text-sm);
-  }
-  .textarea { min-height: 100px; }
-  .ref-grid { grid-template-columns: 1fr; }
-  .summary-grid { grid-template-columns: 1fr; }
-  .toggle-row .toggle-btn {
-    flex: 1 1 calc(50% - var(--space-1));
-    text-align: center;
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-xs);
-  }
-  .chip { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
-  .chip-input-row { flex-direction: column; }
-  .chip-input-row .input { margin-bottom: var(--space-2); }
-  .chip-input-row .btn { width: 100%; justify-content: center; }
-  .repeater-header { padding: var(--space-3) var(--space-4); }
-  .repeater-body { padding: var(--space-4); }
-  .repeater-body .field { margin-bottom: var(--space-4); }
-  .btn-add { width: 100%; justify-content: center; }
-  .action-bar {
-    flex-direction: row;
-    gap: var(--space-2);
-    justify-content: center;
-  }
-  .action-bar .btn {
-    flex: 1;
-    justify-content: center;
-    padding: var(--space-3) var(--space-2);
-    font-size: var(--text-xs);
-  }
-  .summary-card { padding: var(--space-4); }
-  .sidebar { width: 85vw; max-width: 300px; }
-  .sidebar-brand { padding: 0 var(--space-5); margin-bottom: var(--space-6); }
-  .sidebar-brand .logo-mark { width: 32px; height: 32px; }
-  .sidebar-brand .logo-text { font-size: var(--text-base); }
-  .main-inner { padding: var(--space-16) var(--space-4) calc(var(--space-20) + 70px); }
-  .form-section { margin-bottom: var(--space-12); }
-}
-</style>
-<base target="_blank">
+    /* Cards */
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 640px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .feature-box {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s;
+    }
+
+    .feature-box:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+
+    .feature-box-dark {
+      background: var(--carbon-light);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .feature-icon {
+      color: var(--terracota);
+      margin-bottom: 1rem;
+    }
+
+    .feature-box h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-box p, .feature-box ul {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .feature-box-dark p, .feature-box-dark ul { color: rgba(247,244,239,0.65); }
+
+    .feature-box ul {
+      list-style: none;
+      margin-top: 0.75rem;
+    }
+
+    .feature-box ul li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-box ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55rem;
+      width: 5px;
+      height: 5px;
+      background: var(--terracota);
+      border-radius: 50%;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      max-width: 900px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 1rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--terracota), rgba(196,95,60,0.2));
+    }
+
+    @media (min-width: 768px) {
+      .timeline::before { left: 50%; transform: translateX(-50%); }
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 3rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .timeline-item {
+        padding-left: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+      }
+      .timeline-item:nth-child(even) .timeline-content { grid-column: 2; }
+      .timeline-item:nth-child(even) .timeline-meta { grid-column: 1; grid-row: 1; text-align: right; }
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 0.65rem;
+      top: 0.25rem;
+      width: 0.75rem;
+      height: 0.75rem;
+      background: var(--terracota);
+      border-radius: 50%;
+      border: 3px solid var(--offwhite);
+      box-shadow: 0 0 0 3px rgba(196,95,60,0.2);
+      z-index: 2;
+    }
+
+    @media (min-width: 768px) {
+      .timeline-dot { left: 50%; transform: translateX(-50%); }
+    }
+
+    .timeline-meta {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--terracota);
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-content {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-content h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-content p, .timeline-content ul {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .timeline-content ul {
+      list-style: none;
+      margin-top: 0.75rem;
+    }
+
+    .timeline-content ul li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .timeline-content ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55rem;
+      width: 5px;
+      height: 5px;
+      background: var(--terracota);
+      border-radius: 50%;
+    }
+
+    /* Tabelas */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 1rem;
+      border: 1px solid rgba(0,0,0,0.06);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    th {
+      background: var(--carbon);
+      color: var(--offwhite);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover td { background: rgba(196,95,60,0.03); }
+
+    /* Accordion */
+    .accordion { max-width: 900px; }
+
+    .accordion-item {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+    }
+
+    .accordion-item-dark {
+      background: var(--carbon-light);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem;
+      background: transparent;
+      border: none;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .accordion-icon {
+      color: var(--terracota);
+      font-size: 1.25rem;
+      transition: transform 0.3s;
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .accordion-content-inner {
+      padding: 0 1.25rem 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .accordion-item-dark .accordion-content-inner { color: rgba(247,244,239,0.7); }
+
+    .accordion-content-inner ul, .accordion-content-inner ol {
+      padding-left: 1.25rem;
+      line-height: 1.8;
+    }
+
+    /* CTA */
+    .cta-section {
+      background: linear-gradient(135deg, var(--terracota-dark) 0%, var(--terracota) 100%);
+      color: var(--offwhite);
+      text-align: center;
+      padding: 5rem 0;
+    }
+
+    .cta-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+      opacity: 0.9;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--offwhite);
+      color: var(--carbon);
+    }
+
+    .btn-primary:hover { background: var(--white); transform: translateY(-2px); }
+
+    /* Footer */
+    .footer {
+      background: var(--carbon);
+      color: rgba(247,244,239,0.6);
+      padding: 3rem 0;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .footer a { color: var(--terracota); text-decoration: none; }
+
+    /* Highlight box */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(196,95,60,0.08) 0%, rgba(196,95,60,0.03) 100%);
+      border: 1px solid rgba(196,95,60,0.15);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      margin-top: 2rem;
+    }
+
+    .highlight-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--carbon);
+    }
+
+    .highlight-box p { color: var(--text-secondary); font-size: 0.95rem; }
+
+    .section-dark .highlight-box {
+      background: rgba(255,255,255,0.03);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .section-dark .highlight-box h3 { color: var(--offwhite); }
+    .section-dark .highlight-box p { color: rgba(247,244,239,0.65); }
+
+    /* Utility */
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .gap-2 { gap: 0.5rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mt-8 { margin-top: 2rem; }
+    .text-sm { font-size: 0.875rem; }
+    .font-medium { font-weight: 500; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-out;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
-
-<button type="button" class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()" aria-label="Abrir menú">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
-
-<div class="app-shell">
-  <aside class="sidebar" role="navigation" aria-label="Navegación principal">
-    <div class="sidebar-brand">
-      <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="8" fill="#11141a" stroke="#2a2f3a" stroke-width="1"/><path d="M10 20h6v10h-6z" fill="#c49a2c" opacity="0.9"/><path d="M17 14h6v16h-6z" fill="#a67c1a" opacity="0.85"/><path d="M24 18h6v12h-6z" fill="#8b6914" opacity="0.8"/><line x1="8" y1="32" x2="32" y2="32" stroke="#c49a2c" stroke-width="1" opacity="0.4"/></svg>
-      <div class="logo-text">HDM<br>INDUSTRIAL</div>
-      <div class="logo-sub">Discovery Engine</div>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">Junior <span>Reformas</span></a>
+      <div class="nav-links">
+        <a href="#timeline">Timeline</a>
+        <a href="#seo">SEO</a>
+        <a href="#fotos">Fotos</a>
+        <a href="#tecnologia">Tech</a>
+        <a href="#pendentes">Pendentes</a>
+      </div>
     </div>
-    <div class="sidebar-divider"></div>
-    <nav class="sidebar-nav" id="sidebarNav">
-      <a href="#sec-empresa" class="nav-item active"><span class="nav-num">01</span><span class="nav-label">La empresa</span></a>
-      <a href="#sec-servicios" class="nav-item"><span class="nav-num">02</span><span class="nav-label">Lo que hacéis</span></a>
-      <a href="#sec-audiencia" class="nav-item"><span class="nav-num">03</span><span class="nav-label">A quién ayudáis</span></a>
-      <a href="#sec-locacion" class="nav-item"><span class="nav-num">04</span><span class="nav-label">Dónde trabajáis</span></a>
-      <a href="#sec-capacidad" class="nav-item"><span class="nav-num">05</span><span class="nav-label">Capacidad</span></a>
-      <a href="#sec-proyectos" class="nav-item"><span class="nav-num">06</span><span class="nav-label">Proyectos</span></a>
-      <a href="#sec-web" class="nav-item"><span class="nav-num">07</span><span class="nav-label">La nueva web</span></a>
-      <a href="#sec-resumen" class="nav-item"><span class="nav-num">08</span><span class="nav-label">Resumen</span></a>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="autosave-pill" id="autosavePill"><span class="autosave-dot"></span><span id="autosaveText">Guardado</span></div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+        Relatório técnico e comercial
+      </div>
+      <h1>Jr-Reformas.com: tudo que construímos até aqui</h1>
+      <p>Site multilíngue, SEO local, prova social, formulários inteligentes e deploy automatizado. Uma máquina de presença digital para o Junior.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <div class="stat-icon"><i data-lucide="globe" class="w-6 h-6"></i></div>
+          <div class="stat-number">4</div>
+          <div class="stat-label">idiomas (ES, CA, PT, EN)</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon"><i data-lucide="map-pin" class="w-6 h-6"></i></div>
+          <div class="stat-number">416+</div>
+          <div class="stat-label">páginas indexáveis</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon"><i data-lucide="star" class="w-6 h-6"></i></div>
+          <div class="stat-number">10</div>
+          <div class="stat-label">resenhas publicadas</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon"><i data-lucide="image" class="w-6 h-6"></i></div>
+          <div class="stat-number">87</div>
+          <div class="stat-label">fotos catalogadas no site</div>
+        </div>
+      </div>
     </div>
-  </aside>
+  </header>
 
-  <main class="main">
-    <div class="main-inner">
-<section class="form-section" id="sec-empresa" aria-labelledby="h-sec-empresa">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 01</div>
-          <h1 class="header-title" id="h-sec-empresa">La empresa</h1>
-          <p class="header-desc">Descubramos el posicionamiento real de HDM. No buscamos frases corporativas, buscamos entender qué hacéis y por qué importa.</p>
-          </header>
+  <main>
+    <!-- TIMELINE -->
+    <section class="section section-light" id="timeline">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="clock" class="w-4 h-4"></i> Linha do tempo</span>
+          <h2 class="section-title">Evolução do projeto</h2>
+          <p class="section-subtitle">Do site básico à plataforma completa de conversão e SEO local.</p>
+        </div>
 
-        <div class="field">
-          <label class="field-label">¿Cómo explicarías qué hace HDM Industrial a una empresa que todavía no os conoce?</label>
-          <p class="field-hint">Imagina que estás en una reunión con un director de planta que nunca ha oído hablar de vosotros.</p>
-          <textarea class="textarea" id="f-empresa-explica" placeholder="Somos una empresa especializada en..." data-key="empresa.explicacion"></textarea>
-            <div class="field">
-          <label class="field-label">¿Qué debería entender alguien sobre HDM durante los primeros segundos en la nueva web?</label>
-          <textarea class="textarea" id="f-empresa-impacto" placeholder="Que podemos resolver problemas de mantenimiento industrial con profesionales cualificados..." data-key="empresa.impacto"></textarea>
+        <div class="timeline">
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-meta">Fase 1 — Base</div>
+            <div class="timeline-content">
+              <h3>Estrutura e identidade visual</h3>
+              <ul>
+                <li>Site em Next.js + React + TypeScript + Tailwind</li>
+                <li>Paleta terracota/offwhite/carbon</li>
+                <li>Tipografia Playfair + Inter</li>
+                <li>Responsivo desktop/mobile</li>
+                <li>Deploy na Vercel com GitHub</li>
+              </ul>
             </div>
-
-        <div class="field">
-          <label class="field-label">Si un cliente os llama hoy, ¿qué suele necesitar de vosotros?</label>
-          <p class="field-hint">Captura el problema real que resuelve HDM: qué ocurre, qué necesitan y por qué contactan con vosotros.</p>
-          <textarea class="textarea" id="f-empresa-necesidad" placeholder="Normalmente nos contactan cuando necesitan..." data-key="empresa.necesidad"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Cuántos años lleva HDM trabajando en el sector?</label>
-          <input type="text" class="input" id="f-empresa-anos" placeholder="Ej: 15 años" data-key="empresa.anos">
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿Cuántas personas/equipos forman actualmente la empresa? <span class="optional">opcional</span></label>
-          <input type="text" class="input" id="f-empresa-equipo" placeholder="Ej: 45 profesionales entre técnicos, soldadores y personal de obra" data-key="empresa.equipo">
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿Hay algún número que represente especialmente la capacidad de HDM? <span class="optional">opcional</span></label>
-          <p class="field-hint">Proyectos completados, profesiones disponibles, clientes activos, horas de intervención. No inventéis datos.</p>
-          <input type="text" class="input" id="f-empresa-numeros" placeholder="Ej: Más de 200 intervenciones de mantenimiento al año" data-key="empresa.numeros">
-        </div>
-      </section>
-
-      <!-- STEP 02 -->
-      
-<section class="form-section" id="sec-servicios" aria-labelledby="h-sec-servicios">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 02</div>
-          <h1 class="header-title" id="h-sec-servicios">Lo que hacéis</h1>
-          <p class="header-desc">Esta es la columna vertebral del nuevo site. Cuanto más preciso sea aquí, mejor será el resultado final.</p>
-          </header>
-
-        <div class="field">
-          <label class="field-label">Servicios de HDM</label>
-          <p class="field-hint">Añadid cada servicio que ofrezcáis. Una respuesta detallada aquí se traduce en páginas de conversión después.</p>
-          <div class="repeater-list" id="servicios-list"></div>
-          <button type="button" class="btn-add" onclick="addServicio()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir servicio</button><div class="field">
-          <label class="field-label">¿Qué perfiles profesionales puede aportar HDM?</label>
-          <div class="repeater-list" id="perfiles-list"></div>
-          <button type="button" class="btn-add" onclick="addPerfil()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir perfil</button>
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿Qué puede hacer una persona/equipo de HDM que una empresa externa normalmente no puede ofrecer?</label>
-          <textarea class="textarea" id="f-cap-diferencial" placeholder="Nuestro equipo destaca porque..." data-key="capacidad.diferencial"></textarea>
-            </div>
-      </section>
-
-      <!-- STEP 03 -->
-      
-<section class="form-section" id="sec-audiencia" aria-labelledby="h-sec-audiencia">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 03</div>
-          <h1 class="header-title" id="h-sec-audiencia">A quién ayudáis</h1>
-          <p class="header-desc">Entender quién compra, por qué compra y qué dudas tiene antes de decidirse.</p>
-          </header>
-
-        <div class="field">
-          <label class="field-label">¿Qué tipo de empresas suelen contratar HDM?</label>
-          <div class="chip-grid" id="chips-tipo-empresas">
-            <span class="chip" data-value="Industria">Industria</span>
-            <span class="chip" data-value="Ingeniería">Ingeniería</span>
-            <span class="chip" data-value="Construcción">Construcción</span>
-            <span class="chip" data-value="Mantenimiento">Mantenimiento</span>
-            <span class="chip" data-value="Energía">Energía</span>
-            <span class="chip" data-value="Fabricación">Fabricación</span>
-            <span class="chip" data-value="Petroquímica">Petroquímica</span>
-            <span class="chip" data-value="Naval">Naval</span>
           </div>
-          <div class="chip-input-row">
-            <input type="text" class="input" id="custom-tipo-empresas" placeholder="Añadir otro sector...">
-            <button type="button" class="btn btn-secondary" onclick="addCustomChip('tipo-empresas')">Añadir</button>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-meta">Fase 2 — SEO</div>
+            <div class="timeline-content">
+              <h3>SEO local e landings</h3>
+              <ul>
+                <li>Landings por cidade: Sabadell, Barcelona, Terrassa, Mataró</li>
+                <li>Landings por bairro: Eixample, Gràcia, Centro, Can Rull, etc.</li>
+                <li>Landings cruzadas serviço+bairro (banhos, cocinas, suelos, integrales, locales)</li>
+                <li>Schema.org: LocalBusiness, Service, Review, BreadcrumbList, FAQ</li>
+                <li>Sitemap dinâmico e hreflang</li>
+              </ul>
+            </div>
           </div>
-          <input type="hidden" id="f-tipo-empresas" data-key="audiencia.tipoEmpresas"><div class="field">
-          <label class="field-label">¿Quién suele tomar la decisión de contrataros?</label>
-          <div class="chip-grid" id="chips-decisor">
-            <span class="chip" data-value="Dirección">Dirección</span>
-            <span class="chip" data-value="Compras">Compras</span>
-            <span class="chip" data-value="Producción">Producción</span>
-            <span class="chip" data-value="Mantenimiento">Mantenimiento</span>
-            <span class="chip" data-value="Ingeniería">Ingeniería</span>
-            <span class="chip" data-value="RRHH">RRHH</span>
-            <span class="chip" data-value="Jefe de obra">Jefe de obra</span>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-meta">Fase 3 — Conteúdo</div>
+            <div class="timeline-content">
+              <h3>Galerias, serviços e prova social</h3>
+              <ul>
+                <li>Galeria compartilhada nos serviços</li>
+                <li>Fotos reais das obras catalogadas</li>
+                <li>Sistema completo de resenhas com formulário</li>
+                <li>Upload de fotos de perfil via Cloudinary</li>
+                <li>Blog / Guias técnicos</li>
+              </ul>
+            </div>
           </div>
-          <input type="hidden" id="f-decisor" data-key="audiencia.decisor">
-        </div>
 
-        <div class="field">
-          <label class="field-label">¿Qué problema suele tener esa persona cuando os busca?</label>
-          <textarea class="textarea" id="f-audiencia-problema" placeholder="Necesita resolver una parada industrial urgente..." data-key="audiencia.problema"></textarea>
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-meta">Fase 4 — Conversão</div>
+            <div class="timeline-content">
+              <h3>Formulários e contato</h3>
+              <ul>
+                <li>Formulário de orçamento inteligente</li>
+                <li>Formulário de resenha com preview ao vivo</li>
+                <li>WhatsApp fixo em todas as páginas</li>
+                <li>CTAs estratégicos em hero, serviços e footer</li>
+                <li>Autocomplete de cidades</li>
+              </ul>
             </div>
-
-        <div class="field">
-          <label class="field-label">¿Qué suele pasar antes de que un cliente contacte con HDM?</label>
-          <p class="field-hint">Describe el momento previo: ¿qué ocurre en su empresa que le lleva a buscar una solución como la vuestra?</p>
-          <textarea class="textarea" id="f-audiencia-journey" placeholder="Normalmente ocurre que..." data-key="audiencia.journey"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Qué información necesita ese cliente antes de decidir contrataros?</label>
-          <div class="chip-grid" id="chips-info-decision">
-            <span class="chip" data-value="Precio">Precio</span>
-            <span class="chip" data-value="Disponibilidad">Disponibilidad</span>
-            <span class="chip" data-value="Certificaciones">Certificaciones</span>
-            <span class="chip" data-value="Experiencia">Experiencia</span>
-            <span class="chip" data-value="Profesionales">Profesionales</span>
-            <span class="chip" data-value="Plazos">Plazos</span>
-            <span class="chip" data-value="Seguridad">Seguridad</span>
-            <span class="chip" data-value="Proyectos anteriores">Proyectos anteriores</span>
           </div>
-          <input type="hidden" id="f-info-decision" data-key="audiencia.infoDecision">
-        </div>
 
-        <div class="field">
-          <label class="field-label">¿Qué dudas suelen tener los clientes antes de contrataros?</label>
-          <textarea class="textarea" id="f-objeciones" placeholder="Antes de contratar, normalmente preguntan..." data-key="audiencia.objeciones"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Qué información os piden una y otra vez por teléfono o WhatsApp?</label>
-          <textarea class="textarea" id="f-preguntas" placeholder="Siempre nos preguntan..." data-key="audiencia.preguntas"></textarea>
-            </div>
-      </section>
-
-      <!-- STEP 04 -->
-      
-<section class="form-section" id="sec-locacion" aria-labelledby="h-sec-locacion">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 04</div>
-          <h1 class="header-title" id="h-sec-locacion">Dónde trabajáis</h1>
-          <p class="header-desc">La geografía de HDM es clave para SEO local, páginas territoriales y estrategia de captación.</p>
-          </header>
-
-        <div class="field">
-          <label class="field-label">¿Dónde trabajáis actualmente?</label>
-          <p class="field-hint">País, comunidad autónoma, provincia, ciudad o área de actuación.</p>
-          <textarea class="textarea" id="f-loc-actual" placeholder="Actualmente operamos principalmente en Cataluña..." data-key="locacion.actual"></textarea>
-            <div class="field">
-          <label class="field-label">¿Dónde queréis conseguir más clientes?</label>
-          <textarea class="textarea" id="f-loc-objetivo" placeholder="Nos interesa crecer especialmente en..." data-key="locacion.objetivo"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Podéis desplazar equipos/profesionales?</label>
-          <div class="toggle-row">
-            <button type="button" class="toggle-btn" data-toggle="desplazamiento" data-value="si">Sí</button>
-            <button type="button" class="toggle-btn" data-toggle="desplazamiento" data-value="no">No</button>
-          </div>
-          <input type="hidden" id="f-desplazamiento" data-key="locacion.desplazamiento">
-          <div class="conditional" id="cond-desplazamiento">
-            <div class="field" style="margin-bottom:0">
-              <label class="field-label">¿Hasta dónde?</label>
-              <input type="text" class="input" id="f-desplazamiento-hasta" placeholder="Ej: Toda España, Portugal, área mediterránea..." data-key="locacion.desplazamientoHasta">
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-meta">Fase 5 — Qualidade</div>
+            <div class="timeline-content">
+              <h3>Auditoria e refinamentos</h3>
+              <ul>
+                <li>Organização da documentação do projeto</li>
+                <li>Auditoria completa das fotos</li>
+                <li>Chips de zonas clicáveis nas páginas de serviço</li>
+                <li>Link de localidades no menu principal</li>
+                <li>Relatório executivo final</li>
+              </ul>
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="field">
-          <label class="field-label">Sectores donde trabajáis <span class="optional">añadir tantos como sea necesario</span></label>
-          <div class="repeater-list" id="sectores-list"></div>
-          <button type="button" class="btn-add" onclick="addSector()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir sector</button>
-        </div>
-      </section>
-
-      <!-- STEP 05 -->
-      
-<section class="form-section" id="sec-capacidad" aria-labelledby="h-sec-capacidad">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 05</div>
-          <h1 class="header-title" id="h-sec-capacidad">Capacidad industrial</h1>
-          <p class="header-desc">Certificaciones, calidad, seguridad y todo lo que demuestra que HDM puede cumplir.</p>
-          </header>
-
-        <div class="field">
-          <label class="field-label">¿Qué certificaciones, homologaciones o acreditaciones podéis demostrar?</label>
-          <textarea class="textarea" id="f-certificaciones" placeholder="Contamos con certificación ISO 9001, homologación para trabajos en altura..." data-key="capacidad.certificaciones"></textarea>
-            <div class="field">
-          <label class="field-label">¿Qué estándares de seguridad y calidad son importantes para vuestros clientes?</label>
-          <textarea class="textarea" id="f-seguridad" placeholder="Para nosotros es importante cumplir con la normativa de prevención de riesgos laborales..." data-key="capacidad.seguridadCalidad"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Hay documentación que podamos mostrar públicamente?</label>
-          <div class="toggle-row">
-            <button type="button" class="toggle-btn" data-toggle="docpublica" data-value="si">Sí</button>
-            <button type="button" class="toggle-btn" data-toggle="docpublica" data-value="no">No</button>
-          </div>
-          <input type="hidden" id="f-docpublica" data-key="capacidad.docPublica">
+    <!-- ARQUITETURA -->
+    <section class="section section-dark" id="arquitetura">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="layout" class="w-4 h-4"></i> Arquitetura</span>
+          <h2 class="section-title">Como o site está organizado</h2>
+          <p class="section-subtitle">Estrutura pensada para escalar SEO e manutenção.</p>
         </div>
 
-        <div class="field">
-          <label class="field-label">¿Por qué una empresa debería elegir HDM en lugar de otra empresa del sector?</label>
-          <textarea class="textarea" id="f-diferencial" placeholder="Porque..." data-key="capacidad.diferencial"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Qué suelen destacar vuestros clientes después de trabajar con vosotros?</label>
-          <textarea class="textarea" id="f-clientes-valoran" placeholder="Lo que más nos suelen valorar es..." data-key="capacidad.clientesValoran"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Cuál es uno de los trabajos más exigentes que habéis realizado?</label>
-          <textarea class="textarea" id="f-trabajo-exigente" placeholder="Uno de nuestros proyectos más exigentes fue..." data-key="capacidad.trabajoExigente"></textarea>
-            </div>
-      </section>
-
-      <!-- STEP 06 -->
-      
-<section class="form-section" id="sec-proyectos" aria-labelledby="h-sec-proyectos">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 06</div>
-          <h1 class="header-title" id="h-sec-proyectos">Proyectos y experiencia</h1>
-          <p class="header-desc">Los proyectos son la prueba más poderosa. Añadid los que podáis — cada uno es material para case studies.</p>
-          </header>
-
-        <div class="field">
-          <label class="field-label">Proyectos realizados</label>
-          <div class="repeater-list" id="proyectos-list"></div>
-          <button type="button" class="btn-add" onclick="addProyecto()" style="margin-top:var(--space-4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir proyecto</button><div class="field">
-          <label class="field-label">¿Qué clientes o empresas podemos mostrar públicamente? <span class="optional">opcional</span></label>
-          <textarea class="textarea" id="f-clientes-publicos" placeholder="Podemos mencionar a..." data-key="proyectos.clientesPublicos"></textarea>
-            </div>
-      </section>
-
-      <!-- STEP 07 -->
-      
-<section class="form-section" id="sec-web" aria-labelledby="h-sec-web">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 07</div>
-          <h1 class="header-title" id="h-sec-web">La nueva web</h1>
-          <p class="header-desc">Queremos entender qué esperáis del nuevo site, no qué creáis que necesita técnicamente.</p>
-          </header>
-
-        <div class="field">
-          <label class="field-label">¿Qué no funciona bien en vuestra web actual?</label>
-          <textarea class="textarea" id="f-web-problemas" placeholder="El principal problema de la web actual es..." data-key="web.problemas"></textarea>
-            <div class="field">
-          <label class="field-label">¿Qué queréis que el nuevo sitio haga mejor?</label>
-          <div class="chip-grid" id="chips-web-objetivos">
-            <span class="chip" data-value="Conseguir más clientes">Conseguir más clientes</span>
-            <span class="chip" data-value="Mejorar nuestra imagen">Mejorar nuestra imagen</span>
-            <span class="chip" data-value="Explicar mejor los servicios">Explicar mejor los servicios</span>
-            <span class="chip" data-value="Mostrar nuestros proyectos">Mostrar nuestros proyectos</span>
-            <span class="chip" data-value="Entrar en nuevos mercados">Entrar en nuevos mercados</span>
-            <span class="chip" data-value="Mejorar Google">Mejorar Google</span>
-            <span class="chip" data-value="Captar profesionales">Captar profesionales</span>
+        <div class="features-grid">
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="folder-tree" class="w-6 h-6"></i></div>
+            <h3>Estrutura de diretórios</h3>
+            <p>app/[locale]/ para 4 idiomas, páginas de serviço, localidades, bairros, landings cruzadas, blog e resenhas.</p>
           </div>
-          <input type="hidden" id="f-web-objetivos" data-key="web.objetivos">
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿Qué acción debería realizar principalmente un visitante?</label>
-          <div class="toggle-row">
-            <button type="button" class="toggle-btn" data-toggle="ctaprincipal" data-value="presupuesto">Solicitar presupuesto</button>
-            <button type="button" class="toggle-btn" data-toggle="ctaprincipal" data-value="servicio">Solicitar servicio</button>
-            <button type="button" class="toggle-btn" data-toggle="ctaprincipal" data-value="profesionales">Pedir profesionales</button>
-            <button type="button" class="toggle-btn" data-toggle="ctaprincipal" data-value="llamar">Llamar</button>
-            <button type="button" class="toggle-btn" data-toggle="ctaprincipal" data-value="whatsapp">WhatsApp</button>
-            <button type="button" class="toggle-btn" data-toggle="ctaprincipal" data-value="email">Email</button>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="puzzle" class="w-6 h-6"></i></div>
+            <h3>Componentes reutilizáveis</h3>
+            <p>ServiceGallery, ReviewsSystem, ContactForm, SmartBudgetForm, SectionHeader, Breadcrumb, JsonLd e animações.</p>
           </div>
-          <input type="hidden" id="f-cta-principal" data-key="web.ctaPrincipal">
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿Qué tipos de personas deberían poder contactar con HDM desde la web?</label>
-          <div class="chip-grid" id="chips-web-contacto">
-            <span class="chip" data-value="Empresa que necesita un servicio">Empresa que necesita un servicio</span>
-            <span class="chip" data-value="Empresa que necesita profesionales">Empresa que necesita profesionales</span>
-            <span class="chip" data-value="Empresa que necesita mantenimiento">Empresa que necesita mantenimiento</span>
-            <span class="chip" data-value="Candidato/profesional">Candidato/profesional</span>
-            <span class="chip" data-value="Partner">Partner</span>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="database" class="w-6 h-6"></i></div>
+            <h3>Dados centralizados</h3>
+            <p>lib/ para serviços, bairros, localidades, fotos, resenhas, SEO e i18n. Facilita atualizações.</p>
           </div>
-          <input type="hidden" id="f-web-contacto" data-key="web.contacto">
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿También queréis utilizar la web para captar profesionales?</label>
-          <div class="toggle-row">
-            <button type="button" class="toggle-btn" data-toggle="reclutamiento" data-value="si">Sí</button>
-            <button type="button" class="toggle-btn" data-toggle="reclutamiento" data-value="no">No</button>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="repeat" class="w-6 h-6"></i></div>
+            <h3>Automação de resenhas</h3>
+            <p>GitHub Issue criada a cada resenha. Workflow sincroniza issues aprovadas para reviews.json.</p>
           </div>
-          <input type="hidden" id="f-reclutamiento" data-key="web.reclutamiento">
-          <div class="conditional" id="cond-reclutamiento">
-            <div class="field" style="margin-bottom:var(--space-5)">
-              <label class="field-label">¿Qué perfiles buscáis?</label>
-              <textarea class="textarea" id="f-reclutamiento-perfiles" placeholder="Soldadores certificados, técnicos de mantenimiento..." data-key="web.reclutamientoPerfiles"></textarea>
-                </div>
-            <div class="field" style="margin-bottom:0">
-              <label class="field-label">¿Qué información debe enviar un candidato?</label>
-              <textarea class="textarea" id="f-reclutamiento-info" placeholder="CV, certificaciones, disponibilidad..." data-key="web.reclutamientoInfo"></textarea>
-                </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <h3>Galeria compartilhada</h3>
+            <p>Todas as páginas de serviço usam o mesmo componente de galeria. Padronização e menos código.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="zap" class="w-6 h-6"></i></div>
+            <h3>Performance</h3>
+            <p>Imagens otimizadas, geração estática, cache Vercel e fontes otimizadas pelo Next.js.</p>
           </div>
         </div>
 
-        <div class="field">
-          <label class="field-label">Referencias visuales proporcionadas</label>
-          <div class="ref-grid">
-            <div class="ref-card">
-              <div class="ref-card-header"><div class="ref-favicon">S</div><a href="https://sparksservice.com/es/" target="_blank" rel="noopener">sparksservice.com ↗</a></div>
-              <div class="ref-card-body">
-                <label class="field-label">¿Qué te gusta?</label>
-                <div class="chip-grid" style="margin-bottom:var(--space-3)">
-                  <span class="chip" data-ref="sparks" data-value="Diseño">Diseño</span>
-                  <span class="chip" data-ref="sparks" data-value="Estructura">Estructura</span>
-                  <span class="chip" data-ref="sparks" data-value="Fotografías">Fotografías</span>
-                  <span class="chip" data-ref="sparks" data-value="Tipografía">Tipografía</span>
-                  <span class="chip" data-ref="sparks" data-value="Servicios">Servicios</span>
-                </div>
-                <textarea class="textarea" id="f-ref-sparks" placeholder="Me gusta especialmente..." style="min-height:70px;font-size:var(--text-sm)" data-key="refs.sparks"></textarea>
-              </div>
-            </div>
-            <div class="ref-card">
-              <div class="ref-card-header"><div class="ref-favicon">M</div><a href="https://www.metalbraga.com/index.html" target="_blank" rel="noopener">metalbraga.com ↗</a></div>
-              <div class="ref-card-body">
-                <label class="field-label">¿Qué te gusta?</label>
-                <div class="chip-grid" style="margin-bottom:var(--space-3)">
-                  <span class="chip" data-ref="braga" data-value="Diseño">Diseño</span>
-                  <span class="chip" data-ref="braga" data-value="Estructura">Estructura</span>
-                  <span class="chip" data-ref="braga" data-value="Fotografías">Fotografías</span>
-                  <span class="chip" data-ref="braga" data-value="Tipografía">Tipografía</span>
-                  <span class="chip" data-ref="braga" data-value="Servicios">Servicios</span>
-                </div>
-                <textarea class="textarea" id="f-ref-braga" placeholder="Me gusta especialmente..." style="min-height:70px;font-size:var(--text-sm)" data-key="refs.braga"></textarea>
-              </div>
-            </div>
-            <div class="ref-card">
-              <div class="ref-card-header"><div class="ref-favicon">I</div><a href="https://www.incasometal.com/" target="_blank" rel="noopener">incasometal.com ↗</a></div>
-              <div class="ref-card-body">
-                <label class="field-label">¿Qué te gusta?</label>
-                <div class="chip-grid" style="margin-bottom:var(--space-3)">
-                  <span class="chip" data-ref="incaso" data-value="Diseño">Diseño</span>
-                  <span class="chip" data-ref="incaso" data-value="Estructura">Estructura</span>
-                  <span class="chip" data-ref="incaso" data-value="Fotografías">Fotografías</span>
-                  <span class="chip" data-ref="incaso" data-value="Tipografía">Tipografía</span>
-                  <span class="chip" data-ref="incaso" data-value="Servicios">Servicios</span>
-                </div>
-                <textarea class="textarea" id="f-ref-incaso" placeholder="Me gusta especialmente..." style="min-height:70px;font-size:var(--text-sm)" data-key="refs.incaso"></textarea>
+        <div class="accordion mt-8" id="accordion-arquitetura">
+          <div class="accordion-item accordion-item-dark reveal">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span>Principais páginas do site</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-content-inner">
+                <ul>
+                  <li><strong>Home (/)</strong> — Hero, serviços, galeria, resenhas, processo, CTA</li>
+                  <li><strong>Serviços (/servicios/)</strong> — Grid de serviços com galeria e preços</li>
+                  <li><strong>Serviço (/servicios/[slug]/)</strong> — Página dedicada com galeria, FAQ, zonas, formulário</li>
+                  <li><strong>Localidades (/localidades/)</strong> — Cidades onde atua</li>
+                  <li><strong>Localidade (/localidades/[slug]/)</strong> — Landing por cidade</li>
+                  <li><strong>Bairros (/barrios/)</strong> — Lista de bairros estratégicos</li>
+                  <li><strong>Bairro (/barrios/[slug]/)</strong> — Landing por bairro com serviços clicáveis</li>
+                  <li><strong>Bairro+Serviço (/barrios/[bairro]/[serviço]/)</strong> — Landing cruzada de alta conversão</li>
+                  <li><strong>Resenhas (/resenas/)</strong> — Galeria masonry + formulário de envio</li>
+                  <li><strong>Blog / Guias (/blog/)</strong> — Conteúdo para SEO e autoridade</li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="field">
-          <label class="field-label">¿Qué te gustaría que HDM transmitiera y que hoy no transmite?</label>
-          <textarea class="textarea" id="f-ref-deseo" placeholder="Queremos que cuando alguien entre piense..." data-key="refs.deseo"></textarea>
-            </div>
+    <!-- SEO -->
+    <section class="section section-light" id="seo">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="search" class="w-4 h-4"></i> SEO Local</span>
+          <h2 class="section-title">Estratégia de ranqueamento</h2>
+          <p class="section-subtitle">Construído para ser encontrado nas buscas que geram orçamentos.</p>
+        </div>
 
-        <div class="field">
-          <label class="field-label">¿Qué material tenéis disponible?</label>
-          <div class="chip-grid" id="chips-material">
-            <span class="chip" data-value="Fotos de trabajos">Fotos de trabajos</span>
-            <span class="chip" data-value="Fotos de instalaciones">Fotos de instalaciones</span>
-            <span class="chip" data-value="Fotos de profesionales">Fotos de profesionales</span>
-            <span class="chip" data-value="Vídeos">Vídeos</span>
-            <span class="chip" data-value="Certificaciones">Certificaciones</span>
-            <span class="chip" data-value="Proyectos documentados">Proyectos documentados</span>
-            <span class="chip" data-value="Logos de clientes">Logos de clientes</span>
-            <span class="chip" data-value="Catálogos">Catálogos</span>
+        <div class="features-grid">
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="map" class="w-6 h-6"></i></div>
+            <h3>Landings por cidade</h3>
+            <p>Sabadell, Barcelona, Terrassa e Mataró. Cada uma com texto único, fotos e schema local.</p>
           </div>
-          <input type="hidden" id="f-material" data-key="web.material">
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿En qué idiomas debe funcionar la nueva web?</label>
-          <div class="chip-grid" id="chips-idiomas">
-            <span class="chip" data-value="Español">Español</span>
-            <span class="chip" data-value="Catalán">Catalán</span>
-            <span class="chip" data-value="Inglés">Inglés</span>
-            <span class="chip" data-value="Portugués">Portugués</span>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="home" class="w-6 h-6"></i></div>
+            <h3>Landings por bairro</h3>
+            <p>14 bairros estratégicos com páginas dedicadas e links para landings cruzadas.</p>
           </div>
-          <input type="hidden" id="f-idiomas" data-key="web.idiomas">
-        </div>
-
-        <div class="field">
-          <label class="field-label">¿Hay algo que no podamos publicar?</label>
-          <textarea class="textarea" id="f-restricciones" placeholder="No queremos publicar..." data-key="web.restricciones"></textarea>
-            </div>
-
-        <div class="field">
-          <label class="field-label">¿Hay clientes, proyectos o información confidencial que debamos excluir?</label>
-          <textarea class="textarea" id="f-confidencial" placeholder="Debemos excluir..." data-key="web.confidencial"></textarea>
-            </div>
-      </section>
-
-      
-      <!-- STEP 08 -->
-      
-<section class="form-section" id="sec-resumen" aria-labelledby="h-sec-resumen">
-        <header class="page-header">
-          <div class="header-eyebrow"><span class="eyebrow-line"></span> Sección 08</div>
-          <h1 class="header-title" id="h-sec-resumen">Revisa tu información</h1>
-          <p class="header-desc">Verifica que todo esté correcto antes de guardar. Puedes exportar incluso con respuestas incompletas.</p>
-          </header>
-
-        <!-- Summary Card -->
-        <div class="summary-card" id="review-summary">
-          <h3>Resumen del discovery</h3>
-          <div class="summary-grid" id="summary-grid">
-            <div class="summary-item" data-section="empresa"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>La empresa</span></div>
-            <div class="summary-item" data-section="servicios"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Servicios</span></div>
-            <div class="summary-item" data-section="audiencia"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Audiencia</span></div>
-            <div class="summary-item" data-section="locacion"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Localización</span></div>
-            <div class="summary-item" data-section="capacidad"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Capacidad</span></div>
-            <div class="summary-item" data-section="proyectos"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Proyectos</span></div>
-            <div class="summary-item" data-section="web"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>La nueva web</span></div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="crosshair" class="w-6 h-6"></i></div>
+            <h3>Landings serviço + bairro</h3>
+            <p>Ex.: reformas de baños en Eixample de Sabadell. Alta intenção de compra.</p>
           </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="code" class="w-6 h-6"></i></div>
+            <h3>Schema.org completo</h3>
+            <p>LocalBusiness, Service, AggregateRating, Review, BreadcrumbList, FAQPage, WebSite.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="languages" class="w-6 h-6"></i></div>
+            <h3>Multilíngue</h3>
+            <p>4 idiomas com hreflang, URLs localizadas e conteúdo traduzido.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="file-text" class="w-6 h-6"></i></div>
+            <h3>Sitemap e robots</h3>
+            <p>Sitemap dinâmico com 416+ URLs. Robots otimizado para indexar o que importa.</p>
+          </div>
+        </div>
 
-          <div style="margin-top:var(--space-5);padding-top:var(--space-5);border-top:1px solid var(--ink-750);">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--space-3);">
-              <div style="text-align:center;padding:var(--space-3);background:var(--ink-900);border-radius:var(--radius-md);">
-                <div style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:700;color:var(--bronze-300);" id="stat-respuestas">0</div>
-                <div style="font-size:var(--text-xs);color:var(--ink-400);margin-top:var(--space-1);">respuestas</div>
-              </div>
-              <div style="text-align:center;padding:var(--space-3);background:var(--ink-900);border-radius:var(--radius-md);">
-                <div style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:700;color:var(--bronze-300);" id="stat-voz">0</div>
-                <div style="font-size:var(--text-xs);color:var(--ink-400);margin-top:var(--space-1);">por voz</div>
-              </div>
-              <div style="text-align:center;padding:var(--space-3);background:var(--ink-900);border-radius:var(--radius-md);">
-                <div style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:700;color:var(--bronze-300);" id="stat-servicios">0</div>
-                <div style="font-size:var(--text-xs);color:var(--ink-400);margin-top:var(--space-1);">servicios</div>
-              </div>
-              <div style="text-align:center;padding:var(--space-3);background:var(--ink-900);border-radius:var(--radius-md);">
-                <div style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:700;color:var(--bronze-300);" id="stat-proyectos">0</div>
-                <div style="font-size:var(--text-xs);color:var(--ink-400);margin-top:var(--space-1);">proyectos</div>
+        <div class="highlight-box reveal">
+          <h3>Resultado prático</h3>
+          <p>Quando alguém busca "reformas de baño en Sabadell", "reforma integral Eixample" ou "paleta en Badalona", o site tem uma página específica, rápida e rica em dados para ranquear.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONVERSÃO -->
+    <section class="section section-dark" id="conversao">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Conversão</span>
+          <h2 class="section-title">Caminhos para gerar orçamento</h2>
+          <p class="section-subtitle">Múltiplos pontos de contato otimizados.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="message-circle" class="w-6 h-6"></i></div>
+            <h3>WhatsApp fixo</h3>
+            <p>Botão flutuante em todas as páginas com mensagem pré-preenchida. Um clique para falar com o Junior.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="clipboard-type" class="w-6 h-6"></i></div>
+            <h3>Orçamento inteligente</h3>
+            <p>SmartBudgetForm com passos, validação, autocomplete de cidade e envio organizado.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="star" class="w-6 h-6"></i></div>
+            <h3>Sistema de resenhas</h3>
+            <p>Galeria masonry, filtros, cards premium, verificação de cliente e formulário com preview ao vivo.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="phone" class="w-6 h-6"></i></div>
+            <h3>CTAs estratégicos</h3>
+            <p>Botões "Pedir presupuesto" no header, hero, serviços, bairros e final de cada página.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="euro" class="w-6 h-6"></i></div>
+            <h3>Tabela de preços</h3>
+            <p>Preços médios por tipo de reforma com disclaimers e botão para orçamento personalizado.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="badge-check" class="w-6 h-6"></i></div>
+            <h3>Prova social</h3>
+            <p>Avaliações reais, selo "Cliente verificado", estatísticas e galeria de obras.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOTOS -->
+    <section class="section section-light" id="fotos">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="camera" class="w-4 h-4"></i> Fotos e Galerias</span>
+          <h2 class="section-title">Auditoria e organização de imagens</h2>
+          <p class="section-subtitle">Toda foto boa será usada. Duplicatas e imagens ruins serão eliminadas.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="hard-drive" class="w-6 h-6"></i></div>
+            <h3>Auditoria completa</h3>
+            <p><strong>188 arquivos</strong> auditados entre repo, fotos-organizadas e fotos-originais. Identificadas <strong>55 duplicatas exatas</strong> e <strong>15 fotos de telhado/impermeabilização</strong>.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="image-plus" class="w-6 h-6"></i></div>
+            <h3>Fotos adicionadas</h3>
+            <p><strong>55 fotos únicas</strong> importadas para o site, todas com descrição em espanhol, categoria, fase e variações otimizadas.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <h3>Total catalogado</h3>
+            <p><strong>87 fotos</strong> no metadata.json (32 originais + 55 novas), totalizando <strong>261 arquivos WebP/JPG</strong> com thumb, gallery e hero.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="layout-grid" class="w-6 h-6"></i></div>
+            <h3>Categorias cobertas</h3>
+            <p>Baños (55), Exteriores (17), Suelos (5), Demolição/obra (5), Cocinas (3) e Pisos (2). Galerias de serviços mais completas.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="shield" class="w-6 h-6"></i></div>
+            <h3>Telas e impermeabilização</h3>
+            <p>Fotos de manta asfáltica, aislamiento de terraço e trabajos de soplete agora aparecem na galeria EXTERIOR / DURANTE.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="trash-2" class="w-6 h-6"></i></div>
+            <h3>Limpeza</h3>
+            <p>Duplicatas mantidas apenas como representantes. Arquivos ruins, screenshots e não-relevantes foram descartados da importação.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap mt-8 reveal">
+          <table>
+            <thead>
+              <tr>
+                <th>Local</th>
+                <th>Total auditado</th>
+                <th>Importado</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>public/fotos/ (originais)</td>
+                <td>64</td>
+                <td>32 fotos catalogadas</td>
+                <td>Concluído</td>
+              </tr>
+              <tr>
+                <td>fotos-organizadas/</td>
+                <td>77</td>
+                <td>55 fotos únicas</td>
+                <td>Concluído</td>
+              </tr>
+              <tr>
+                <td>fotos-originais/ (não organizadas)</td>
+                <td>47</td>
+                <td>0 (todas duplicatas ou screenshots)</td>
+                <td>Concluído</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="highlight-box reveal">
+          <h3>Ação concluída</h3>
+          <p>Todas as fotos boas e únicas foram catalogadas no metadata.json com categoria (BANO, EXTERIOR, SUELO, DEMO, COCINA, PISO), fase (DESPUES, DURANTE, DETALLE), descrição em espanhol e variações otimizadas em WebP. As galerias de serviços agora contam com muito mais conteúdo real de obras, incluindo terrazas, impermeabilização e detalhes de acabamento.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTEÚDO E DESIGN -->
+    <section class="section section-dark" id="design">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="palette" class="w-4 h-4"></i> Conteúdo e Design</span>
+          <h2 class="section-title">Identidade visual premium</h2>
+          <p class="section-subtitle">Design acolhedor, profissional e artesanal.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="paintbrush" class="w-6 h-6"></i></div>
+            <h3>Paleta de cores</h3>
+            <p>Terracota (#c45f3c), offwhite (#f7f4ef), carbon (#1a1a1a) e cinzas. Cores que transmitem confiança.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="type" class="w-6 h-6"></i></div>
+            <h3>Tipografia</h3>
+            <p>Playfair Display para títulos e Inter para textos. Combinação premium e legível.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="images" class="w-6 h-6"></i></div>
+            <h3>Galerias reais</h3>
+            <p>Fotos originais organizadas por categoria: banhos, cozinhas, pisos, integrais, detalhes.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="smartphone" class="w-6 h-6"></i></div>
+            <h3>Responsivo completo</h3>
+            <p>Layout adaptado para mobile, tablet e desktop. Menu mobile, grids ajustáveis, touch-friendly.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="sparkles" class="w-6 h-6"></i></div>
+            <h3>Animações refinadas</h3>
+            <p>Reveal no scroll, hover suaves, loading states e transições de galeria sem exageros.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="cloud" class="w-6 h-6"></i></div>
+            <h3>Cloudinary</h3>
+            <p>Imagens de resenhas e avatares otimizadas automaticamente em tamanho e formato.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECNOLOGIA -->
+    <section class="section section-light" id="tecnologia">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="cpu" class="w-4 h-4"></i> Tecnologia</span>
+          <h2 class="section-title">Stack moderno e escalável</h2>
+          <p class="section-subtitle">Arquitetura profissional com deploy automatizado.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="hexagon" class="w-6 h-6"></i></div>
+            <h3>Next.js 15 + React 19</h3>
+            <p>App Router, Server Components, geração estática e otimização automática.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="file-code" class="w-6 h-6"></i></div>
+            <h3>TypeScript</h3>
+            <p>Tipagem em dados, schemas, componentes e SEO. Mais segurança para escalar.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="wind" class="w-6 h-6"></i></div>
+            <h3>Tailwind CSS</h3>
+            <p>Classes utilitárias, tema customizado, design tokens e responsividade.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="rocket" class="w-6 h-6"></i></div>
+            <h3>Vercel + GitHub</h3>
+            <p>Deploy automático a cada push. Preview, cache global, edge network e HTTPS.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <h3>Cloudinary</h3>
+            <p>Upload, otimização e entrega de mídia. Base centralizada para fotos e avatares.</p>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
+            <h3>Qualidade</h3>
+            <p>ESLint, Prettier, componentes reutilizáveis e schemas validados.</p>
+          </div>
+        </div>
+
+        <div class="accordion mt-8" id="accordion-tech">
+          <div class="accordion-item reveal">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span>Fluxo de desenvolvimento e deploy</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              <div class="accordion-content-inner">
+                <ol>
+                  <li>Código editado e versionado no GitHub</li>
+                  <li>Cada push dispara build na Vercel</li>
+                  <li>Deploy automático em jr-reformas.com</li>
+                  <li>Imagens servidas pelo Cloudinary com cache global</li>
+                  <li>Sitemap atualizado automaticamente</li>
+                </ol>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <div id="review-warnings" style="margin-top:var(--space-4);display:none;">
-            <div style="display:flex;align-items:center;gap:var(--space-2);padding:var(--space-3);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-md);font-size:var(--text-sm);color:var(--signal-amber);">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span id="review-warnings-text"></span>
-            </div>
-          </div><div class="field">
-          <label class="field-label">Email de contacto <span class="optional">para que Nexo Digital pueda contactaros</span></label>
-          <input type="email" class="input" id="f-contacto-email" placeholder="matheus@hdmindustrial.es" data-key="contacto.email">
+    <!-- ROADMAP -->
+    <section class="section section-dark" id="roadmap">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="route" class="w-4 h-4"></i> Roadmap</span>
+          <h2 class="section-title">Próximos passos realistas</h2>
+          <p class="section-subtitle">Ajustes finos de performance, rastreamento e autoridade.</p>
         </div>
 
-        <div class="field">
-          <label class="field-label">Nombre y cargo</label>
-          <input type="text" class="input" id="f-contacto-nombre" placeholder="Matheus — Director Comercial" data-key="contacto.nombre">
+        <div class="features-grid">
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="bar-chart-3" class="w-6 h-6"></i></div>
+            <h3>Analytics e conversão</h3>
+            <p>Google Analytics 4, Search Console, eventos de conversão nos botões e formulários, heatmaps.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="link" class="w-6 h-6"></i></div>
+            <h3>Backlinks e parcerias</h3>
+            <p>Fornecedores, diretórios locais, blogs e perfis de negócio para fortalecer autoridade.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="map-pin" class="w-6 h-6"></i></div>
+            <h3>Google Business Profile</h3>
+            <p>Otimização completa: fotos, descrição, serviços, posts regulares e respostas a avaliações.</p>
+          </div>
+          <div class="feature-box feature-box-dark reveal">
+            <div class="feature-icon"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <h3>Galeria completa</h3>
+            <p>Catalogar e publicar todas as fotos boas, eliminando duplicatas e preenchendo galerias.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAREFAS PENDENTES -->
+    <section class="section section-light" id="pendentes">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="list-checks" class="w-4 h-4"></i> Tarefas pendentes</span>
+          <h2 class="section-title">O que ainda falta para terminar</h2>
+          <p class="section-subtitle">Itens técnicos e não-técnicos que precisam de atenção.</p>
         </div>
 
-        <div class="field">
-          <label class="field-label">Notas adicionales <span class="optional">cualquier cosa que no haya cabido</span></label>
-          <textarea class="textarea" id="f-notas" placeholder="Queremos añadir que..." data-key="contacto.notas" style="min-height:80px"></textarea>
-            </div>
-
-        <div style="text-align:center;padding:var(--space-8) 0;">
-          <p style="color:var(--ink-300);font-size:var(--text-md);line-height:var(--leading-relaxed);max-width:520px;margin:0 auto var(--space-6);">
-            <strong style="color:var(--bronze-300)">Tu información está lista para guardar.</strong><br>
-            Puedes exportar una copia completa con todas tus respuestas, transcripciones y grabaciones de voz.
-          </p>
-          <button type="button" class="btn btn-primary" onclick="exportPackage()" style="font-size:var(--text-md);padding:var(--space-4) var(--space-8)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Guardar una copia
-          </button>
+        <div class="features-grid">
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="google" class="w-6 h-6"></i></div>
+            <h3>Google (não-programação)</h3>
+            <ul>
+              <li>Configurar Google Search Console</li>
+              <li>Configurar Google Analytics 4</li>
+              <li>Otimizar Google Business Profile</li>
+              <li>Solicitar avaliações no Google</li>
+            </ul>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="camera" class="w-6 h-6"></i></div>
+            <h3>Fotos e conteúdo</h3>
+            <ul>
+              <li><s>Finalizar auditoria visual das fotos</s> — concluído (87 catalogadas)</li>
+              <li><s>Catalogar fotos boas no metadata.json</s> — concluído (55 adicionadas)</li>
+              <li>Associar fotos às resenhas sem imagem</li>
+              <li>Revisar textos das landings</li>
+            </ul>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="clipboard-list" class="w-6 h-6"></i></div>
+            <h3>Formulários</h3>
+            <ul>
+              <li>Testar envio de orçamento em produção</li>
+              <li>Testar envio de resenha com foto</li>
+              <li>Confirmar recebimento de e-mails</li>
+            </ul>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="link-2" class="w-6 h-6"></i></div>
+            <h3>SEO e autoridade</h3>
+            <ul>
+              <li>Cadastrar em diretórios locais</li>
+              <li>Conseguir backlinks de fornecedores</li>
+              <li>Criar posts no Google Business</li>
+            </ul>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="smartphone" class="w-6 h-6"></i></div>
+            <h3>Validação mobile</h3>
+            <ul>
+              <li>Testar todas as páginas no celular</li>
+              <li>Verificar velocidade no PageSpeed</li>
+              <li>Confirmar WhatsApp em todas as páginas</li>
+            </ul>
+          </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
+            <h3>Legal e conformidade</h3>
+            <ul>
+              <li>Revisar aviso legal e políticas</li>
+              <li>Confirmar cookie banner se necessário</li>
+              <li>Verificar dados de contato e endereço</li>
+            </ul>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-    </div>
+    <!-- CTA FINAL -->
+    <section class="cta-section">
+      <div class="container">
+        <h2>Resumo executivo</h2>
+        <p>O site do <strong>Junior Reformas</strong> deixou de ser uma página simples e virou uma plataforma completa de presença digital: SEO local, prova social, formulários inteligentes, galerias reais, multilíngue e deploy automatizado.</p>
+        <p><strong>Tudo pronto para escalar e converter.</strong></p>
+        <a href="#" class="btn btn-primary" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+          <i data-lucide="arrow-up" class="w-4 h-4"></i>
+          Voltar ao topo
+        </a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <p><strong>Relatório técnico — Jr-Reformas</strong></p>
+        <p>Site: <a href="https://jr-reformas.com" target="_blank">jr-reformas.com</a></p>
+        <p>Equipe Nexo Digital · Gerado em agosto de 2026</p>
+      </div>
+    </footer>
   </main>
-</div>
 
-<div class="action-bar">
-  <button type="button" class="btn btn-secondary" onclick="saveProgress()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar progreso</button>
-  <button type="button" class="btn btn-secondary" onclick="exportMarkdown()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Exportar Markdown</button>
-  <button type="button" class="btn btn-secondary" onclick="window.print()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir / PDF</button>
-</div>
+  <script>
+    // Inicializa ícones Lucide
+    lucide.createIcons();
 
-<script>
-const STATE = {
-  data: {},
-  counters: { servicios: 0, perfiles: 0, sectores: 0, proyectos: 0 },
-  schemaVersion: '4.1',
-  formVersion: 'hdm-discovery-v4-single',
-  language: 'es-ES',
-  createdAt: null,
-  updatedAt: null
-};
+    // Accordion
+    function toggleAccordion(trigger) {
+      const item = trigger.parentElement;
+      const content = item.querySelector('.accordion-content');
+      const icon = trigger.querySelector('.accordion-icon');
+      const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
 
-const LS_KEY = 'hdm_discovery_v4_single';
+      document.querySelectorAll('.accordion-content').forEach(c => {
+        c.style.maxHeight = '0px';
+        c.parentElement.querySelector('.accordion-icon').textContent = '+';
+      });
 
-function initChips() {
-  document.querySelectorAll('.chip-grid').forEach(grid => {
-    grid.addEventListener('click', e => {
-      const chip = e.target.closest('.chip');
-      if (!chip) return;
-      chip.classList.toggle('selected');
-      syncChips(grid);
-    });
-  });
-}
-function syncChips(grid) {
-  const hidden = findHiddenForChips(grid);
-  if (!hidden) return;
-  const vals = Array.from(grid.querySelectorAll('.chip.selected')).map(c => c.dataset.value);
-  hidden.value = JSON.stringify(vals);
-  triggerAutosave();
-}
-function findHiddenForChips(grid) {
-  let el = grid;
-  while (el = el.nextElementSibling) { if (el.tagName === 'INPUT' && el.type === 'hidden') return el; }
-  return grid.parentElement.querySelector('input[type="hidden"]');
-}
-function addCustomChip(groupId) {
-  const input = document.getElementById('custom-' + groupId);
-  const val = input.value.trim();
-  if (!val) return;
-  const grid = document.getElementById('chips-' + groupId);
-  const chip = document.createElement('span');
-  chip.className = 'chip selected';
-  chip.dataset.value = val;
-  chip.innerHTML = val + ' <svg class="chip-check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  grid.appendChild(chip);
-  input.value = '';
-  syncChips(grid);
-}
-
-function initToggles() {
-  document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const group = btn.dataset.toggle;
-      document.querySelectorAll('.toggle-btn[data-toggle="' + group + '"]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const hidden = document.getElementById('f-' + group);
-      if (hidden) hidden.value = btn.dataset.value;
-      const block = document.getElementById('cond-' + group);
-      if (block) block.classList.toggle('visible', btn.dataset.value === 'si');
-      triggerAutosave();
-    });
-  });
-}
-
-function setToggle(btn, val) {
-  const row = btn.closest('.toggle-row');
-  row.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const hidden = row.nextElementSibling;
-  if (hidden && hidden.type === 'hidden') hidden.value = val;
-  triggerAutosave();
-}
-
-function esc(s) { return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function sel(a, b) { return a === b ? 'selected' : ''; }
-
-function addServicio(data) {
-  STATE.counters.servicios++;
-  const n = STATE.counters.servicios;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.dataset.sid = n;
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">SVC-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre del servicio</label><input type="text" class="input s-nombre" placeholder="Mantenimiento industrial" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">¿Qué incluye?</label><textarea class="textarea s-incluye" placeholder="Realizamos..." style="min-height:70px">' + esc(data?.incluye) + '</textarea></div><div class="field"><label class="field-label">¿Qué tipo de trabajos hacéis?</label><input type="text" class="input s-tipo" placeholder="Ej: Soldadura TIG, montaje de estructuras..." value="' + esc(data?.tipo) + '"></div><div class="field"><label class="field-label">¿En qué situaciones suele necesitarlo el cliente?</label><textarea class="textarea s-situacion" placeholder="Cuando..." style="min-height:60px">' + esc(data?.situacion) + '</textarea></div><div class="field"><label class="field-label">Modalidad</label><select class="select s-modalidad"><option value="">Seleccionar...</option><option value="ejecutamos" ' + sel(data?.modalidad,'ejecutamos') + '>Ejecutamos el trabajo</option><option value="profesionales" ' + sel(data?.modalidad,'profesionales') + '>Proporcionamos profesionales</option><option value="ambas" ' + sel(data?.modalidad,'ambas') + '>Ambas</option><option value="otro" ' + sel(data?.modalidad,'otro') + '>Otro</option></select></div><div class="field"><label class="field-label">¿Cómo suele pedir un cliente este servicio?</label><textarea class="textarea s-lenguaje" placeholder="Necesitamos soldadores para una parada industrial..." style="min-height:60px">' + esc(data?.lenguaje) + '</textarea></div><div class="field"><label class="field-label">¿Hay otra forma de llamarlo?</label><input type="text" class="input s-alias" placeholder="También lo conocemos como..." value="' + esc(data?.alias) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">¿Potenciar en la web?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.potenciar==='si'?'active':'') + '" onclick="setToggle(this,\'si\')">Sí</button><button type="button" class="toggle-btn ' + (data?.potenciar==='no'?'active':'') + '" onclick="setToggle(this,\'no\')">No</button></div><input type="hidden" class="s-potenciar" value="' + esc(data?.potenciar) + '"></div></div>';
-  document.getElementById('servicios-list').appendChild(card);
-  triggerAutosave();
-}
-
-function addPerfil(data) {
-  STATE.counters.perfiles++;
-  const n = STATE.counters.perfiles;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">PRF-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre / Especialidad</label><input type="text" class="input p-nombre" placeholder="Ej: Soldador TIG certificado" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">Certificaciones <span class="optional">opcional</span></label><input type="text" class="input p-cert" placeholder="Certificaciones relevantes" value="' + esc(data?.cert) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">Experiencia <span class="optional">opcional</span></label><input type="text" class="input p-exp" placeholder="Años de experiencia, tipo de obra..." value="' + esc(data?.exp) + '"></div></div>';
-  document.getElementById('perfiles-list').appendChild(card);
-  triggerAutosave();
-}
-
-function addSector(data) {
-  STATE.counters.sectores++;
-  const n = STATE.counters.sectores;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">SEC-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Sector</label><input type="text" class="input sc-nombre" placeholder="Ej: Petroquímica, naval, energía..." value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">¿Qué tipo de trabajo realizáis allí?</label><textarea class="textarea sc-trabajo" placeholder="En este sector solemos..." style="min-height:60px">' + esc(data?.trabajo) + '</textarea></div><div class="field"><label class="field-label">¿Qué experiencia tenéis?</label><textarea class="textarea sc-exp" placeholder="Llevamos X años trabajando..." style="min-height:60px">' + esc(data?.exp) + '</textarea></div><div class="field" style="margin-bottom:0"><label class="field-label">¿Mostrar proyectos de este sector?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.mostrar==='si'?'active':'') + '" onclick="setToggle(this,\'si\')">Sí</button><button type="button" class="toggle-btn ' + (data?.mostrar==='no'?'active':'') + '" onclick="setToggle(this,\'no\')">No</button></div><input type="hidden" class="sc-mostrar" value="' + esc(data?.mostrar) + '"></div></div>';
-  document.getElementById('sectores-list').appendChild(card);
-  triggerAutosave();
-}
-
-function addProyecto(data) {
-  STATE.counters.proyectos++;
-  const n = STATE.counters.proyectos;
-  const card = document.createElement('div');
-  card.className = 'repeater-card';
-  card.innerHTML = '<div class="repeater-header"><span class="repeater-title">PRY-' + String(n).padStart(2,'0') + '</span><button type="button" class="repeater-remove" onclick="this.closest(\'.repeater-card\').remove();triggerAutosave()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button></div><div class="repeater-body"><div class="field"><label class="field-label">Nombre del proyecto</label><input type="text" class="input py-nombre" placeholder="Mantenimiento parada 2024 — Refinería X" value="' + esc(data?.nombre) + '"></div><div class="field"><label class="field-label">Cliente <span class="optional">opcional</span></label><input type="text" class="input py-cliente" placeholder="Nombre del cliente" value="' + esc(data?.cliente) + '"></div><div class="field"><label class="field-label">¿Publicar nombre del cliente?</label><div class="toggle-row"><button type="button" class="toggle-btn ' + (data?.publicar==='si'?'active':'') + '" onclick="setToggle(this,\'si\')">Sí</button><button type="button" class="toggle-btn ' + (data?.publicar==='no'?'active':'') + '" onclick="setToggle(this,\'no\')">No</button></div><input type="hidden" class="py-publicar" value="' + esc(data?.publicar) + '"></div><div class="field"><label class="field-label">Sector</label><input type="text" class="input py-sector" placeholder="Ej: Petroquímica" value="' + esc(data?.sector) + '"></div><div class="field"><label class="field-label">Localización</label><input type="text" class="input py-loc" placeholder="Ej: Tarragona" value="' + esc(data?.loc) + '"></div><div class="field"><label class="field-label">¿Qué necesitaba el cliente?</label><textarea class="textarea py-necesidad" placeholder="El cliente necesitaba..." style="min-height:60px">' + esc(data?.necesidad) + '</textarea></div><div class="field"><label class="field-label">¿Qué hizo HDM?</label><textarea class="textarea py-hdm" placeholder="HDM se encargó de..." style="min-height:60px">' + esc(data?.hdm) + '</textarea></div><div class="field"><label class="field-label">Resultado <span class="optional">opcional</span></label><textarea class="textarea py-resultado" placeholder="El resultado fue..." style="min-height:60px">' + esc(data?.resultado) + '</textarea></div><div class="field"><label class="field-label">Profesionales/equipos <span class="optional">opcional</span></label><input type="text" class="input py-equipo" placeholder="Ej: 4 soldadores + 2 técnicos" value="' + esc(data?.equipo) + '"></div><div class="field" style="margin-bottom:0"><label class="field-label">Duración <span class="optional">opcional</span></label><input type="text" class="input py-duracion" placeholder="Ej: 3 semanas" value="' + esc(data?.duracion) + '"></div></div>';
-  document.getElementById('proyectos-list').appendChild(card);
-  triggerAutosave();
-}
-
-function collectAllData() {
-  document.querySelectorAll('[data-key]').forEach(el => { STATE.data[el.dataset.key] = el.value; });
-
-  const servs = [];
-  document.querySelectorAll('#servicios-list .repeater-card').forEach(c => {
-    servs.push({
-      nombre: c.querySelector('.s-nombre')?.value || '',
-      incluye: c.querySelector('.s-incluye')?.value || '',
-      tipo: c.querySelector('.s-tipo')?.value || '',
-      situacion: c.querySelector('.s-situacion')?.value || '',
-      modalidad: c.querySelector('.s-modalidad')?.value || '',
-      lenguaje: c.querySelector('.s-lenguaje')?.value || '',
-      alias: c.querySelector('.s-alias')?.value || '',
-      potenciar: c.querySelector('.s-potenciar')?.value || ''
-    });
-  });
-  if (servs.length) STATE.data.servicios = servs;
-
-  const perfs = [];
-  document.querySelectorAll('#perfiles-list .repeater-card').forEach(c => {
-    perfs.push({ nombre: c.querySelector('.p-nombre')?.value || '', cert: c.querySelector('.p-cert')?.value || '', exp: c.querySelector('.p-exp')?.value || '' });
-  });
-  if (perfs.length) STATE.data.perfiles = perfs;
-
-  const secs = [];
-  document.querySelectorAll('#sectores-list .repeater-card').forEach(c => {
-    secs.push({ nombre: c.querySelector('.sc-nombre')?.value || '', trabajo: c.querySelector('.sc-trabajo')?.value || '', exp: c.querySelector('.sc-exp')?.value || '', mostrar: c.querySelector('.sc-mostrar')?.value || '' });
-  });
-  if (secs.length) STATE.data.sectores = secs;
-
-  const proys = [];
-  document.querySelectorAll('#proyectos-list .repeater-card').forEach(c => {
-    proys.push({
-      nombre: c.querySelector('.py-nombre')?.value || '', cliente: c.querySelector('.py-cliente')?.value || '',
-      publicar: c.querySelector('.py-publicar')?.value || '', sector: c.querySelector('.py-sector')?.value || '',
-      loc: c.querySelector('.py-loc')?.value || '', necesidad: c.querySelector('.py-necesidad')?.value || '',
-      hdm: c.querySelector('.py-hdm')?.value || '', resultado: c.querySelector('.py-resultado')?.value || '',
-      equipo: c.querySelector('.py-equipo')?.value || '', duracion: c.querySelector('.py-duracion')?.value || ''
-    });
-  });
-  if (proys.length) STATE.data.proyectos = proys;
-}
-
-function saveProgress() {
-  collectAllData();
-  STATE.updatedAt = new Date().toISOString();
-  const payload = {
-    schemaVersion: STATE.schemaVersion,
-    formVersion: STATE.formVersion,
-    language: STATE.language,
-    createdAt: STATE.createdAt,
-    updatedAt: STATE.updatedAt,
-    data: STATE.data
-  };
-  localStorage.setItem(LS_KEY, JSON.stringify(payload));
-  const pill = document.getElementById('autosavePill');
-  const text = document.getElementById('autosaveText');
-  pill.className = 'autosave-pill saved';
-  text.textContent = 'Guardado';
-  setTimeout(() => { pill.className = 'autosave-pill'; text.textContent = 'Guardado'; }, 2000);
-}
-
-function hasSavedSession() {
-  const raw = localStorage.getItem(LS_KEY);
-  if (!raw) return false;
-  try {
-    const saved = JSON.parse(raw);
-    return saved.data && Object.keys(saved.data).length > 0;
-  } catch { return false; }
-}
-
-function offerSessionRecovery() {
-  if (!hasSavedSession()) return false;
-  const choice = confirm('Hemos encontrado una respuesta guardada.\n\n¿Quieres CONTINUAR donde la dejaste?\n(Cancelar = empezar de nuevo)');
-  if (choice) {
-    loadStorage();
-    return true;
-  } else {
-    if (confirm('¿Seguro que quieres empezar de nuevo? Se borrará la información guardada.')) {
-      localStorage.removeItem(LS_KEY);
-      clearAllData();
-    } else {
-      loadStorage();
-      return true;
-    }
-  }
-  return false;
-}
-
-function clearAllData() {
-  STATE.data = {};
-  STATE.counters = { servicios: 0, perfiles: 0, sectores: 0, proyectos: 0 };
-  document.querySelectorAll('textarea, input[type="text"], input[type="email"]').forEach(el => { if (el.id && el.id.startsWith('f-')) el.value = ''; });
-  document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
-  document.querySelectorAll('input[type="hidden"]').forEach(h => h.value = '');
-  document.querySelectorAll('.repeater-list').forEach(list => list.innerHTML = '');
-  updateSummary();
-}
-
-function loadStorage() {
-  const raw = localStorage.getItem(LS_KEY);
-  if (!raw) return;
-  try {
-    const saved = JSON.parse(raw);
-    STATE.data = saved.data || {};
-    if (saved.createdAt) STATE.createdAt = saved.createdAt;
-    populate();
-  } catch(e) { console.error(e); }
-}
-
-function populate() {
-  const d = STATE.data;
-  document.querySelectorAll('[data-key]').forEach(el => {
-    const v = d[el.dataset.key];
-    if (v !== undefined) el.value = v;
-  });
-
-  document.querySelectorAll('input[type="hidden"][data-key]').forEach(h => {
-    const v = d[h.dataset.key];
-    if (!v) return;
-    try {
-      const vals = JSON.parse(v);
-      if (!Array.isArray(vals)) return;
-      const grid = h.previousElementSibling;
-      if (grid && grid.classList.contains('chip-grid')) {
-        grid.querySelectorAll('.chip').forEach(c => c.classList.toggle('selected', vals.includes(c.dataset.value)));
+      if (!isOpen) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.textContent = '−';
       }
-    } catch(e) {}
-  });
-
-  document.querySelectorAll('input[type="hidden"][data-key]').forEach(h => {
-    const v = d[h.dataset.key];
-    if (!v) return;
-    const row = h.previousElementSibling;
-    if (row && row.classList.contains('toggle-row')) {
-      row.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.value === v));
     }
-    const cond = document.getElementById('cond-' + h.id.replace('f-',''));
-    if (cond) cond.classList.toggle('visible', v === 'si');
-  });
 
-  if (d.servicios) d.servicios.forEach(s => addServicio(s));
-  if (d.perfiles) d.perfiles.forEach(p => addPerfil(p));
-  if (d.sectores) d.sectores.forEach(s => addSector(s));
-  if (d.proyectos) d.proyectos.forEach(p => addProyecto(p));
-}
-
-let autosaveTimer;
-function initAutosave() {
-  document.addEventListener('input', () => triggerAutosave());
-}
-function triggerAutosave() {
-  const pill = document.getElementById('autosavePill');
-  const text = document.getElementById('autosaveText');
-  pill.className = 'autosave-pill saving';
-  text.textContent = 'Guardando...';
-  clearTimeout(autosaveTimer);
-  autosaveTimer = setTimeout(() => saveProgress(), 1200);
-}
-
-function updateSummary() {
-  collectAllData();
-  const d = STATE.data;
-
-  const checks = {
-    empresa: !!(d['empresa.explicacion'] || d['empresa.necesidad']),
-    servicios: !!(d.servicios?.length),
-    audiencia: !!(d['audiencia.problema']),
-    locacion: !!(d['locacion.actual']),
-    capacidad: !!(d['capacidad.certificaciones'] || d['capacidad.diferencial']),
-    proyectos: !!(d.proyectos?.length),
-    web: !!(d['web.problemas'] || d['web.objetivos'])
-  };
-
-  document.querySelectorAll('#summary-grid .summary-item').forEach(item => {
-    const section = item.dataset.section;
-    item.classList.toggle('complete', !!checks[section]);
-  });
-
-  let respuestas = 0;
-  document.querySelectorAll('[data-key]').forEach(el => { if (el.value.trim()) respuestas++; });
-  document.getElementById('stat-respuestas').textContent = respuestas;
-  document.getElementById('stat-voz').textContent = 0;
-  document.getElementById('stat-servicios').textContent = d.servicios?.length || 0;
-  document.getElementById('stat-proyectos').textContent = d.proyectos?.length || 0;
-
-  const emptyCount = Object.keys(checks).filter(k => !checks[k]).length;
-  const warningsEl = document.getElementById('review-warnings');
-  const warningsText = document.getElementById('review-warnings-text');
-  if (emptyCount > 0) {
-    warningsEl.style.display = 'block';
-    warningsText.textContent = emptyCount + ' sección' + (emptyCount > 1 ? 'es' : '') + ' sin completar. Puedes guardar igualmente.';
-  } else {
-    warningsEl.style.display = 'none';
-  }
-}
-
-function exportMarkdown() {
-  collectAllData();
-  const d = STATE.data;
-  let md = `# HDM INDUSTRIAL — Website Discovery Blueprint
-
-> Generado por HDM Industrial Discovery Engine v4
-> Schema: ${STATE.schemaVersion} | Form: ${STATE.formVersion}
-> Fecha: ${new Date().toLocaleDateString('es-ES')}
-
----
-
-## 01 — LA EMPRESA
-
-**Explicación:** ${val(d,'empresa.explicacion')}
-
-**Impacto:** ${val(d,'empresa.impacto')}
-
-**Necesidad:** ${val(d,'empresa.necesidad')}
-
-**Años:** ${val(d,'empresa.anos')} | **Equipo:** ${val(d,'empresa.equipo')} | **Números:** ${val(d,'empresa.numeros')}
-
-`;
-  md += `---
-
-## 02 — SERVICIOS
-
-`;
-  (d.servicios || []).forEach((s, i) => {
-    md += `### ${s.nombre || 'Servicio '+(i+1)}
-
-`;
-    md += `- **Qué incluye:** ${s.incluye || '_'}
-`;
-    md += `- **Tipo:** ${s.tipo || '_'}
-`;
-    md += `- **Situación:** ${s.situacion || '_'}
-`;
-    md += `- **Modalidad:** ${s.modalidad || '_'}
-`;
-    md += `- **Lenguaje cliente:** ${s.lenguaje || '_'}
-`;
-    md += `- **Alias:** ${s.alias || '_'}
-`;
-    md += `- **Potenciar:** ${s.potenciar || '_'}
-
-`;
-  });
-  md += `### Perfiles
-
-`;
-  (d.perfiles || []).forEach((p, i) => { md += `${i+1}. **${p.nombre || '_'}** — Cert: ${p.cert || 'N/A'} — Exp: ${p.exp || 'N/A'}
-`; });
-  md += `
-**Capacidad diferencial:** ${val(d,'capacidad.diferencial')}
-
-`;
-  md += `---
-
-## 03 — AUDIENCIA
-
-**Tipo empresas:** ${jval(d,'audiencia.tipoEmpresas')}
-
-**Decisor:** ${jval(d,'audiencia.decisor')}
-
-**Problema:** ${val(d,'audiencia.problema')}
-
-**Journey:** ${val(d,'audiencia.journey')}
-
-**Info decisión:** ${jval(d,'audiencia.infoDecision')}
-
-**Objeciones:** ${val(d,'audiencia.objeciones')}
-
-**Preguntas frecuentes:** ${val(d,'audiencia.preguntas')}
-
-`;
-  md += `---
-
-## 04 — LOCALIZACIÓN
-
-**Actual:** ${val(d,'locacion.actual')}
-
-**Objetivo:** ${val(d,'locacion.objetivo')}
-
-**Desplazamiento:** ${val(d,'locacion.desplazamiento')} ${d['locacion.desplazamiento']==='si'?'— Hasta: '+val(d,'locacion.desplazamientoHasta'):''}
-
-`;
-  if (d.sectores?.length) { md += `### Sectores
-
-`; d.sectores.forEach((s, i) => { md += `${i+1}. **${s.nombre}** — ${s.trabajo || ''} (Mostrar: ${s.mostrar || ''})
-`; }); md += `
-`; }
-  md += `---
-
-## 05 — CAPACIDAD
-
-**Certificaciones:** ${val(d,'capacidad.certificaciones')}
-
-**Seguridad/Calidad:** ${val(d,'capacidad.seguridadCalidad')}
-
-**Doc. pública:** ${val(d,'capacidad.docPublica')}
-
-**Diferencial:** ${val(d,'capacidad.diferencial')}
-
-**Valoran clientes:** ${val(d,'capacidad.clientesValoran')}
-
-**Trabajo exigente:** ${val(d,'capacidad.trabajoExigente')}
-
-`;
-  md += `---
-
-## 06 — PROYECTOS
-
-`;
-  (d.proyectos || []).forEach((p, i) => {
-    md += `### ${p.nombre || 'Proyecto '+(i+1)}
-
-`;
-    md += `- **Cliente:** ${p.cliente || 'N/A'} (Publicar: ${p.publicar || 'N/A'})
-`;
-    md += `- **Sector:** ${p.sector || 'N/A'} — **Loc:** ${p.loc || 'N/A'}
-`;
-    md += `- **Necesidad:** ${p.necesidad || 'N/A'}
-`;
-    md += `- **HDM hizo:** ${p.hdm || 'N/A'}
-`;
-    md += `- **Resultado:** ${p.resultado || 'N/A'}
-`;
-    md += `- **Equipo:** ${p.equipo || 'N/A'} — **Duración:** ${p.duracion || 'N/A'}
-
-`;
-  });
-  md += `**Clientes públicos:** ${val(d,'proyectos.clientesPublicos')}
-
-`;
-  md += `---
-
-## 07 — NUEVA WEB
-
-**Problemas actuales:** ${val(d,'web.problemas')}
-
-**Objetivos:** ${jval(d,'web.objetivos')}
-
-**CTA principal:** ${val(d,'web.ctaPrincipal')}
-
-**Contactos:** ${jval(d,'web.contacto')}
-
-**Reclutamiento:** ${val(d,'web.reclutamiento')}
-`;
-  if (d['web.reclutamiento'] === 'si') { md += `- Perfiles: ${val(d,'web.reclutamientoPerfiles')}
-`; md += `- Info candidato: ${val(d,'web.reclutamientoInfo')}
-`; }
-  md += `
-**Idiomas:** ${jval(d,'web.idiomas')}
-
-**Ref. Sparks:** ${val(d,'refs.sparks')}
-
-**Ref. Braga:** ${val(d,'refs.braga')}
-
-**Ref. Incaso:** ${val(d,'refs.incaso')}
-
-**Deseo percepción:** ${val(d,'refs.deseo')}
-
-**Material:** ${jval(d,'web.material')}
-
-**Restricciones:** ${val(d,'web.restricciones')}
-
-**Confidencial:** ${val(d,'web.confidencial')}
-
-`;
-  md += `---
-
-## 08 — CONTACTO
-
-**Email:** ${val(d,'contacto.email')}
-
-**Nombre:** ${val(d,'contacto.nombre')}
-
-**Notas:** ${val(d,'contacto.notas')}
-
-`;
-  md += `---
-
-## DATA MODEL (JSON)
-
-\`\`\`json
-${JSON.stringify(d, null, 2)}
-\`\`\`
-`;
-
-  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'HDM_Discovery_' + new Date().toISOString().split('T')[0] + '.md';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function val(d, k) { return d[k] || '_No respondido_'; }
-function jval(d, k) {
-  try { const a = JSON.parse(d[k] || '[]'); return Array.isArray(a) && a.length ? a.join(', ') : '_No respondido_'; }
-  catch { return d[k] || '_No respondido_'; }
-}
-
-async function exportPackage() {
-  collectAllData();
-
-  if (typeof JSZip === 'undefined') {
-    alert('JSZip no está disponible. Recarga la página e inténtalo de nuevo.');
-    return;
-  }
-
-  const zip = new JSZip();
-  const d = STATE.data;
-  const date = new Date().toISOString().split('T')[0];
-  const timestamp = new Date().toISOString();
-
-  const responses = [];
-  document.querySelectorAll('[data-key]').forEach((el, idx) => {
-    const key = el.dataset.key;
-    responses.push({
-      index: idx + 1,
-      questionId: key,
-      question: getQuestionLabel(key),
-      answer: el.value,
-      timestamp: Date.now()
-    });
-  });
-
-  const discoveryFolder = zip.folder('01-DISCOVERY');
-
-  const exportData = {
-    schemaVersion: STATE.schemaVersion,
-    formVersion: STATE.formVersion,
-    language: STATE.language,
-    createdAt: STATE.createdAt || timestamp,
-    updatedAt: timestamp,
-    exportedAt: timestamp,
-    responses: responses,
-    services: d.servicios || [],
-    profiles: d.perfiles || [],
-    sectors: d.sectores || [],
-    projects: d.proyectos || [],
-    metadata: {
-      totalResponses: responses.length,
-      typedResponses: responses.length
-    }
-  };
-
-  discoveryFolder.file('hdm-discovery.json', JSON.stringify(exportData, null, 2));
-
-  let md = `# HDM INDUSTRIAL — Website Discovery Blueprint\n\n> Schema: ${STATE.schemaVersion} | Form: ${STATE.formVersion}\n> Exportado: ${timestamp}\n\n---\n\n## Empresa\n\n${val(d,'empresa.explicacion')}\n\n## Servicios\n\n`;
-  (d.servicios || []).forEach((s, i) => { md += `${i+1}. **${s.nombre || '_'}** — ${s.incluye || ''}\n`; });
-  md += `\n## Proyectos\n\n`;
-  (d.proyectos || []).forEach((p, i) => { md += `${i+1}. **${p.nombre || '_'}** — ${p.hdm || ''}\n`; });
-  md += `\n## Contacto\n\n${val(d,'contacto.email')}\n`;
-  discoveryFolder.file('hdm-discovery.md', md);
-
-  zip.file('README.txt', `HDM Industrial — Discovery Export\n================================\nFecha: ${date}\nIdioma: ${STATE.language}\nSchema: ${STATE.schemaVersion}\nForm: ${STATE.formVersion}\n\nContenido:\n  01-DISCOVERY/    → Respuestas estructuradas (JSON + Markdown)\n\nEstadísticas:\n  Total respuestas: ${responses.length}\n\nPara análisis posterior, usa 01-DISCOVERY/hdm-discovery.json\n`);
-
-  const blob = await zip.generateAsync({ type: 'blob' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'HDM-Industrial-Discovery-' + date + '.zip';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function getQuestionLabel(key) {
-  const labels = {
-    'empresa.explicacion': '¿Cómo explicarías qué hace HDM Industrial?',
-    'empresa.impacto': '¿Qué debería entender alguien sobre HDM?',
-    'empresa.necesidad': '¿Qué suele necesitar un cliente de vosotros?',
-    'empresa.anos': '¿Cuántos años lleva HDM trabajando?',
-    'empresa.equipo': '¿Cuántas personas forman la empresa?',
-    'empresa.numeros': '¿Números que representen la capacidad de HDM?',
-    'capacidad.diferencial': '¿Qué puede hacer HDM que otros no?',
-    'audiencia.problema': '¿Qué problema tiene el cliente cuando os busca?',
-    'audiencia.journey': '¿Qué suele pasar antes de contactar con HDM?',
-    'audiencia.objeciones': '¿Qué dudas tienen los clientes?',
-    'audiencia.preguntas': '¿Qué os preguntan una y otra vez?',
-    'locacion.actual': '¿Dónde trabajáis actualmente?',
-    'locacion.objetivo': '¿Dónde queréis crecer?',
-    'locacion.desplazamiento': '¿Podéis desplazar equipos?',
-    'locacion.desplazamientoHasta': '¿Hasta dónde os desplazáis?',
-    'capacidad.certificaciones': '¿Qué certificaciones podéis demostrar?',
-    'capacidad.seguridadCalidad': '¿Estándares de seguridad y calidad?',
-    'capacidad.docPublica': '¿Documentación pública disponible?',
-    'capacidad.diferencial': '¿Por qué elegir HDM?',
-    'capacidad.clientesValoran': '¿Qué valoran vuestros clientes?',
-    'capacidad.trabajoExigente': '¿Trabajo más exigente realizado?',
-    'proyectos.clientesPublicos': '¿Clientes que podemos mostrar?',
-    'web.problemas': '¿Qué no funciona en la web actual?',
-    'web.objetivos': '¿Objetivos del nuevo sitio?',
-    'web.ctaPrincipal': '¿Acción principal del visitante?',
-    'web.contacto': '¿Tipos de contacto desde la web?',
-    'web.reclutamiento': '¿Captar profesionales?',
-    'web.reclutamientoPerfiles': '¿Perfiles que buscáis?',
-    'web.reclutamientoInfo': '¿Info que debe enviar un candidato?',
-    'refs.sparks': 'Referencia: sparksservice.com',
-    'refs.braga': 'Referencia: metalbraga.com',
-    'refs.incaso': 'Referencia: incasometal.com',
-    'refs.deseo': '¿Qué transmitir que hoy no transmitís?',
-    'web.material': 'Material disponible',
-    'web.idiomas': 'Idiomas de la web',
-    'web.restricciones': 'Restricciones de publicación',
-    'web.confidencial': 'Información confidencial',
-    'contacto.email': 'Email de contacto',
-    'contacto.nombre': 'Nombre y cargo',
-    'contacto.notas': 'Notas adicionales'
-  };
-  return labels[key] || key;
-}
-
-function initScrollSpy() {
-  const sections = document.querySelectorAll('.form-section');
-  const navItems = document.querySelectorAll('.nav-item');
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        navItems.forEach(item => {
-          item.classList.toggle('active', item.getAttribute('href') === '#' + id);
-        });
-      }
-    });
-  }, { rootMargin: '-20% 0px -80% 0px' });
-
-  sections.forEach(section => observer.observe(section));
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (!STATE.createdAt) STATE.createdAt = new Date().toISOString();
-  const recovered = offerSessionRecovery();
-  if (!recovered) STATE.createdAt = new Date().toISOString();
-  initChips();
-  initToggles();
-  initAutosave();
-  initScrollSpy();
-  updateSummary();
-});
-
-</script>
-
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
