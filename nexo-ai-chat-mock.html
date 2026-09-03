@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock — IA dentro do Chat (Luna + Tool Calling)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: #0b0f17; --bg-soft: #111827; --card: #151d2b; --card-border: #233047;
+    --brand: #0ea5e9; --brand-soft: rgba(14,165,233,.12);
+    --green: #22c55e; --green-soft: rgba(34,197,94,.12);
+    --amber: #f59e0b; --amber-soft: rgba(245,158,11,.12);
+    --red: #ef4444; --red-soft: rgba(239,68,68,.12);
+    --violet: #8b5cf6; --violet-soft: rgba(139,92,246,.12);
+    --text: #e5e9f0; --text-2: #94a3b8; --text-3: #64748b;
+    --mono: 'JetBrains Mono', monospace; --radius: 14px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  .container { max-width:1180px; margin:0 auto; padding:0 1.5rem; }
+  header.hero { padding:4rem 0 2.5rem; background:radial-gradient(ellipse 800px 400px at 20% -10%, rgba(14,165,233,.18), transparent), radial-gradient(ellipse 600px 300px at 90% 0%, rgba(139,92,246,.14), transparent); border-bottom:1px solid var(--card-border); }
+  .badge { display:inline-flex; align-items:center; gap:.45rem; font-size:.78rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--violet); background:var(--violet-soft); border:1px solid rgba(139,92,246,.3); padding:.35rem .8rem; border-radius:999px; margin-bottom:1.2rem; }
+  h1 { font-size:clamp(1.7rem,4vw,2.5rem); font-weight:800; letter-spacing:-.02em; }
+  h1 span { background:linear-gradient(90deg,var(--violet),var(--brand)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { color:var(--text-2); max-width:760px; margin-top:1rem; }
+  section { padding:3rem 0; border-bottom:1px solid rgba(35,48,71,.5); }
+  h2 { font-size:1.45rem; font-weight:700; display:flex; align-items:center; gap:.6rem; margin-bottom:.4rem; }
+  h2 i { width:22px; height:22px; color:var(--brand); }
+  .section-sub { color:var(--text-3); font-size:.92rem; margin-bottom:1.8rem; }
+  .pill { display:inline-flex; align-items:center; gap:.3rem; font-size:.72rem; font-weight:600; padding:.18rem .6rem; border-radius:999px; white-space:nowrap; }
+  .pill.ok { color:var(--green); background:var(--green-soft); border:1px solid rgba(34,197,94,.3); }
+  .pill.new { color:var(--brand); background:var(--brand-soft); border:1px solid rgba(14,165,233,.3); }
+  .pill.note { color:var(--violet); background:var(--violet-soft); border:1px solid rgba(139,92,246,.3); }
+  .pill.fix { color:var(--amber); background:var(--amber-soft); border:1px solid rgba(245,158,11,.3); }
+  .grid { display:grid; gap:1rem; }
+  .grid-2 { grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); }
+  .card { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); padding:1.4rem; }
+  .card h3 { font-size:.98rem; font-weight:600; margin-bottom:.9rem; display:flex; align-items:center; gap:.5rem; }
+  .card h3 i { width:17px; height:17px; color:var(--brand); }
+  table { width:100%; border-collapse:collapse; font-size:.88rem; }
+  th { text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); font-weight:600; padding:.55rem .75rem; border-bottom:1px solid var(--card-border); }
+  td { padding:.6rem .75rem; border-bottom:1px solid rgba(35,48,71,.5); vertical-align:top; }
+  .mono { font-family:var(--mono); font-size:.82rem; }
+  .callout { display:flex; gap:.8rem; padding:1rem 1.2rem; border-radius:var(--radius); font-size:.9rem; margin-top:1rem; }
+  .callout i { width:18px; height:18px; flex-shrink:0; margin-top:.15rem; }
+  .callout.info { background:var(--brand-soft); border:1px solid rgba(14,165,233,.3); color:#bae6fd; }
+  .callout.warn { background:var(--amber-soft); border:1px solid rgba(245,158,11,.3); color:#fde68a; }
+
+  /* ===== MOCK DO CHAT ===== */
+  .mock-wrap { display:grid; grid-template-columns:minmax(340px,430px) 1fr; gap:1.5rem; align-items:start; }
+  @media (max-width:900px) { .mock-wrap { grid-template-columns:1fr; } }
+  .phone { background:#f8fafc; border:1px solid var(--card-border); border-radius:22px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.5); position:sticky; top:1rem; }
+  .phone-head { background:linear-gradient(90deg,#0ea5e9,#6366f1); padding:.9rem 1rem; display:flex; align-items:center; gap:.7rem; }
+  .phone-head .avatar { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; color:#fff; }
+  .phone-head .t { color:#fff; font-size:.85rem; font-weight:600; line-height:1.25; }
+  .phone-head .s { color:rgba(255,255,255,.75); font-size:.68rem; display:flex; align-items:center; gap:.3rem; }
+  .luna-badge { margin-left:auto; background:rgba(255,255,255,.18); color:#fff; font-size:.62rem; font-weight:600; padding:.25rem .55rem; border-radius:999px; display:flex; align-items:center; gap:.3rem; }
+  .thread { padding:1rem .9rem; display:flex; flex-direction:column; gap:.7rem; min-height:480px; max-height:560px; overflow-y:auto; }
+  .msg { max-width:88%; border-radius:14px; padding:.55rem .75rem; font-size:.8rem; line-height:1.5; color:#1e293b; }
+  .msg.user { align-self:flex-end; background:#0ea5e9; color:#fff; border-bottom-right-radius:4px; }
+  .msg.luna { align-self:flex-start; background:#fff; border:1px solid #e2e8f0; border-bottom-left-radius:4px; }
+  .msg .who { font-size:.6rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:.2rem; display:flex; align-items:center; gap:.3rem; }
+  .msg.luna .who { color:#8b5cf6; }
+  .msg.user .who { color:rgba(255,255,255,.7); justify-content:flex-end; }
+  .msg .num { display:inline-flex; width:15px; height:15px; border-radius:50%; background:var(--violet); color:#fff; font-size:.58rem; align-items:center; justify-content:center; font-weight:700; margin-right:.25rem; }
+  .msg.user .num { background:rgba(255,255,255,.25); }
+  .widget { align-self:flex-start; max-width:92%; background:#fff; border:1px solid #c7d2fe; border-radius:14px; border-bottom-left-radius:4px; overflow:hidden; box-shadow:0 4px 14px rgba(99,102,241,.12); }
+  .widget .w-head { background:linear-gradient(90deg,#eef2ff,#f5f3ff); padding:.5rem .75rem; font-size:.68rem; font-weight:700; color:#4f46e5; display:flex; align-items:center; gap:.35rem; border-bottom:1px solid #e0e7ff; }
+  .widget .w-body { padding:.65rem .75rem; font-size:.76rem; color:#334155; display:flex; flex-direction:column; gap:.35rem; }
+  .widget .w-row { display:flex; gap:.4rem; }
+  .widget .w-row b { color:#64748b; font-weight:600; min-width:74px; font-size:.68rem; text-transform:uppercase; letter-spacing:.03em; }
+  .widget .w-actions { display:flex; gap:.4rem; padding:.6rem .75rem; border-top:1px solid #f1f5f9; }
+  .wbtn { flex:1; border:none; border-radius:8px; padding:.45rem .5rem; font-size:.7rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.3rem; transition:opacity .15s; font-family:inherit; }
+  .wbtn:hover { opacity:.85; }
+  .wbtn.confirm { background:#4f46e5; color:#fff; }
+  .wbtn.ghost { background:#f1f5f9; color:#475569; }
+  .wbtn.sent { background:var(--green-soft); color:#16a34a; border:1px solid rgba(34,197,94,.4); cursor:default; }
+  .widget.sent-state { border-color:#86efac; }
+  .status-chip { display:inline-flex; align-items:center; gap:.25rem; font-size:.62rem; font-weight:600; padding:.15rem .5rem; border-radius:999px; background:#f1f5f9; color:#475569; }
+  .status-chip.ok { background:#dcfce7; color:#16a34a; }
+  .human-card { align-self:stretch; background:#fffbeb; border:1px solid #fde68a; border-radius:14px; padding:.65rem .75rem; font-size:.74rem; color:#92400e; display:flex; gap:.5rem; align-items:flex-start; }
+  .human-card i { width:15px; height:15px; flex-shrink:0; margin-top:.1rem; color:#d97706; }
+  .typing { align-self:flex-start; display:flex; gap:3px; padding:.4rem .2rem; }
+  .typing span { width:6px; height:6px; border-radius:50%; background:#94a3b8; animation:blink 1.2s infinite; }
+  .typing span:nth-child(2){ animation-delay:.2s } .typing span:nth-child(3){ animation-delay:.4s }
+  @keyframes blink { 0%,80%,100%{opacity:.25} 40%{opacity:1} }
+  .phone-input { display:flex; gap:.5rem; padding:.6rem .8rem; border-top:1px solid #e2e8f0; background:#fff; }
+  .phone-input .fake { flex:1; background:#f1f5f9; border-radius:999px; padding:.5rem .9rem; font-size:.74rem; color:#94a3b8; }
+  .phone-input .ic { width:34px; height:34px; border-radius:50%; background:#0ea5e9; color:#fff; display:flex; align-items:center; justify-content:center; }
+  .phone-input .ic.clip { background:#fff; border:1px solid #e2e8f0; color:#64748b; }
+
+  .legend-item { display:flex; gap:.9rem; padding:1rem 0; border-bottom:1px solid rgba(35,48,71,.5); }
+  .legend-item:last-child { border-bottom:none; }
+  .legend-num { width:26px; height:26px; border-radius:50%; background:var(--violet-soft); border:1px solid rgba(139,92,246,.4); color:var(--violet); font-weight:700; font-size:.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .legend-item h4 { font-size:.9rem; margin-bottom:.15rem; }
+  .legend-item p { font-size:.82rem; color:var(--text-2); }
+  footer { padding:2.5rem 0 4rem; color:var(--text-3); font-size:.82rem; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <div class="badge"><i data-lucide="sparkles"></i> Mock interativo — proposta de produto</div>
+    <h1>A Luna <span>dentro do chat</span> — com tool calling</h1>
+    <p class="sub">Conceito: o chat do projeto deixa de ser só humano↔humano. A IA participa da thread, executa tudo que o cliente pode fazer via APIs (criar solicitação, comentar, votar, enviar documento…) com confirmação em widget dentro do chat, e devolve para humanos quando preciso. <b>Clique em “Confirmar e enviar” no widget (3) para ver a transição de estado.</b></p>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <h2><i data-lucide="messages-square"></i> Mock da conversa</h2>
+    <p class="section-sub">Exemplo realista: cliente pede um carrossel → wizard da IA → confirmação → solicitação criada. Depois: consulta de créditos (tool de leitura) e pedido de humano (handoff).</p>
+
+    <div class="mock-wrap">
+      <!-- ===== PHONE ===== -->
+      <div class="phone">
+        <div class="phone-head">
+          <div class="avatar"><i data-lucide="message-circle" style="width:18px;height:18px"></i></div>
+          <div>
+            <div class="t">Chat · Ona Dance web</div>
+            <div class="s"><i data-lucide="sparkles" style="width:10px;height:10px"></i> Luna IA ativa neste chat</div>
+          </div>
+          <div class="luna-badge"><i data-lucide="bot" style="width:11px;height:11px"></i> IA</div>
+        </div>
+        <div class="thread">
+
+          <div class="msg luna">
+            <div class="who"><span class="num">1</span><i data-lucide="sparkles" style="width:10px;height:10px"></i> Luna · IA</div>
+            Oi, Jess! Sou a Luna ✨ Posso ajudar com <b>tudo</b> o que você faz aqui: criar solicitações, enviar documentos, acompanhar status, votar em enquetes… É só pedir.<br><br>Se preferir falar com um <b>humano</b>, é só avisar a qualquer momento.
+          </div>
+
+          <div class="msg user">
+            <div class="who">Jess</div>
+            quero pedir um carrossel pro instagram
+          </div>
+
+          <div class="msg luna">
+            <div class="who"><span class="num">2</span><i data-lucide="sparkles" style="width:10px;height:10px"></i> Luna · IA</div>
+            Claro! Vou montar a solicitação. Só confirma os dados pra mim 👇
+          </div>
+
+          <div class="widget" id="wizard">
+            <div class="w-head"><i data-lucide="wand-2" style="width:12px;height:12px"></i> CONFIRMAR SOLICITAÇÃO</div>
+            <div class="w-body">
+              <div class="w-row"><b>Tipo</b><span>Solicitação de design — Carrossel Instagram</span></div>
+              <div class="w-row"><b>Projeto</b><span>Ona Dance web</span></div>
+              <div class="w-row"><b>Descrição</b><span>Carrossel para o Instagram do estúdio</span></div>
+              <div class="w-row"><b>Entrega</b><span>Normal</span></div>
+              <div class="w-row"><b>Custo</b><span>1 crédito da conversa (a solicitação não cobra extra)</span></div>
+            </div>
+            <div class="w-actions">
+              <button class="wbtn ghost" onclick="alert('Modo edição: a Luna reabriria o wizard perguntando o que alterar')"><i data-lucide="pencil" style="width:11px;height:11px"></i> Editar</button>
+              <button class="wbtn ghost" onclick="document.getElementById('wizard').style.display='none'">Cancelar</button>
+              <button class="wbtn confirm" onclick="confirmar()"><i data-lucide="check" style="width:11px;height:11px"></i> Confirmar e enviar</button>
+            </div>
+          </div>
+          <div class="widget sent-state" id="sent" style="display:none">
+            <div class="w-head" style="background:#f0fdf4;border-color:#bbf7d0;color:#16a34a"><i data-lucide="check-circle-2" style="width:12px;height:12px"></i> SOLICITAÇÃO ENVIADA</div>
+            <div class="w-body">
+              <div class="w-row"><b>Solicitação</b><span>#REQ-0231 — Carrossel Instagram</span></div>
+              <div class="w-row"><b>Status</b><span class="status-chip ok"><i data-lucide="inbox" style="width:10px;height:10px"></i> Recebida</span></div>
+              <div class="w-row"><b>Quem</b><span>Criada por Luna a pedido de Jess</span></div>
+            </div>
+            <div class="w-actions"><button class="wbtn sent"><i data-lucide="check" style="width:11px;height:11px"></i> Enviada — acompanhe pelo painel</button></div>
+          </div>
+
+          <div class="msg user"><div class="who">Jess</div>quanto de crédito eu tenho?</div>
+
+          <div class="msg luna">
+            <div class="who"><span class="num">4</span><i data-lucide="sparkles" style="width:10px;height:10px"></i> Luna · IA</div>
+            Você tem <b>997 créditos</b> no plano Profesional. Cada mensagem minha consome 1 crédito. 💜
+          </div>
+
+          <div class="msg user"><div class="who">Jess</div>na verdade quero falar com uma pessoa</div>
+
+          <div class="msg luna">
+            <div class="who"><span class="num">5</span><i data-lucide="sparkles" style="width:10px;height:10px"></i> Luna · IA</div>
+            Sem problemas! Vou chamar a equipe Nexo agora — pode continuar escrevendo aqui que eles respondem neste mesmo chat. 💬
+          </div>
+
+          <div class="human-card">
+            <i data-lucide="user-check"></i>
+            <div><b>Equipe Nexo notificada via Telegram ✓</b><br>Jess (equipe) foi chamada e vê esta conversa completa. A Luna fica em silêncio até o atendimento humano terminar.</div>
+          </div>
+
+          <div class="typing"><span></span><span></span><span></span></div>
+        </div>
+        <div class="phone-input">
+          <div class="ic clip"><i data-lucide="paperclip" style="width:15px;height:15px"></i></div>
+          <div class="fake">Escreva sua mensagem…</div>
+          <div class="ic"><i data-lucide="send" style="width:15px;height:15px"></i></div>
+        </div>
+      </div>
+
+      <!-- ===== LEGENDA ===== -->
+      <div>
+        <div class="card">
+          <h3><i data-lucide="list-ordered"></i> O que cada número do mock significa</h3>
+          <div class="legend-item"><div class="legend-num">1</div><div><h4>Saudação com escopo + porta de saída humana</h4><p>Na <b>primeira mensagem da sessão</b>, a Luna apresenta o que pode fazer e avisa que humano está a um comando de distância. Requisito explícito do produto.</p></div></div>
+          <div class="legend-item"><div class="legend-num">2</div><div><h4>Wizard conversacional</h4><p>“Quero um carrossel” dispara o <b>tool</b> <span class="mono">create_request</span>. A IA coleta os dados faltantes conversando (tipo, descrição, urgência) em vez de jogar um formulário na cara do usuário.</p></div></div>
+          <div class="legend-item"><div class="legend-num">3</div><div><h4>Widget de confirmação in-chat</h4><p><b>Nenhuma mutação acontece sem confirmação explícita.</b> O widget resume o payload exato que será enviado à API real (<span class="mono">POST /cliente/api/requests</span>). Confirmar → estado “SOLICITAÇÃO ENVIADA” renderizado na própria thread, com o número da solicitação.</p></div></div>
+          <div class="legend-item"><div class="legend-num">4</div><div><h4>Tools de leitura respondem direto</h4><p>Consultas (saldo de créditos, status de solicitação, calendário, enquetes) são executadas server-side imediatamente, sem widget — resposta em texto/card.</p></div></div>
+          <div class="legend-item"><div class="legend-num">5</div><div><h4>Handoff para humano</h4><p>O LLM detecta a intenção (“falar com pessoa/atendente/humano”) → notifica o grupo do Telegram da Nexo (já existe no app: <span class="mono">sendTelegramNotification</span>, grupo <span class="mono">-1003915957914</span>) + notificação in-app aos admins + modo silêncio da IA até o humano encerrar.</p></div></div>
+        </div>
+
+        <div class="card" style="margin-top:1rem">
+          <h3><i data-lucide="wrench"></i> Ferramentas que a IA teria (allowlist por papel)</h3>
+          <table>
+            <tr><th>Tool</th><th>API que executa</th><th>Confirma?</th></tr>
+            <tr><td class="mono">create_request</td><td class="mono">POST /cliente/api/requests</td><td><span class="pill fix">widget</span></td></tr>
+            <tr><td class="mono">comment_request</td><td class="mono">POST …/requests/:id/comments</td><td><span class="pill fix">widget</span></td></tr>
+            <tr><td class="mono">upload_document</td><td class="mono">POST /cliente/api/chat/upload + files</td><td><span class="pill fix">widget</span></td></tr>
+            <tr><td class="mono">vote_poll</td><td class="mono">PUT /cliente/api/polls</td><td><span class="pill fix">widget</span></td></tr>
+            <tr><td class="mono">suggest_idea</td><td class="mono">POST …/projects/:id/ideas</td><td><span class="pill fix">widget</span></td></tr>
+            <tr><td class="mono">approve / reject</td><td class="mono">POST …/requests/:id/approve|reject</td><td><span class="pill sev" style="color:var(--red);background:var(--red-soft);border:1px solid rgba(239,68,68,.3)">widget + role</span></td></tr>
+            <tr><td class="mono">check_credits</td><td class="mono">GET /cliente/api/credits/balance</td><td><span class="pill ok">direto</span></td></tr>
+            <tr><td class="mono">list_requests / status</td><td class="mono">GET /cliente/api/requests</td><td><span class="pill ok">direto</span></td></tr>
+            <tr><td class="mono">list_events / calendar</td><td class="mono">GET …/projects/:id/calendar</td><td><span class="pill ok">direto</span></td></tr>
+            <tr><td class="mono">list_pending_actions</td><td class="mono">GET /cliente/api/ai-tools/list-pending-actions</td><td><span class="pill ok">direto</span></td></tr>
+            <tr><td class="mono">complete_action</td><td class="mono">POST …/complete-action</td><td><span class="pill fix">widget</span></td></tr>
+            <tr><td class="mono">request_human</td><td class="mono">Telegram + notificação in-app</td><td><span class="pill note">direto (intenção)</span></td></tr>
+          </table>
+          <p style="font-size:.78rem;color:var(--text-3);margin-top:.8rem">Fora da allowlist por segurança: senha (<span class="mono">user/password</span>), convites, webhooks, proxy externo e qualquer rota admin.</p>
+        </div>
+
+        <div class="callout warn"><i data-lucide="alert-triangle"></i><div><b>Ainda é só um mock.</b> Nada aqui está implementado. A proposta arquitetural completa (fases, custos, segurança, persistência, handoff) está no plano que acompanha este arquivo.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">Nexo Digital — mock de produto gerado em 03/09/2026 · não implementado</div>
+</footer>
+
+<script>
+function confirmar() {
+  document.getElementById('wizard').style.display = 'none';
+  document.getElementById('sent').style.display = 'block';
+}
+lucide.createIcons();
+</script>
+</body>
+</html>

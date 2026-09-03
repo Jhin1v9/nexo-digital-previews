@@ -101,6 +101,14 @@
 
     .nav-links a:hover { color: var(--offwhite); background: rgba(255,255,255,0.05); }
 
+    .nav-links a.nav-shortcut {
+      color: var(--terracota);
+      border: 1px solid rgba(196,95,60,0.45);
+      margin-right: 0.5rem;
+    }
+
+    .nav-links a.nav-shortcut:hover { background: rgba(196,95,60,0.15); color: var(--terracota-light); }
+
     /* Hero */
     .hero {
       background: linear-gradient(135deg, var(--carbon) 0%, var(--carbon-mid) 100%);
@@ -675,6 +683,8 @@
     <div class="container nav-inner">
       <a href="#" class="nav-logo">Junior <span>Reformas</span></a>
       <div class="nav-links">
+        <a href="./nexo-vps-workspaces.html" class="nav-shortcut">Workspace VPS</a>
+        <a href="./nexo-ai-chat-mock.html" class="nav-shortcut">Mock IA no Chat</a>
         <a href="#changelog">Novidades</a>
         <a href="#timeline">Timeline</a>
         <a href="#seo">SEO</a>
