@@ -138,8 +138,8 @@
     <div class="hero-meta">
       <div><i data-lucide="calendar"></i> 03/09/2026</div>
       <div><i data-lucide="globe"></i> vps.nexo-digital.app</div>
-      <div><i data-lucide="git-branch"></i> 5 commits — repo EEA-Ops-Master/vps</div>
-      <div><i data-lucide="check-circle-2"></i> 36/36 páginas · 188 APIs</div>
+      <div><i data-lucide="git-branch"></i> 7 commits — repo EEA-Ops-Master/vps</div>
+      <div><i data-lucide="check-circle-2"></i> 36/36 páginas · 193 APIs</div>
     </div>
   </div>
 </header>
@@ -200,6 +200,7 @@
           <tr><td class="mono">Cookies</td><td>middlewares aceitam qualquer cookie terminado em <span class="mono">session-token</span> (<span class="mono">cliente.session-token</span>, <span class="mono">authjs.session-token</span>)</td></tr>
           <tr><td class="mono">/cliente exato</td><td>Caddy redireciona direto a <span class="mono">/cliente/es</span> (default es); <span class="mono">/nexo</span> → <span class="mono">/nexo/pt</span> — redirecionar para a barra final causa loop</td></tr>
           <tr><td class="mono">Build</td><td>os Dockerfiles <b>não</b> sobrescrevem mais <span class="mono">next.config.js</span> nem patcham <span class="mono">middleware.ts</span></td></tr>
+          <tr><td class="mono">Deep links</td><td>middleware preserva o destino em <span class="mono">?callbackUrl=</span> ao barrar na tela de login; o login retorna para ele (path interno apenas). Links externos para o admin usam <span class="mono">/nexo/es/chat?roomId=…</span></td></tr>
         </table>
       </div>
     </div>
@@ -397,6 +398,26 @@
 
     <div class="timeline">
       <div class="t-item fix">
+        <div class="t-head"><code>6133969</code><span class="pill fix">fix</span></div>
+        <p><b>fix(handoff): deep link do Telegram agora abre o chat após o login</b></p>
+        <ul>
+          <li><b>Causa raiz (3 elos):</b> ① link do Telegram usava <span class="mono">?projectId=</span> mas a página admin lê <span class="mono">?roomId=</span> → nenhuma sala selecionada, página "só atualizava"; ② middleware redirecionava p/ <span class="mono">/login</span> sem guardar o destino; ③ login sempre caía na raiz (<span class="mono">router.push('/')</span>)</li>
+          <li>Fix: link com <span class="mono">roomId=</span> · middleware preserva destino em <span class="mono">callbackUrl</span> · login volta p/ o destino (path interno apenas, bloqueia open redirect <span class="mono">//</span>)</li>
+          <li>Validado E2E: anônimo → <span class="mono">/login?callbackUrl=%2Fes%2Fchat%3FroomId%3DX</span> → login → chat aberto na sala; 307 de locale (<span class="mono">/login→/pt/login</span>) preserva o param</li>
+        </ul>
+      </div>
+      <div class="t-item fix">
+        <div class="t-head"><code>c6f92cb</code><span class="pill new">feature</span></div>
+        <p><b>feat(handoff): modo humano no chat — solicitação via Telegram + encerramento</b></p>
+        <ul>
+          <li><b>Cliente:</b> botão "Falar com um humano" no chat → cria <span class="mono">HumanHandoff</span> (ACTIVE), posta msg de sistema na thread e dispara <b>Telegram no grupo Nexo</b> com link direto <span class="mono">/nexo/es/chat?roomId=…</span> · banner âmbar com "Encerrar atendimento" enquanto ativo</li>
+          <li><b>Admin:</b> <span class="mono">GET /nexo/api/admin/chat/handoffs</span> lista ativos (sala, cliente, solicitante) · banner no chat com solicitante/data + botão "Encerrar atendimento humano" (<span class="mono">POST .../handoffs/end</span>) · nova página disponível no menu</li>
+          <li><b>Cliente APIs:</b> <span class="mono">GET/POST/DELETE /cliente/api/chat/handoff</span> — upsert idempotente, valida ownership da org, um ACTIVE por sala</li>
+          <li><b>Banco:</b> tabela <span class="mono">HumanHandoff</span> (migration 20260903190000, só CREATE TABLE + índice — dados intactos); ambos workspaces leem o mesmo schema</li>
+          <li>E2E em produção: <b>19/19</b> (criar, idempotência, status, msgs de sistema, lista admin, authz 401/403/404, encerrar pelas duas pontas)</li>
+        </ul>
+      </div>
+      <div class="t-item fix">
         <div class="t-head"><code>0978128</code><span class="pill new">feature</span></div>
         <p><b>feat(ai-review): chats da Luna agora ficam salvos e revisáveis + anexos visíveis</b></p>
         <ul>
@@ -482,10 +503,12 @@
         </table>
       </div>
       <div class="card">
-        <h3><i data-lucide="braces"></i> APIs — 188 endpoints</h3>
+        <h3><i data-lucide="braces"></i> APIs — 193 endpoints</h3>
         <table>
           <tr><td>Inventário completo + testes (seção APIs)</td><td><span class="pill ok">pass</span></td></tr>
           <tr><td>Bug real encontrado: chat/rooms 500 → fix b796986</td><td><span class="pill ok">fix</span></td></tr>
+          <tr><td>Modo humano (handoff): fluxo completo cliente+admin</td><td><span class="pill ok">19/19</span></td></tr>
+          <tr><td>Deep link Telegram → login → chat (callbackUrl)</td><td><span class="pill ok">pass</span></td></tr>
           <tr><td>10 × 500 restantes = input inválido (sem impacto real)</td><td><span class="pill note">nota</span></td></tr>
           <tr><td>4 mutações destrutivas protegidas (não executadas)</td><td><span class="pill ok">pass</span></td></tr>
           <tr><td>Auth Luna (X-Luna-Key) rejeitando sem key — 19/19</td><td><span class="pill ok">pass</span></td></tr>
@@ -509,10 +532,10 @@
 <section id="apis">
   <div class="container">
     <h2><i data-lucide="braces"></i> Rotas de API — inventário completo testado</h2>
-    <p class="section-sub">188 endpoints (69 cliente + 119 admin/agente) exercitados em produção em 03/09/2026 com sessão real de login. Metodologia não-destrutiva: GETs reais; mutações com body vazio <span class="mono">{}</span> (espera-se 400/404 — prova que a rota existe e valida input sem alterar dados); rotas destrutivas não foram executadas.</p>
+    <p class="section-sub">193 endpoints (72 cliente + 121 admin/agente) exercitados em produção em 03/09/2026 com sessão real de login. Metodologia não-destrutiva: GETs reais; mutações com body vazio <span class="mono">{}</span> (espera-se 400/404 — prova que a rota existe e valida input sem alterar dados); rotas destrutivas não foram executadas.</p>
 
     <div class="grid grid-4" style="margin-bottom:1.8rem">
-      <div class="card stat info"><div class="num">188</div><div class="lbl">endpoints mapeados e exercitados</div></div>
+      <div class="card stat info"><div class="num">193</div><div class="lbl">endpoints mapeados e exercitados</div></div>
       <div class="card stat ok"><div class="num">48</div><div class="lbl">respostas 200 com sessão válida</div></div>
       <div class="card stat ok"><div class="num">1</div><div class="lbl">bug funcional encontrado e corrigido (chat/rooms)</div></div>
       <div class="card stat violet"><div class="num">4</div><div class="lbl">mutações destrutivas protegidas (não executadas)</div></div>
@@ -528,8 +551,8 @@
       <div><b>Nota sobre os 500 restantes (10 ocorrências):</b> todas com input inválido — upload sem multipart, ou update de id inexistente (o Prisma lança P2025 e o catch devolve 500 em vez de 404/400). <b>Nenhum afeta uso real</b> (o frontend sempre envia multipart e ids existentes). Rotas: <span class="mono">chat/upload</span> (×2), <span class="mono">projects/:id/files</span>, <span class="mono">requests/:id/complete-action</span>, <span class="mono">admin/needs/:id</span> (approve, reject, delete), <span class="mono">admin/polls/:id</span>, <span class="mono">admin/projects/:id</span>, <span class="mono">admin/requests/:id</span>. Melhoria de validação planejada, sem urgência.</div>
     </div>
 
-    <h3 style="margin:2rem 0 .5rem;font-size:1.1rem;display:flex;align-items:center;gap:.5rem"><i data-lucide="user" style="width:18px;height:18px;color:var(--brand)"></i> Workspace Cliente — 68 endpoints</h3>
-<div class="route-group"><h4><i data-lucide="folder"></i> Chat (mensagens, stream, upload, busca, IA Luna) <span style="color:var(--text-3)">(11)</span></h4>
+    <h3 style="margin:2rem 0 .5rem;font-size:1.1rem;display:flex;align-items:center;gap:.5rem"><i data-lucide="user" style="width:18px;height:18px;color:var(--brand)"></i> Workspace Cliente — 71 endpoints</h3>
+<div class="route-group"><h4><i data-lucide="folder"></i> Chat (mensagens, stream, upload, busca, IA Luna, handoff) <span style="color:var(--text-3)">(14)</span></h4>
 <table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
 <tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/chat/ai</td><td><span class="pill note">400</span></td></tr>
 <tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/link-preview</td><td><span class="pill note">400</span></td></tr>
@@ -542,6 +565,9 @@
 <tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/search</td><td><span class="pill note">400</span></td></tr>
 <tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/stream</td><td><span class="pill note">400</span></td></tr>
 <tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/chat/upload</td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/handoff <span style="color:var(--text-3)">?roomId=</span></td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/chat/handoff</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/cliente/api/chat/handoff <span style="color:var(--text-3)">?roomId=</span></td><td><span class="pill ok">200</span></td></tr>
 </table>
 </div>
 <div class="route-group"><h4><i data-lucide="folder"></i> AI Tools (agente) <span style="color:var(--text-3)">(4)</span></h4>
@@ -662,7 +688,7 @@
 </table>
 </div>
 
-    <h3 style="margin:2.5rem 0 .5rem;font-size:1.1rem;display:flex;align-items:center;gap:.5rem"><i data-lucide="lock" style="width:18px;height:18px;color:var(--violet)"></i> Workspace Admin + Luna — 115 endpoints</h3>
+    <h3 style="margin:2.5rem 0 .5rem;font-size:1.1rem;display:flex;align-items:center;gap:.5rem"><i data-lucide="lock" style="width:18px;height:18px;color:var(--violet)"></i> Workspace Admin + Luna — 117 endpoints</h3>
 <div class="route-group"><h4><i data-lucide="sparkles"></i> AI Chat Revision (novo — 03/09) <span style="color:var(--text-3)">(5)</span></h4>
 <div class="route-list">
 <span class="route"><span class="dot"></span><b>POST</b> /cliente/api/chat/ai/upload</span>
@@ -702,6 +728,12 @@
 <tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/chat/projects</td><td><span class="pill ok">200</span></td></tr>
 <tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/chat/rooms</td><td><span class="pill ok">200</span></td></tr>
 <tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/chat/upload</td><td><span class="pill sev">500</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="user-check"></i> Handoff / atendimento humano (novo — 03/09) <span style="color:var(--text-3)">(2)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/chat/handoffs</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/chat/handoffs/end</td><td><span class="pill ok">200</span></td></tr>
 </table>
 </div>
 <div class="route-group"><h4><i data-lucide="folder"></i> Solicitações <span style="color:var(--text-3)">(10)</span></h4>
