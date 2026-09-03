@@ -138,8 +138,8 @@
     <div class="hero-meta">
       <div><i data-lucide="calendar"></i> 03/09/2026</div>
       <div><i data-lucide="globe"></i> vps.nexo-digital.app</div>
-      <div><i data-lucide="git-branch"></i> 4 commits — repo EEA-Ops-Master/vps</div>
-      <div><i data-lucide="check-circle-2"></i> 36/36 páginas · 183 APIs testadas</div>
+      <div><i data-lucide="git-branch"></i> 5 commits — repo EEA-Ops-Master/vps</div>
+      <div><i data-lucide="check-circle-2"></i> 36/36 páginas · 188 APIs</div>
     </div>
   </div>
 </header>
@@ -396,11 +396,23 @@
     <p class="section-sub">Timeline completa. Commits no repositório <span class="mono">EEA-Ops-Master/vps</span> (branch main).</p>
 
     <div class="timeline">
+      <div class="t-item fix">
+        <div class="t-head"><code>0978128</code><span class="pill new">feature</span></div>
+        <p><b>feat(ai-review): chats da Luna agora ficam salvos e revisáveis + anexos visíveis</b></p>
+        <ul>
+          <li><b>Persistência:</b> <span class="mono">/cliente/api/chat/ai</span> grava a conversa em novas tabelas <span class="mono">AiConversation/AiMessage</span> (migration 20260903173000, só CREATE TABLE — dados intactos); cobrança de créditos inalterada</li>
+          <li><b>AI Chat Revision:</b> página <span class="mono">/nexo/es/chat-revision</span> repaginada — admin vê o que cada cliente pede à IA, anexos renderizados, e decide: revisar ✓ / sinalizar violação 🚩 (com nota) / apagar 🗑</li>
+          <li><b>Anexos na Luna:</b> widget ganhou clipe (imagem/vídeo/PDF/office/txt) via novo <span class="mono">POST /cliente/api/chat/ai/upload</span></li>
+          <li><b>Fix de anexos "que chegavam a nada":</b> mediaUrl sem prefixo basePath → 404 nas duas pontas; <span class="mono">convertFileUrl</span> corrigido no chat admin (<span class="mono">/nexo</span>) e no chat cliente (<span class="mono">/cliente</span>)</li>
+          <li>4 novas APIs admin: <span class="mono">GET /nexo/api/admin/ai-conversations</span>, <span class="mono">GET/DELETE .../[id]</span>, <span class="mono">PUT .../[id]/review</span></li>
+          <li>Validação E2E em produção: <b>22/22</b> (sessão staff, sem gastar créditos de cliente)</li>
+        </ul>
+      </div>
       <div class="t-item sev">
         <div class="t-head"><code>b796986</code><span class="pill sev">bug</span><span class="pill fix">fix</span></div>
         <p><b>fix(admin): chat/rooms 500 — nome da relação Prisma é chatMessages</b></p>
         <ul>
-          <li>Detectado no sweep de 183 endpoints: <span class="mono">GET /nexo/api/admin/chat/rooms</span> quebrava a página "Revisión de Chats" com 500 (a query usava a relação inexistente <span class="mono">messages</span>; o schema a chama <span class="mono">chatMessages</span>)</li>
+          <li>Detectado no sweep de 188 endpoints: <span class="mono">GET /nexo/api/admin/chat/rooms</span> quebrava a página "Revisión de Chats" com 500 (a query usava a relação inexistente <span class="mono">messages</span>; o schema a chama <span class="mono">chatMessages</span>)</li>
           <li>Corrigido select/where/_count + filtro de mensagens deletadas; contrato do frontend preservado; validado 200 com dados reais após rebuild</li>
         </ul>
       </div>
@@ -470,7 +482,7 @@
         </table>
       </div>
       <div class="card">
-        <h3><i data-lucide="braces"></i> APIs — 183 endpoints</h3>
+        <h3><i data-lucide="braces"></i> APIs — 188 endpoints</h3>
         <table>
           <tr><td>Inventário completo + testes (seção APIs)</td><td><span class="pill ok">pass</span></td></tr>
           <tr><td>Bug real encontrado: chat/rooms 500 → fix b796986</td><td><span class="pill ok">fix</span></td></tr>
@@ -497,10 +509,10 @@
 <section id="apis">
   <div class="container">
     <h2><i data-lucide="braces"></i> Rotas de API — inventário completo testado</h2>
-    <p class="section-sub">183 endpoints (68 cliente + 115 admin/agente) exercitados em produção em 03/09/2026 com sessão real de login. Metodologia não-destrutiva: GETs reais; mutações com body vazio <span class="mono">{}</span> (espera-se 400/404 — prova que a rota existe e valida input sem alterar dados); rotas destrutivas não foram executadas.</p>
+    <p class="section-sub">188 endpoints (69 cliente + 119 admin/agente) exercitados em produção em 03/09/2026 com sessão real de login. Metodologia não-destrutiva: GETs reais; mutações com body vazio <span class="mono">{}</span> (espera-se 400/404 — prova que a rota existe e valida input sem alterar dados); rotas destrutivas não foram executadas.</p>
 
     <div class="grid grid-4" style="margin-bottom:1.8rem">
-      <div class="card stat info"><div class="num">183</div><div class="lbl">endpoints mapeados e exercitados</div></div>
+      <div class="card stat info"><div class="num">188</div><div class="lbl">endpoints mapeados e exercitados</div></div>
       <div class="card stat ok"><div class="num">48</div><div class="lbl">respostas 200 com sessão válida</div></div>
       <div class="card stat ok"><div class="num">1</div><div class="lbl">bug funcional encontrado e corrigido (chat/rooms)</div></div>
       <div class="card stat violet"><div class="num">4</div><div class="lbl">mutações destrutivas protegidas (não executadas)</div></div>
@@ -651,6 +663,15 @@
 </div>
 
     <h3 style="margin:2.5rem 0 .5rem;font-size:1.1rem;display:flex;align-items:center;gap:.5rem"><i data-lucide="lock" style="width:18px;height:18px;color:var(--violet)"></i> Workspace Admin + Luna — 115 endpoints</h3>
+<div class="route-group"><h4><i data-lucide="sparkles"></i> AI Chat Revision (novo — 03/09) <span style="color:var(--text-3)">(5)</span></h4>
+<div class="route-list">
+<span class="route"><span class="dot"></span><b>POST</b> /cliente/api/chat/ai/upload</span>
+<span class="route"><span class="dot"></span><b>GET</b> /nexo/api/admin/ai-conversations</span>
+<span class="route param"><span class="dot"></span><b>GET</b> /nexo/api/admin/ai-conversations/:id</span>
+<span class="route param"><span class="dot"></span><b>DELETE</b> /nexo/api/admin/ai-conversations/:id</span>
+<span class="route param"><span class="dot"></span><b>PUT</b> /nexo/api/admin/ai-conversations/:id/review</span>
+</div></div>
+
 <div class="route-group"><h4><i data-lucide="folder"></i> Luna (API do agente IA — autenticada por X-Luna-Key) <span style="color:var(--text-3)">(19)</span></h4>
 <table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
 <tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/analyze-request</td><td><span class="pill note">401</span></td></tr>
