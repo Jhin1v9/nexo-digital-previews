@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexo VPS — Workspaces: estado atual e mudanças (03/09/2026)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --bg-soft: #111827;
+      --card: #151d2b;
+      --card-border: #233047;
+      --brand: #0ea5e9;
+      --brand-soft: rgba(14,165,233,.12);
+      --green: #22c55e;
+      --green-soft: rgba(34,197,94,.12);
+      --amber: #f59e0b;
+      --amber-soft: rgba(245,158,11,.12);
+      --red: #ef4444;
+      --red-soft: rgba(239,68,68,.12);
+      --violet: #8b5cf6;
+      --violet-soft: rgba(139,92,246,.12);
+      --text: #e5e9f0;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 14px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem; }
+
+    header.hero {
+      padding: 4.5rem 0 3rem;
+      background:
+        radial-gradient(ellipse 800px 400px at 20% -10%, rgba(14,165,233,.18), transparent),
+        radial-gradient(ellipse 600px 300px at 90% 0%, rgba(139,92,246,.14), transparent);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .badge { display: inline-flex; align-items: center; gap: .45rem; font-size: .78rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--brand); background: var(--brand-soft); border: 1px solid rgba(14,165,233,.3); padding: .35rem .8rem; border-radius: 999px; margin-bottom: 1.2rem; }
+    h1 { font-size: clamp(1.8rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+    h1 span { background: linear-gradient(90deg, var(--brand), var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p.sub { color: var(--text-2); max-width: 720px; margin-top: 1rem; font-size: 1.02rem; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.8rem; color: var(--text-3); font-size: .85rem; }
+    .hero-meta div { display: flex; align-items: center; gap: .45rem; }
+    .hero-meta i { width: 15px; height: 15px; }
+
+    nav.toc { position: sticky; top: 0; z-index: 50; background: rgba(11,15,23,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); }
+    nav.toc .container { display: flex; gap: .25rem; overflow-x: auto; padding: .6rem 1.5rem; }
+    nav.toc a { white-space: nowrap; font-size: .82rem; font-weight: 500; color: var(--text-2); text-decoration: none; padding: .4rem .85rem; border-radius: 8px; transition: all .15s; }
+    nav.toc a:hover { color: var(--text); background: var(--bg-soft); }
+
+    section { padding: 3.2rem 0; border-bottom: 1px solid rgba(35,48,71,.5); }
+    h2 { font-size: 1.55rem; font-weight: 700; letter-spacing: -.01em; display: flex; align-items: center; gap: .6rem; margin-bottom: .4rem; }
+    h2 i { width: 22px; height: 22px; color: var(--brand); }
+    .section-sub { color: var(--text-3); font-size: .92rem; margin-bottom: 1.8rem; }
+
+    .grid { display: grid; gap: 1rem; }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+    .card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 1.4rem; }
+    .card h3 { font-size: .98rem; font-weight: 600; margin-bottom: .9rem; display: flex; align-items: center; gap: .5rem; }
+    .card h3 i { width: 17px; height: 17px; color: var(--brand); }
+
+    .stat { text-align: left; }
+    .stat .num { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; }
+    .stat .lbl { color: var(--text-3); font-size: .82rem; margin-top: .1rem; }
+    .stat.ok .num { color: var(--green); }
+    .stat.info .num { color: var(--brand); }
+    .stat.violet .num { color: var(--violet); }
+
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); font-weight: 600; padding: .55rem .75rem; border-bottom: 1px solid var(--card-border); }
+    td { padding: .6rem .75rem; border-bottom: 1px solid rgba(35,48,71,.5); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    td.mono, .mono { font-family: var(--mono); font-size: .82rem; }
+    td a { color: var(--brand); text-decoration: none; }
+    td a:hover { text-decoration: underline; }
+
+    .pill { display: inline-flex; align-items: center; gap: .3rem; font-size: .72rem; font-weight: 600; padding: .18rem .6rem; border-radius: 999px; white-space: nowrap; }
+    .pill i { width: 11px; height: 11px; }
+    .pill.ok { color: var(--green); background: var(--green-soft); border: 1px solid rgba(34,197,94,.3); }
+    .pill.new { color: var(--brand); background: var(--brand-soft); border: 1px solid rgba(14,165,233,.3); }
+    .pill.fix { color: var(--amber); background: var(--amber-soft); border: 1px solid rgba(245,158,11,.3); }
+    .pill.sev { color: var(--red); background: var(--red-soft); border: 1px solid rgba(239,68,68,.3); }
+    .pill.note { color: var(--violet); background: var(--violet-soft); border: 1px solid rgba(139,92,246,.3); }
+
+    .route-group { margin-bottom: 1.6rem; }
+    .route-group h4 { font-size: .8rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); margin-bottom: .6rem; display: flex; align-items: center; gap: .45rem; }
+    .route-list { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .route { display: inline-flex; align-items: center; gap: .45rem; font-family: var(--mono); font-size: .78rem; background: var(--bg-soft); border: 1px solid var(--card-border); border-radius: 8px; padding: .32rem .65rem; color: var(--text-2); }
+    .route b { color: var(--text); font-weight: 600; }
+    .route .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,.6); }
+    .route.param { border-style: dashed; }
+
+    .timeline { position: relative; padding-left: 1.6rem; }
+    .timeline::before { content: ''; position: absolute; left: .45rem; top: .4rem; bottom: .4rem; width: 2px; background: var(--card-border); }
+    .t-item { position: relative; margin-bottom: 1.6rem; }
+    .t-item::before { content: ''; position: absolute; left: -1.42rem; top: .35rem; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 3px solid var(--brand); }
+    .t-item.sev::before { border-color: var(--red); }
+    .t-item.fix::before { border-color: var(--amber); }
+    .t-head { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-bottom: .35rem; }
+    .t-head code { font-family: var(--mono); font-size: .82rem; color: var(--brand); background: var(--bg-soft); padding: .15rem .5rem; border-radius: 6px; border: 1px solid var(--card-border); }
+    .t-item p { color: var(--text-2); font-size: .9rem; }
+    .t-item ul { margin: .5rem 0 0 1.1rem; color: var(--text-2); font-size: .88rem; }
+    .t-item li { margin-bottom: .25rem; }
+
+    .callout { display: flex; gap: .8rem; padding: 1rem 1.2rem; border-radius: var(--radius); font-size: .9rem; margin-top: 1rem; }
+    .callout i { width: 18px; height: 18px; flex-shrink: 0; margin-top: .15rem; }
+    .callout.info { background: var(--brand-soft); border: 1px solid rgba(14,165,233,.3); color: #bae6fd; }
+    .callout.warn { background: var(--amber-soft); border: 1px solid rgba(245,158,11,.3); color: #fde68a; }
+    .callout.ok { background: var(--green-soft); border: 1px solid rgba(34,197,94,.3); color: #bbf7d0; }
+
+    footer { padding: 2.5rem 0 4rem; color: var(--text-3); font-size: .82rem; }
+    footer .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 3rem 0 2rem; }
+      section { padding: 2.2rem 0; }
+      .card { padding: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <div class="badge"><i data-lucide="server"></i> Infraestrutura — Nexo Digital VPS</div>
+    <h1>Workspaces <span>Cliente & Admin</span><br>Estado atual e mudanças</h1>
+    <p class="sub">Documentação viva do deploy de 03/09/2026: arquitetura de rotas com <code class="mono" style="color:var(--brand)">basePath</code>, mapa completo de rotas testadas em produção, correções de segurança e histórico de alterações.</p>
+    <div class="hero-meta">
+      <div><i data-lucide="calendar"></i> 03/09/2026</div>
+      <div><i data-lucide="globe"></i> vps.nexo-digital.app</div>
+      <div><i data-lucide="git-branch"></i> 3 commits — repo EEA-Ops-Master/vps</div>
+      <div><i data-lucide="check-circle-2"></i> 36/36 rotas validadas</div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="container">
+    <a href="#resumo">Resumo</a>
+    <a href="#arquitetura">Arquitetura</a>
+    <a href="#servicos">Serviços</a>
+    <a href="#cliente">Workspace Cliente</a>
+    <a href="#admin">Workspace Admin</a>
+    <a href="#mudancas">Mudanças do dia</a>
+    <a href="#testes">Testes</a>
+    <a href="#operacao">Operação</a>
+  </div>
+</nav>
+
+<!-- ============ RESUMO ============ -->
+<section id="resumo">
+  <div class="container">
+    <h2><i data-lucide="layout-dashboard"></i> Resumo executivo</h2>
+    <p class="section-sub">O que mudou e por quê, em uma página.</p>
+    <div class="grid grid-4">
+      <div class="card stat ok"><div class="num">36/36</div><div class="lbl">rotas de sidebar e sub-rotas OK em produção</div></div>
+      <div class="card stat info"><div class="num">2</div><div class="lbl">bugs críticos de navegação eliminados (404 em edição de cliente e abertura de projeto)</div></div>
+      <div class="card stat violet"><div class="num">3</div><div class="lbl">commits no dia — basePath, Caddy/redirects, hrefs duplicados</div></div>
+      <div class="card stat ok"><div class="num">0</div><div class="lbl">mudanças no banco de dados — dados e clientes intactos</div></div>
+    </div>
+    <div class="callout info">
+      <i data-lucide="info"></i>
+      <div><b>Causa raiz resolvida:</b> os apps workspace-cliente (<span class="mono">/cliente</span>) e workspace-nexo (<span class="mono">/nexo</span>) rodavam sem <span class="mono">basePath</span>, com o Caddy removendo o prefixo antes de repassar ao Next.js e os Dockerfiles sobrescrevendo a configuração em build. Toda navegação absoluta caía na raiz do domínio (404 ou app errado). Agora os apps conhecem o próprio prefixo e o proxy o preserva.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARQUITETURA ============ -->
+<section id="arquitetura">
+  <div class="container">
+    <h2><i data-lucide="network"></i> Arquitetura de rotas (nova)</h2>
+    <p class="section-sub">Request flow desde o navegador até o app Next.js.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3><i data-lucide="arrow-right"></i> Fluxo atual</h3>
+        <table>
+          <tr><td class="mono">1. Navegador</td><td><span class="mono">/cliente/es/projetos</span> (URL pública com prefixo)</td></tr>
+          <tr><td class="mono">2. Cloudflare</td><td>tunnel → <span class="mono">http://localhost:80</span></td></tr>
+          <tr><td class="mono">3. Caddy</td><td><span class="mono">handle /cliente/*</span> — <b>mantém</b> o prefixo no upstream (antes: <span class="mono">handle_path</span> removia)</td></tr>
+          <tr><td class="mono">4. Next.js</td><td><span class="mono">basePath: '/cliente'</span> — rotas casam com o prefixo; <span class="mono">Link</span>/<span class="mono">router.push</span> geram URLs prefixadas sozinhos</td></tr>
+          <tr><td class="mono">5. Auth.js</td><td><span class="mono">NEXTAUTH_URL=.../cliente/api/auth</span> + <span class="mono">basePath '/api/auth'</span> interno</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><i data-lucide="list-rules"></i> Regras que valem para sempre</h3>
+        <table>
+          <tr><td class="mono">Nunca</td><td>prefixar <span class="mono">router.push()</span> / <span class="mono">&lt;Link href&gt;</span> com <span class="mono">/cliente</span> ou <span class="mono">/nexo</span> — o basePath adiciona e duplicaria (<span class="mono">/cliente/cliente/...</span> → 404)</td></tr>
+          <tr><td class="mono">fetch()</td><td><span class="mono">fetch('/api/...')</span> é prefixado automaticamente pelo <span class="mono">lib/fetch-patch.ts</span>; <span class="mono">fetch('/cliente/api/...')</span> também funciona</td></tr>
+          <tr><td class="mono">Cookies</td><td>middlewares aceitam qualquer cookie terminado em <span class="mono">session-token</span> (<span class="mono">cliente.session-token</span>, <span class="mono">authjs.session-token</span>)</td></tr>
+          <tr><td class="mono">/cliente exato</td><td>Caddy redireciona direto a <span class="mono">/cliente/es</span> (default es); <span class="mono">/nexo</span> → <span class="mono">/nexo/pt</span> — redirecionar para a barra final causa loop</td></tr>
+          <tr><td class="mono">Build</td><td>os Dockerfiles <b>não</b> sobrescrevem mais <span class="mono">next.config.js</span> nem patcham <span class="mono">middleware.ts</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVIÇOS ============ -->
+<section id="servicos">
+  <div class="container">
+    <h2><i data-lucide="boxes"></i> Serviços do VPS</h2>
+    <p class="section-sub">Os 12 containers Docker e suas URLs públicas. Todos operacionais.</p>
+    <div class="card" style="overflow-x:auto">
+      <table>
+        <tr><th>Serviço</th><th>URL pública</th><th>Container</th><th>Porta local</th><th>Status</th></tr>
+        <tr><td>Portal</td><td class="mono"><a href="https://vps.nexo-digital.app/" target="_blank">/</a></td><td class="mono">nexo_workspace_portal</td><td class="mono">13473</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>Workspace Cliente</td><td class="mono"><a href="https://vps.nexo-digital.app/cliente" target="_blank">/cliente</a></td><td class="mono">nexo_workspace_cliente</td><td class="mono">13472</td><td><span class="pill fix"><i data-lucide="wrench"></i>redeployado hoje</span></td></tr>
+        <tr><td>Workspace NEXO (admin)</td><td class="mono"><a href="https://vps.nexo-digital.app/nexo" target="_blank">/nexo</a></td><td class="mono">nexo_workspace_nexo</td><td class="mono">13471</td><td><span class="pill fix"><i data-lucide="wrench"></i>redeployado hoje</span></td></tr>
+        <tr><td>Nexo Digital Store</td><td class="mono"><a href="https://vps.nexo-digital.app/store/" target="_blank">/store</a></td><td class="mono">nexo_digital_store</td><td class="mono">13469</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>Nexo LP Creator</td><td class="mono"><a href="https://vps.nexo-digital.app/lp/" target="_blank">/lp</a></td><td class="mono">nexo_lp_creator</td><td class="mono">3460</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>Nexus RH</td><td class="mono"><a href="https://vps.nexo-digital.app/nexus/" target="_blank">/nexus</a></td><td class="mono">nexus_rh</td><td class="mono">13710</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>Nexus Suite</td><td class="mono"><a href="https://vps.nexo-digital.app/nexus-suite/" target="_blank">/nexus-suite</a></td><td class="mono">nexo_nexus_suite</td><td class="mono">13700</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>Luna Kernel</td><td class="mono"><a href="https://vps.nexo-digital.app/luna/" target="_blank">/luna</a></td><td class="mono">nexo_luna_kernel</td><td class="mono">3458</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>Dashboard Pro</td><td class="mono"><a href="https://vps.nexo-digital.app/dashboard/" target="_blank">/dashboard</a></td><td class="mono">nexo_dashboard_frontend / backend</td><td class="mono">13510 / 3500</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>Portainer</td><td class="mono"><a href="https://vps.nexo-digital.app/portainer/" target="_blank">/portainer</a></td><td class="mono">portainer</td><td class="mono">9000</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+        <tr><td>PostgreSQL 16</td><td class="mono">interno</td><td class="mono">nexo_postgres</td><td class="mono">5432</td><td><span class="pill ok"><i data-lucide="check"></i>healthy</span></td></tr>
+        <tr><td>Telegram Bot / noVNC</td><td class="mono">/novnc (com auth)</td><td class="mono">nexo_telegram_bot / systemd</td><td class="mono">6080</td><td><span class="pill ok"><i data-lucide="check"></i>up</span></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORKSPACE CLIENTE ============ -->
+<section id="cliente">
+  <div class="container">
+    <h2><i data-lucide="user"></i> Workspace Cliente</h2>
+    <p class="section-sub">
+      URL: <a href="https://vps.nexo-digital.app/cliente" target="_blank" style="color:var(--brand)">vps.nexo-digital.app/cliente</a> ·
+      basePath <span class="mono">/cliente</span> · locales <span class="mono">es (default) / en / pt / ca</span> ·
+      login cliente de teste: <span class="mono">info@onadance.com</span>
+    </p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3><i data-lucide="map"></i> Mapa de rotas — testadas 200 em produção</h3>
+        <div class="route-group">
+          <h4><i data-lucide="panel-left"></i> Sidebar / bottom-nav / menu mobile</h4>
+          <div class="route-list">
+            <span class="route"><span class="dot"></span><b>/cliente/es</b> dashboard</span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/projetos</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/chat</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/votacoes</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/ideias</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/calendario</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/notificacoes</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/perfil</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/creditos</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/contratos</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/arquivos</b></span>
+          </div>
+        </div>
+        <div class="route-group">
+          <h4><i data-lucide="git-fork"></i> Sub-rotas e fluxos</h4>
+          <div class="route-list">
+            <span class="route param"><span class="dot"></span><b>/cliente/es/projeto/[id]</b></span>
+            <span class="route param"><span class="dot"></span><b>/cliente/es/projeto/[id]/solicitacoes/nova</b></span>
+            <span class="route param"><span class="dot"></span><b>/cliente/es/solicitacao/[id]</b></span>
+            <span class="route param"><span class="dot"></span><b>/cliente/es/acao/[requestId]</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/projetos/novo-solicitacao</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/integracoes</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/es/config</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/[locale]/login</b> pública</span>
+            <span class="route param"><span class="dot"></span><b>/cliente/[locale]/convite/[token]</b> pública</span>
+          </div>
+        </div>
+        <div class="route-group">
+          <h4><i data-lucide="plug"></i> APIs principais</h4>
+          <div class="route-list">
+            <span class="route"><span class="dot"></span><b>/cliente/api/auth/*</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/api/projects</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/api/chat/messages</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/api/chat/upload</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/api/credits/*</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/api/requests</b></span>
+            <span class="route"><span class="dot"></span><b>/cliente/api/chat/ai</b> Luna (DeepSeek)</span>
+            <span class="route"><span class="dot"></span><b>/cliente/api/webhooks/*</b> HMAC</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3><i data-lucide="shield-check"></i> Proteção (estado atual)</h3>
+          <table>
+            <tr><td>Middleware</td><td>rate-limit login (5/15min), security headers, <b>checagem de sessão</b> (adicionada hoje)</td></tr>
+            <tr><td>Dashboard</td><td>layout de servidor com <span class="mono">auth()</span> — sem login não renderiza conteúdo</td></tr>
+            <tr><td>Sem sessão</td><td>307 → <span class="mono">/cliente/login</span> (prefixo preservado)</td></tr>
+            <tr><td>Chat IA (Luna)</td><td>DeepSeek, 1 crédito/msg, rate-limit 20/h, anti prompt-injection</td></tr>
+            <tr><td>Uploads</td><td>via API autenticada, arquivos fora de public/</td></tr>
+          </table>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <h3><i data-lucide="wrench"></i> Bugs corrigidos hoje (cliente)</h3>
+          <table>
+            <tr><td><span class="pill sev">bug</span></td><td>"Abrir projeto" e "criar solicitação" caíam em página inexistente (redirect 301 para o app errado)</td></tr>
+            <tr><td><span class="pill sev">bug</span></td><td>Toda a sidebar/bottom-nav/menu renderava <span class="mono">/cliente/cliente/...</span> → 404 em todos os itens</td></tr>
+            <tr><td><span class="pill sev">seg</span></td><td>Páginas do dashboard respondiam 200 <b>sem login</b> (proteção era só client-side)</td></tr>
+            <tr><td><span class="pill fix">fix</span></td><td>Redirect de locale perdia o prefixo (<span class="mono">/cliente/projetos</span> → <span class="mono">/es/projetos</span>)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORKSPACE ADMIN ============ -->
+<section id="admin">
+  <div class="container">
+    <h2><i data-lucide="lock"></i> Workspace NEXO (Admin)</h2>
+    <p class="section-sub">
+      URL: <a href="https://vps.nexo-digital.app/nexo" target="_blank" style="color:var(--brand)">vps.nexo-digital.app/nexo</a> ·
+      basePath <span class="mono">/nexo</span> · locales <span class="mono">pt (default) / en / es</span> ·
+      acesso restrito a ADMIN + Nexo staff
+    </p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3><i data-lucide="map"></i> Mapa de rotas — testadas 200 em produção</h3>
+        <div class="route-group">
+          <h4><i data-lucide="panel-left"></i> Sidebar (18 itens)</h4>
+          <div class="route-list">
+            <span class="route"><span class="dot"></span><b>/nexo/pt</b> dashboard</span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/organizacoes</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/clientes</b></span>
+            <span class="route param"><span class="dot"></span><b>/nexo/pt/clientes/[id]</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/projetos</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/contratos</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/convites</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/solicitacoes</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/creditos</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/votacoes</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/ideias</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/analises</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/cronograma</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/chat</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/chat-revision</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/notificacoes</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/logs</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/configuracoes</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/pt/guia-creditos</b></span>
+          </div>
+        </div>
+        <div class="route-group">
+          <h4><i data-lucide="plug"></i> APIs principais</h4>
+          <div class="route-list">
+            <span class="route"><span class="dot"></span><b>/nexo/api/auth/*</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/api/admin/clients</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/api/admin/organizations</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/api/admin/invitations</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/api/admin/requests</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/api/admin/chat/*</b></span>
+            <span class="route"><span class="dot"></span><b>/nexo/api/files/*</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3><i data-lucide="shield-check"></i> Proteção (estado atual)</h3>
+          <table>
+            <tr><td>Middleware</td><td>sessão obrigatória exceto <span class="mono">/login</span> e <span class="mono">/setup</span>; redirect com prefixo</td></tr>
+            <tr><td>Layout admin</td><td><span class="mono">auth()</span> server-side + role ADMIN obrigatória</td></tr>
+            <tr><td>APIs admin</td><td><span class="mono">requireAdmin()</span> em todas as rotas <span class="mono">/api/admin/*</span></td></tr>
+            <tr><td>Auditoria</td><td><span class="mono">logSystem</span> em criação/edição/exclusão de clientes e auth</td></tr>
+          </table>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <h3><i data-lucide="wrench"></i> Bugs corrigidos hoje (admin)</h3>
+          <table>
+            <tr><td><span class="pill sev">bug</span></td><td>"Editar cliente" ia para <span class="mono">/clientes/[id]</span> na raiz → 404 (era o bug relatado originalmente)</td></tr>
+            <tr><td><span class="pill sev">seg</span></td><td><span class="mono">/api/admin/clients</span> e <span class="mono">/clients/[id]</span> <b>vazavam o hash bcrypt</b> das senhas de todos os clientes — removido das respostas</td></tr>
+            <tr><td><span class="pill fix">fix</span></td><td>Link de convite gerado sem prefixo (<span class="mono">/convite/xxx</span>) → agora <span class="mono">/cliente/convite/xxx</span>; links antigos redirecionam via Caddy</td></tr>
+            <tr><td><span class="pill fix">fix</span></td><td>Sidebar renderava <span class="mono">/nexo/nexo/pt/...</span> → 404 em todos os itens</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MUDANÇAS ============ -->
+<section id="mudancas">
+  <div class="container">
+    <h2><i data-lucide="history"></i> Mudanças do dia — 03/09/2026</h2>
+    <p class="section-sub">Timeline completa. Commits no repositório <span class="mono">EEA-Ops-Master/vps</span> (branch main).</p>
+
+    <div class="timeline">
+      <div class="t-item sev">
+        <div class="t-head"><code>26b1b97</code><span class="pill sev">crítico</span><span class="pill fix">fix</span></div>
+        <p><b>fix(routing): basePath nos workspaces + Caddy sem strip de prefixo</b> — 43 arquivos</p>
+        <ul>
+          <li><span class="mono">basePath</span> via <span class="mono">NEXT_PUBLIC_BASE_PATH</span> nos dois apps; <span class="mono">lib/fetch-patch.ts</span> prefixa fetch</li>
+          <li>Middlewares: cookie por sufixo, redirect com prefixo, sem reconstruir requisição</li>
+          <li>Cliente: proteção de sessão no middleware + layout de servidor (auth)</li>
+          <li>Segurança: hash bcrypt removido das APIs; convite com prefixo</li>
+          <li>Dockerfiles sem overrides de config; Compose com <span class="mono">NEXTAUTH_URL .../api/auth</span></li>
+        </ul>
+      </div>
+      <div class="t-item fix">
+        <div class="t-head"><code>ebe4726</code><span class="pill fix">fix</span></div>
+        <p><b>fix(caddy): loop de redirects em /cliente e /nexo + sync do Caddyfile</b></p>
+        <ul>
+          <li>Loop infinito (Safari: "muitos redirecionamentos"): <span class="mono">/cliente</span> → <span class="mono">/cliente/</span> → 308 → <span class="mono">/cliente</span>. Agora redireciona direto ao locale default</li>
+          <li><span class="mono">Caddyfile.caddy</span> sincronizado com o live — restaurado bloco <span class="mono">@scanner</span> (proteção contra path traversal/.env/.git que o live havia perdido)</li>
+        </ul>
+      </div>
+      <div class="t-item fix">
+        <div class="t-head"><code>6a72729</code><span class="pill fix">fix</span></div>
+        <p><b>fix(routing): elimina prefixo duplicado em hrefs de navegação (sidebar)</b> — 7 arquivos</p>
+        <ul>
+          <li>Sidebar/bottom-nav/menu-mobile (cliente) e sidebar (admin) montavam hrefs com <span class="mono">/cliente/</span> ou <span class="mono">/nexo/</span> via atribuição — com basePath isso renderizava <span class="mono">/cliente/cliente/...</span> → 404 em todos os itens</li>
+          <li>Detecção de item ativo normalizada (funciona com ou sem prefixo no pathname)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <i data-lucide="alert-triangle"></i>
+      <div><b>Atenção ao navegar:</b> quem acessou o app durante a janela de deploy pode ter 301 antigos em cache. Se algo parecer estranho, use hard refresh (<span class="mono">Cmd+Shift+R</span> / <span class="mono">Ctrl+Shift+R</span>).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTES ============ -->
+<section id="testes">
+  <div class="container">
+    <h2><i data-lucide="flask-conical"></i> Cobertura de testes em produção</h2>
+    <p class="section-sub">Todos os testes executados contra https://vps.nexo-digital.app com login real (API), após cada deploy.</p>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3><i data-lucide="list-checks"></i> Suíte de rotas — 12/12</h3>
+        <table>
+          <tr><td>Login via API (cliente + admin)</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Página protegida sem sessão → 307</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Redirect de locale mantém prefixo</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Bug original: editar cliente → 200</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Bug original: abrir projeto / nova solicitação → 200</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Sem hash de senha nas APIs admin</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Assets <span class="mono">/_next</span> sob o prefixo</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Redirecionamentos legados (/projetos, /login…)</td><td><span class="pill ok">pass</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><i data-lucide="panel-left"></i> Sidebar — 36/36</h3>
+        <table>
+          <tr><td>Cliente: 11 itens de menu → 200</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Cliente: sub-rotas (projeto, solicitacoes…)</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Admin: 18 itens de menu → 200</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Admin: clientes/[id]?edit=true → 200</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Zero hrefs duplicados no HTML</td><td><span class="pill ok">pass</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><i data-lucide="lock"></i> Segurança verificada</h3>
+        <table>
+          <tr><td><span class="mono">/.env</span> → 403 (bloco @scanner)</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>bcrypt hash ausente nas respostas</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Dashboard sem conteúdo sem login</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Rate-limit de login ativo</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Security headers presentes</td><td><span class="pill ok">pass</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OPERAÇÃO ============ -->
+<section id="operacao">
+  <div class="container">
+    <h2><i data-lucide="settings"></i> Operação & referência</h2>
+    <p class="section-sub">Como operar, reverter e onde está cada coisa.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3><i data-lucide="terminal"></i> Comandos úteis</h3>
+        <table>
+          <tr><td>Rebuild de um app</td><td class="mono">docker compose build workspace-cliente && docker compose up -d workspace-cliente</td></tr>
+          <tr><td>Reload do Caddy (após editar)</td><td class="mono">caddy reload --config /etc/caddy/Caddyfile</td></tr>
+          <tr><td>Logs</td><td class="mono">docker logs --tail 50 nexo_workspace_cliente</td></tr>
+          <tr><td>Caddyfile do repo (fonte)</td><td class="mono">VPS/Caddyfile.caddy — sincronizar com /etc/caddy/Caddyfile</td></tr>
+          <tr><td>Docs do ambiente</td><td class="mono">VPS/AGENTS.md (estrutura, credenciais, regras)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><i data-lucide="archive"></i> Backup & rollback</h3>
+        <table>
+          <tr><td>Backup pré-deploy</td><td class="mono">~/backups/pre-basepath-20260903-1345/ (código, Caddyfile, compose, env)</td></tr>
+          <tr><td>Imagens Docker anteriores</td><td class="mono">:pre-basepath (cliente e nexo)</td></tr>
+          <tr><td>Rollback rápido</td><td class="mono">docker tag …:pre-basepath …:latest && docker compose up -d</td></tr>
+          <tr><td>Banco de dados</td><td>intacto — nenhuma migration executada; dumps diários 03:00 em <span class="mono">~/backups</span></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="callout ok">
+      <i data-lucide="check-circle-2"></i>
+      <div><b>Notas conhecidas (não são bugs):</b> o warning <span class="mono">env-url-basepath-mismatch</span> no log do Auth.js é cosmético (login 100% funcional). Links de bookmarks antigos sem prefixo redirecionam automaticamente (301). O mobile-nav do admin usa paths sem locale e ganha um redirect de locale extra — funcional.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div>Nexo Digital — documentação interna gerada em 03/09/2026</div>
+    <div>Servidor: <span class="mono">vps.nexo-digital.app</span> · Repo: <span class="mono">EEA-Ops-Master/vps</span></div>
+  </div>
+</footer>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
