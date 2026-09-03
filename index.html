@@ -718,12 +718,46 @@
             <div class="timeline-content">
               <h3>Auditoria e refinamentos</h3>
               <ul>
-                <li>Correção da galeria: agora lê metadata.json dinamicamente (88 fotos)</li>
-                <li>Correção de rotas: landings bairro+serviço no App Router correto</li>
-                <li>Mobile grid com 3 colunas em galerias e reviews</li>
+                <li>Organização da documentação do projeto</li>
+                <li>Auditoria completa das fotos</li>
                 <li>Chips de zonas clicáveis nas páginas de serviço</li>
                 <li>Link de localidades no menu principal</li>
                 <li>Relatório executivo final</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-meta">Fase 6 — Pós-lançamento</div>
+            <div class="timeline-content">
+              <h3>Correções e refinamentos</h3>
+              <ul>
+                <li>Correção do bug da calculadora no mobile — estimativa posicionada corretamente</li>
+                <li>Reviews em 2 colunas no mobile com proteção anti-quebra de texto</li>
+                <li>Galeria de transformaciones otimizada para 2/3/4 colunas responsivas</li>
+                <li>Formulários de contato e orçamento ativados para envio por e-mail</li>
+                <li>Assinatura animada "Nexo Digital" no footer com efeito Digital Rain</li>
+                <li>Eliminação de 9 fotos duplicadas por hash (mantendo a melhor versão de cada)</li>
+                <li>Link "Ver todas las localidades" adicionado no footer</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-meta">Fase 7 — SEO local</div>
+            <div class="timeline-content">
+              <h3>Landing pages por bairro</h3>
+              <ul>
+                <li>Expansão de 12 para 21 bairros (9 novos bairros de Sabadell)</li>
+                <li>Página de listagem <code>/barrios</code> criada com agrupamento por cidade</li>
+                <li>Schema JSON-LD (Service + BreadcrumbList + FAQPage) em todas as páginas de bairro</li>
+                <li>Seção de FAQ adicionada nas páginas principais de bairro</li>
+                <li>Correção de typo "Grària" → "Gràcia" e campos opcionais heroFoto/gallery no tipo Neighborhood</li>
+                <li>Menu header e footer atualizados com link direto para /barrios</li>
+                <li>Sitemap atualizado com /barrios e novas páginas (657 páginas estáticas geradas)</li>
+                <li>Chips de zonas em páginas de serviço agora apontam para slugs próprios de cada bairro</li>
               </ul>
             </div>
           </div>
@@ -823,7 +857,7 @@
           <div class="feature-box reveal">
             <div class="feature-icon"><i data-lucide="crosshair" class="w-6 h-6"></i></div>
             <h3>Landings serviço + bairro</h3>
-            <p>Ex.: reformas de baños en Centro de Sabadell. Alta intenção de compra. Acesso também pelos chips clicáveis nas páginas de serviço.</p>
+            <p>Ex.: reformas de baños en Eixample de Sabadell. Alta intenção de compra.</p>
           </div>
           <div class="feature-box reveal">
             <div class="feature-icon"><i data-lucide="code" class="w-6 h-6"></i></div>
@@ -889,11 +923,6 @@
             <h3>Prova social</h3>
             <p>Avaliações reais, selo "Cliente verificado", estatísticas e galeria de obras.</p>
           </div>
-          <div class="feature-box feature-box-dark reveal">
-            <div class="feature-icon"><i data-lucide="calculator" class="w-6 h-6"></i></div>
-            <h3>Calculadora de reforma</h3>
-            <p>Estimativa orientativa por tipo de reforma, metros quadrados e acabamento. Funciona em mobile e desktop.</p>
-          </div>
         </div>
       </div>
     </section>
@@ -938,11 +967,6 @@
             <h3>Limpeza</h3>
             <p>Duplicatas mantidas apenas como representantes. Arquivos ruins, screenshots e não-relevantes foram descartados da importação.</p>
           </div>
-          <div class="feature-box reveal">
-            <div class="feature-icon"><i data-lucide="refresh-cw" class="w-6 h-6"></i></div>
-            <h3>Galeria dinâmica</h3>
-            <p>A galeria /proyectos/galeria/ agora lê o metadata.json e exibe todas as fotos automaticamente, com filtros por categoria.</p>
-          </div>
         </div>
 
         <div class="table-wrap mt-8 reveal">
@@ -965,7 +989,7 @@
               <tr>
                 <td>fotos-organizadas/</td>
                 <td>77</td>
-                <td>56 fotos únicas importadas</td>
+                <td>55 fotos únicas</td>
                 <td>Concluído</td>
               </tr>
               <tr>
@@ -974,19 +998,13 @@
                 <td>0 (todas duplicatas ou screenshots)</td>
                 <td>Concluído</td>
               </tr>
-              <tr>
-                <td>Total catalogado no site</td>
-                <td>—</td>
-                <td>88 fotos no metadata.json</td>
-                <td>Concluído</td>
-              </tr>
             </tbody>
           </table>
         </div>
 
         <div class="highlight-box reveal">
           <h3>Ação concluída</h3>
-          <p>Todas as fotos boas e únicas foram catalogadas no metadata.json com categoria (BANO, EXTERIOR, SUELO, DEMO, COCINA, PISO), fase (DESPUES, DURANTE, DETALLE), descrição em espanhol e variações otimizadas em WebP. A galeria principal agora é dinâmica e exibe automaticamente todas as fotos catalogadas com filtros por categoria. As galerias de serviços contam com conteúdo real de obras, incluindo terrazas, impermeabilização e detalhes de acabamento.</p>
+          <p>Todas as fotos boas e únicas foram catalogadas no metadata.json com categoria (BANO, EXTERIOR, SUELO, DEMO, COCINA, PISO), fase (DESPUES, DURANTE, DETALLE), descrição em espanhol e variações otimizadas em WebP. As galerias de serviços agora contam com muito mais conteúdo real de obras, incluindo terrazas, impermeabilização e detalhes de acabamento.</p>
         </div>
       </div>
     </section>
@@ -1075,6 +1093,11 @@
             <h3>Qualidade</h3>
             <p>ESLint, Prettier, componentes reutilizáveis e schemas validados.</p>
           </div>
+          <div class="feature-box reveal">
+            <div class="feature-icon"><i data-lucide="sparkles" class="w-6 h-6"></i></div>
+            <h3>Assinatura Nexo Digital</h3>
+            <p>Footer com assinatura animada Digital Rain — identidade visual da Nexo Digital no crédito do site.</p>
+          </div>
         </div>
 
         <div class="accordion mt-8" id="accordion-tech">
@@ -1117,7 +1140,7 @@
           <div class="feature-box feature-box-dark reveal">
             <div class="feature-icon"><i data-lucide="link" class="w-6 h-6"></i></div>
             <h3>Backlinks e parcerias</h3>
-            <p>Fornecedores, diretórios locais e perfis de negócio para fortalecer autoridade de domínio.</p>
+            <p>Fornecedores, diretórios locais, blogs e perfis de negócio para fortalecer autoridade.</p>
           </div>
           <div class="feature-box feature-box-dark reveal">
             <div class="feature-icon"><i data-lucide="map-pin" class="w-6 h-6"></i></div>
@@ -1126,8 +1149,8 @@
           </div>
           <div class="feature-box feature-box-dark reveal">
             <div class="feature-icon"><i data-lucide="image" class="w-6 h-6"></i></div>
-            <h3>Galeria e reviews</h3>
-            <p>Revisar duplicatas manualmente, adicionar novas resenhas e manter galerias atualizadas.</p>
+            <h3>Galeria completa</h3>
+            <p>Catalogar e publicar todas as fotos boas, eliminando duplicatas e preenchendo galerias.</p>
           </div>
         </div>
       </div>
@@ -1157,10 +1180,9 @@
             <div class="feature-icon"><i data-lucide="camera" class="w-6 h-6"></i></div>
             <h3>Fotos e conteúdo</h3>
             <ul>
-              <li><s>Finalizar auditoria visual das fotos</s> — concluído (88 catalogadas)</li>
+              <li><s>Finalizar auditoria visual das fotos</s> — concluído (87 catalogadas)</li>
               <li><s>Catalogar fotos boas no metadata.json</s> — concluído (55 adicionadas)</li>
-              <li><s>Galeria dinâmica no App Router correto</s> — concluído</li>
-              <li>Revisar e remover fotos repetidas manualmente</li>
+              <li><s>Eliminar fotos duplicadas por hash</s> — concluído (9 removidas)</li>
               <li>Associar fotos às resenhas sem imagem</li>
               <li>Revisar textos das landings</li>
             </ul>
@@ -1169,16 +1191,19 @@
             <div class="feature-icon"><i data-lucide="clipboard-list" class="w-6 h-6"></i></div>
             <h3>Formulários</h3>
             <ul>
-              <li>Testar envio de orçamento em produção</li>
+              <li><s>Ativar envio de orçamento por e-mail</s> — concluído</li>
+              <li><s>Ativar envio de contato por e-mail</s> — concluído</li>
               <li>Testar envio de resenha com foto</li>
-              <li>Adicionar upload de foto de perfil no formulário de resenhas</li>
-              <li>Confirmar recebimento de e-mails</li>
+              <li>Confirmar recebimento de e-mails em produção</li>
             </ul>
           </div>
           <div class="feature-box reveal">
             <div class="feature-icon"><i data-lucide="link-2" class="w-6 h-6"></i></div>
             <h3>SEO e autoridade</h3>
             <ul>
+              <li><s>Criar landing pages por bairro</s> — concluído (21 bairros + /barrios)</li>
+              <li><s>Adicionar schema e FAQ nas páginas de bairro</s> — concluído</li>
+              <li><s>Atualizar sitemap com /barrios</s> — concluído</li>
               <li>Cadastrar em diretórios locais</li>
               <li>Conseguir backlinks de fornecedores</li>
               <li>Criar posts no Google Business</li>
@@ -1188,7 +1213,6 @@
             <div class="feature-icon"><i data-lucide="smartphone" class="w-6 h-6"></i></div>
             <h3>Validação mobile</h3>
             <ul>
-              <li><s>Grid de galerias e reviews com 3 colunas</s> — concluído</li>
               <li>Testar todas as páginas no celular</li>
               <li>Verificar velocidade no PageSpeed</li>
               <li>Confirmar WhatsApp em todas as páginas</li>
@@ -1224,7 +1248,7 @@
       <div class="container">
         <p><strong>Relatório técnico — Jr-Reformas</strong></p>
         <p>Site: <a href="https://jr-reformas.com" target="_blank">jr-reformas.com</a></p>
-        <p>Equipe Nexo Digital · Gerado em agosto de 2026</p>
+        <p>Equipe Nexo Digital · Atualizado em 3 de setembro de 2026</p>
       </div>
     </footer>
   </main>
