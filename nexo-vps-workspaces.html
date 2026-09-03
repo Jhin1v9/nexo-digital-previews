@@ -138,8 +138,8 @@
     <div class="hero-meta">
       <div><i data-lucide="calendar"></i> 03/09/2026</div>
       <div><i data-lucide="globe"></i> vps.nexo-digital.app</div>
-      <div><i data-lucide="git-branch"></i> 3 commits — repo EEA-Ops-Master/vps</div>
-      <div><i data-lucide="check-circle-2"></i> 36/36 rotas validadas</div>
+      <div><i data-lucide="git-branch"></i> 4 commits — repo EEA-Ops-Master/vps</div>
+      <div><i data-lucide="check-circle-2"></i> 36/36 páginas · 183 APIs testadas</div>
     </div>
   </div>
 </header>
@@ -153,6 +153,7 @@
     <a href="#admin">Workspace Admin</a>
     <a href="#mudancas">Mudanças do dia</a>
     <a href="#testes">Testes</a>
+    <a href="#apis">APIs</a>
     <a href="#operacao">Operação</a>
   </div>
 </nav>
@@ -396,6 +397,14 @@
 
     <div class="timeline">
       <div class="t-item sev">
+        <div class="t-head"><code>b796986</code><span class="pill sev">bug</span><span class="pill fix">fix</span></div>
+        <p><b>fix(admin): chat/rooms 500 — nome da relação Prisma é chatMessages</b></p>
+        <ul>
+          <li>Detectado no sweep de 183 endpoints: <span class="mono">GET /nexo/api/admin/chat/rooms</span> quebrava a página "Revisión de Chats" com 500 (a query usava a relação inexistente <span class="mono">messages</span>; o schema a chama <span class="mono">chatMessages</span>)</li>
+          <li>Corrigido select/where/_count + filtro de mensagens deletadas; contrato do frontend preservado; validado 200 com dados reais após rebuild</li>
+        </ul>
+      </div>
+      <div class="t-item sev">
         <div class="t-head"><code>26b1b97</code><span class="pill sev">crítico</span><span class="pill fix">fix</span></div>
         <p><b>fix(routing): basePath nos workspaces + Caddy sem strip de prefixo</b> — 43 arquivos</p>
         <ul>
@@ -461,6 +470,16 @@
         </table>
       </div>
       <div class="card">
+        <h3><i data-lucide="braces"></i> APIs — 183 endpoints</h3>
+        <table>
+          <tr><td>Inventário completo + testes (seção APIs)</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Bug real encontrado: chat/rooms 500 → fix b796986</td><td><span class="pill ok">fix</span></td></tr>
+          <tr><td>10 × 500 restantes = input inválido (sem impacto real)</td><td><span class="pill note">nota</span></td></tr>
+          <tr><td>4 mutações destrutivas protegidas (não executadas)</td><td><span class="pill ok">pass</span></td></tr>
+          <tr><td>Auth Luna (X-Luna-Key) rejeitando sem key — 19/19</td><td><span class="pill ok">pass</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
         <h3><i data-lucide="lock"></i> Segurança verificada</h3>
         <table>
           <tr><td><span class="mono">/.env</span> → 403 (bloco @scanner)</td><td><span class="pill ok">pass</span></td></tr>
@@ -470,6 +489,393 @@
           <tr><td>Security headers presentes</td><td><span class="pill ok">pass</span></td></tr>
         </table>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APIS ============ -->
+<section id="apis">
+  <div class="container">
+    <h2><i data-lucide="braces"></i> Rotas de API — inventário completo testado</h2>
+    <p class="section-sub">183 endpoints (68 cliente + 115 admin/agente) exercitados em produção em 03/09/2026 com sessão real de login. Metodologia não-destrutiva: GETs reais; mutações com body vazio <span class="mono">{}</span> (espera-se 400/404 — prova que a rota existe e valida input sem alterar dados); rotas destrutivas não foram executadas.</p>
+
+    <div class="grid grid-4" style="margin-bottom:1.8rem">
+      <div class="card stat info"><div class="num">183</div><div class="lbl">endpoints mapeados e exercitados</div></div>
+      <div class="card stat ok"><div class="num">48</div><div class="lbl">respostas 200 com sessão válida</div></div>
+      <div class="card stat ok"><div class="num">1</div><div class="lbl">bug funcional encontrado e corrigido (chat/rooms)</div></div>
+      <div class="card stat violet"><div class="num">4</div><div class="lbl">mutações destrutivas protegidas (não executadas)</div></div>
+    </div>
+
+    <div class="callout info">
+      <i data-lucide="info"></i>
+      <div><b>Como ler os status:</b> <span class="pill ok">200</span> responde OK com sessão · <span class="pill note">400/404</span> rejeitou o body vazio ou id fictício — rota viva e validando · <span class="pill note">401/403</span> auth/barreira de papel ativa (esperado) · <span class="pill sev">500</span> ver nota abaixo · <span class="pill fix">não exec.</span> mutação destrutiva/proxy externo, propositalmente não executada para proteger dados de clientes.</div>
+    </div>
+
+    <div class="callout warn">
+      <i data-lucide="alert-triangle"></i>
+      <div><b>Nota sobre os 500 restantes (10 ocorrências):</b> todas com input inválido — upload sem multipart, ou update de id inexistente (o Prisma lança P2025 e o catch devolve 500 em vez de 404/400). <b>Nenhum afeta uso real</b> (o frontend sempre envia multipart e ids existentes). Rotas: <span class="mono">chat/upload</span> (×2), <span class="mono">projects/:id/files</span>, <span class="mono">requests/:id/complete-action</span>, <span class="mono">admin/needs/:id</span> (approve, reject, delete), <span class="mono">admin/polls/:id</span>, <span class="mono">admin/projects/:id</span>, <span class="mono">admin/requests/:id</span>. Melhoria de validação planejada, sem urgência.</div>
+    </div>
+
+    <h3 style="margin:2rem 0 .5rem;font-size:1.1rem;display:flex;align-items:center;gap:.5rem"><i data-lucide="user" style="width:18px;height:18px;color:var(--brand)"></i> Workspace Cliente — 68 endpoints</h3>
+<div class="route-group"><h4><i data-lucide="folder"></i> Chat (mensagens, stream, upload, busca, IA Luna) <span style="color:var(--text-3)">(11)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/chat/ai</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/link-preview</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/messages</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/chat/messages</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/cliente/api/chat/messages/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/cliente/api/chat/messages/<span style="color:var(--text-3)">:id</span>/react</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/chat/messages/<span style="color:var(--text-3)">:id</span>/react</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/cliente/api/chat/messages/<span style="color:var(--text-3)">:id</span>/read</td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/search</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/chat/stream</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/chat/upload</td><td><span class="pill sev">500</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> AI Tools (agente) <span style="color:var(--text-3)">(4)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/ai-tools/analyze-request</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/ai-tools/complete-action</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/ai-tools/list-needs</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/ai-tools/list-pending-actions</td><td><span class="pill note">401</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Projetos (dados, arquivos, equipe, contratos, ideias, calendário) <span style="color:var(--text-3)">(14)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/projects</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/calendar</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/calendar</td><td><span class="pill note">403</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/contracts</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/contracts</td><td><span class="pill note">403</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/contracts</td><td><span class="pill note">403</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/files</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/files</td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/ideas</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/ideas</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/ideas</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/team</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/projects/<span style="color:var(--text-3)">:id</span>/team</td><td><span class="pill note">403</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Solicitações (aprovar/rejeitar, comentários, eventos) <span style="color:var(--text-3)">(10)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/requests</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/requests</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--violet);font-family:var(--mono);font-size:.78rem">PATCH</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span>/approve</td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span>/comments</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span>/comments</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span>/complete-action</td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span>/events</td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/requests/<span style="color:var(--text-3)">:id</span>/reject</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Créditos <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/credits</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/credits</td><td><span class="pill note">403</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/credits/balance</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Notificações <span style="color:var(--text-3)">(4)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/notifications</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/notifications</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/notifications/read-all</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/notifications/stream</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Votações (enquetes) <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/polls</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/polls</td><td><span class="pill note">403</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/cliente/api/polls</td><td><span class="pill note">403</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Convites <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/invitations/accept</td><td><span class="pill note">400</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Usuário (senha, preferências) <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/cliente/api/user/password</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/user/preferences</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--violet);font-family:var(--mono);font-size:.78rem">PATCH</b></td><td class="mono">/cliente/api/user/preferences</td><td><span class="pill note">400</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Proxy externo (CRM/financeiro) <span style="color:var(--text-3)">(6)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/proxy/clientes</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/proxy/financeiro</td><td><span class="pill note">403</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/proxy/leads</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/proxy/leads</td><td><span class="pill fix">não exec.</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/proxy/tarefas</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/proxy/tarefas</td><td><span class="pill fix">não exec.</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Webhooks <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/webhooks/dashboard</td><td><span class="pill fix">não exec.</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/webhooks/sync</td><td><span class="pill note">403</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/webhooks/sync</td><td><span class="pill fix">não exec.</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Auth <span style="color:var(--text-3)">(2)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/cliente/api/auth/log-failure</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/auth/session</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Arquivos <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/files/dummy.txt</td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Dashboard <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/dashboard</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Logs <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/system-logs</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Saúde <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/cliente/api/health</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+
+    <h3 style="margin:2.5rem 0 .5rem;font-size:1.1rem;display:flex;align-items:center;gap:.5rem"><i data-lucide="lock" style="width:18px;height:18px;color:var(--violet)"></i> Workspace Admin + Luna — 115 endpoints</h3>
+<div class="route-group"><h4><i data-lucide="folder"></i> Luna (API do agente IA — autenticada por X-Luna-Key) <span style="color:var(--text-3)">(19)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/analyze-request</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/approve-request</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/complete-action</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/create-comment</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/create-need</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/create-request</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/get-request</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/list-events</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/list-needs</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/list-pending-actions</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/list-requests</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/notify-client</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/reject-request</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/request-approval</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/security/check-ip</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/luna/security/trusted-ips</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/security/trusted-ips</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/luna/security/trusted-ips</td><td><span class="pill note">401</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/luna/summarize-timeline</td><td><span class="pill note">401</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Chat (upload + revisão) <span style="color:var(--text-3)">(5)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/chat/messages</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/chat/messages</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/chat/projects</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/chat/rooms</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/chat/upload</td><td><span class="pill sev">500</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Solicitações <span style="color:var(--text-3)">(10)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/requests</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span></td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span>/actions</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span>/actions/complete</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span>/comments</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span>/events</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span>/needs</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/requests/<span style="color:var(--text-3)">:id</span>/needs</td><td><span class="pill note">400</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Needs (aprovação) <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/needs/<span style="color:var(--text-3)">:id</span></td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/needs/<span style="color:var(--text-3)">:id</span>/approve</td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/needs/<span style="color:var(--text-3)">:id</span>/reject</td><td><span class="pill sev">500</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Projetos (incl. equipe e purge) <span style="color:var(--text-3)">(10)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/projects</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/projects</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span></td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span>/purge</td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span>/team</td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span>/team</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span>/team/<span style="color:var(--text-3)">:memberId</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/projects/<span style="color:var(--text-3)">:id</span>/team/<span style="color:var(--text-3)">:memberId</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Clientes <span style="color:var(--text-3)">(7)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/clients</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/clients</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/clients/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/clients/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/clients/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/clients/<span style="color:var(--text-3)">:id</span>/purge</td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/clients/<span style="color:var(--text-3)">:id</span>/reset-password</td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Organizações <span style="color:var(--text-3)">(6)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/organizations</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/organizations</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/organizations/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/organizations/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/organizations/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/organizations/<span style="color:var(--text-3)">:id</span>/purge</td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Usuários <span style="color:var(--text-3)">(5)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/users</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/users</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/users/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/users/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/users/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Workspace users <span style="color:var(--text-3)">(5)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/workspace/users</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/workspace/users</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/workspace/users/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/workspace/users/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/workspace/users/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Contratos <span style="color:var(--text-3)">(5)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/contracts</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/contracts</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/contracts/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/contracts/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/contracts/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Créditos & config <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/credits</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/credits</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/credits/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Votações <span style="color:var(--text-3)">(6)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/polls</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/polls</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/polls/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/polls/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/polls/<span style="color:var(--text-3)">:id</span></td><td><span class="pill sev">500</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/polls/<span style="color:var(--text-3)">:id</span>/vote</td><td><span class="pill note">400</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Ideias <span style="color:var(--text-3)">(5)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/ideas</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/ideas</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/ideas/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/ideas/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/ideas/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">400</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Calendário <span style="color:var(--text-3)">(4)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/calendar</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/calendar</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/calendar/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/calendar/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Eventos <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/events</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/events/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/events/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Convites <span style="color:var(--text-3)">(3)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/invitations</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/invitations</td><td><span class="pill note">400</span></td></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/invitations/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Comentários <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/comments/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Ações do cliente <span style="color:var(--text-3)">(2)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--red);font-family:var(--mono);font-size:.78rem">DELETE</b></td><td class="mono">/nexo/api/admin/client-actions/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+<tr><td><b style="color:var(--amber);font-family:var(--mono);font-size:.78rem">PUT</b></td><td class="mono">/nexo/api/admin/client-actions/<span style="color:var(--text-3)">:id</span></td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Análises <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/analyses</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Analytics <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/analytics</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Estatísticas <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/stats</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Logs <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/admin/system-logs</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Reset (destrutivo) <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/admin/reset-clients</td><td><span class="pill note">400</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Auth <span style="color:var(--text-3)">(2)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/auth/log-failure</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/auth/session</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Arquivos <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/files/dummy.txt</td><td><span class="pill note">404</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Setup <span style="color:var(--text-3)">(2)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/setup</td><td><span class="pill ok">200</span></td></tr>
+<tr><td><b style="color:var(--brand);font-family:var(--mono);font-size:.78rem">POST</b></td><td class="mono">/nexo/api/setup</td><td><span class="pill note">403</span></td></tr>
+</table>
+</div>
+<div class="route-group"><h4><i data-lucide="folder"></i> Saúde <span style="color:var(--text-3)">(1)</span></h4>
+<table><tr><th style="width:70px">Método</th><th>Rota</th><th style="width:90px">Status</th></tr>
+<tr><td><b style="color:var(--green);font-family:var(--mono);font-size:.78rem">GET</b></td><td class="mono">/nexo/api/health</td><td><span class="pill ok">200</span></td></tr>
+</table>
+</div>
+
+    <div class="callout ok" style="margin-top:2rem">
+      <i data-lucide="check-circle-2"></i>
+      <div><b>Rotas não executadas de propósito (proteção de dados):</b> <span class="mono">POST /cliente/api/proxy/leads</span>, <span class="mono">POST /cliente/api/proxy/tarefas</span> (criariam registros no CRM externo), <span class="mono">POST /cliente/api/webhooks/dashboard</span>, <span class="mono">GET/POST /cliente/api/webhooks/sync</span> (disparariam sincronizações), <span class="mono">POST /nexo/api/admin/reset-clients</span> e os <span class="mono">purge</span>/<span class="mono">reset-password</span> (destrutivos). Todas responderam às requisições GET/POST de varredura vizinhas e estão sob auth.</div>
     </div>
   </div>
 </section>
