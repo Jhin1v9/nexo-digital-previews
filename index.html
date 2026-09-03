@@ -591,6 +591,83 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Changelog / últimas modificações */
+    .changelog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .changelog-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.25rem;
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      border-left: 4px solid var(--terracota);
+    }
+
+    .changelog-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateX(4px);
+    }
+
+    .changelog-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--terracota);
+    }
+
+    .changelog-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--terracota);
+      color: var(--white);
+    }
+
+    .changelog-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--carbon);
+      margin: 0;
+    }
+
+    .changelog-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (min-width: 768px) {
+      .changelog-item {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 1.25rem;
+      }
+      .changelog-date {
+        min-width: 110px;
+        flex-shrink: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -598,6 +675,7 @@
     <div class="container nav-inner">
       <a href="#" class="nav-logo">Junior <span>Reformas</span></a>
       <div class="nav-links">
+        <a href="#changelog">Novidades</a>
         <a href="#timeline">Timeline</a>
         <a href="#seo">SEO</a>
         <a href="#fotos">Fotos</a>
@@ -642,6 +720,86 @@
   </header>
 
   <main>
+    <!-- CHANGELOG -->
+    <section class="section section-light" id="changelog">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="zap" class="w-4 h-4"></i> Últimas modificações</span>
+          <h2 class="section-title">O que mudou recentemente</h2>
+          <p class="section-subtitle">Alterações em ordem cronológica, com destaque para as entregas mais recentes.</p>
+        </div>
+
+        <div class="changelog-list">
+          <div class="changelog-item reveal">
+            <div class="changelog-date">
+              <i data-lucide="calendar" class="w-3 h-3"></i>
+              03 Set 2026
+              <span class="changelog-badge">Novo</span>
+            </div>
+            <div>
+              <h3 class="changelog-title">Tabela de preços virou cards no mobile</h3>
+              <p class="changelog-desc">Todas as páginas de serviço agora exibem os preços como cards empilhados no mobile, sem scroll horizontal. Preço em destaque visual, fonte mínima 14px e touch target de 44px.</p>
+            </div>
+          </div>
+
+          <div class="changelog-item reveal">
+            <div class="changelog-date">
+              <i data-lucide="calendar" class="w-3 h-3"></i>
+              03 Set 2026
+            </div>
+            <div>
+              <h3 class="changelog-title">Expansão das landing pages por bairro</h3>
+              <p class="changelog-desc">De 12 para 21 bairros em Sabadell. Criada página de listagem <code>/barrios</code>, schema JSON-LD (Service + Breadcrumb + FAQ) e navegação no header/footer.</p>
+            </div>
+          </div>
+
+          <div class="changelog-item reveal">
+            <div class="changelog-date">
+              <i data-lucide="calendar" class="w-3 h-3"></i>
+              03 Set 2026
+            </div>
+            <div>
+              <h3 class="changelog-title">Assinatura animada "Nexo Digital" no footer</h3>
+              <p class="changelog-desc">Efeito Digital Rain no crédito do footer, com cores da identidade Nexo Digital e tipografia em destaque.</p>
+            </div>
+          </div>
+
+          <div class="changelog-item reveal">
+            <div class="changelog-date">
+              <i data-lucide="calendar" class="w-3 h-3"></i>
+              03 Set 2026
+            </div>
+            <div>
+              <h3 class="changelog-title">Correções mobile e galeria</h3>
+              <p class="changelog-desc">Bug da calculadora corrigido no mobile, reviews em 2 colunas com proteção anti-quebra, galeria de transformaciones responsiva (2/3/4 colunas) e 9 fotos duplicadas removidas por hash.</p>
+            </div>
+          </div>
+
+          <div class="changelog-item reveal">
+            <div class="changelog-date">
+              <i data-lucide="calendar" class="w-3 h-3"></i>
+              02 Set 2026
+            </div>
+            <div>
+              <h3 class="changelog-title">Formulários de contato e orçamento ativados</h3>
+              <p class="changelog-desc">Envio de e-mail configurado para formulários de contato e orçamento, com validação e página de agradecimento.</p>
+            </div>
+          </div>
+
+          <div class="changelog-item reveal">
+            <div class="changelog-date">
+              <i data-lucide="calendar" class="w-3 h-3"></i>
+              28 Ago 2026
+            </div>
+            <div>
+              <h3 class="changelog-title">53 landings de serviço + bairro e sitemap</h3>
+              <p class="changelog-desc">Geração de 53 páginas cruzadas serviço × bairro, sitemap completo com 416+ URLs e links internos estruturados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- TIMELINE -->
     <section class="section section-light" id="timeline">
       <div class="container">
